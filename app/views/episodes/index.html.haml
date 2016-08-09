@@ -1,0 +1,20 @@
+%h1 Index
+
+
+- if @episodes.present?
+  - @episodes.each do |episode|
+    .episode
+      = link_to episode_path( episode ) do
+        %span View #{episode.title}
+
+      - if current_user.role == "admin"
+        %span - 
+        = link_to edit_episode_path( episode.id ) do
+          %span Edit
+
+        %span - 
+        = link_to episode_backstage_path( episode.id ) do
+          %span Backstage
+
+- if current_user.role == "admin"
+  = link_to "New", new_episode_path

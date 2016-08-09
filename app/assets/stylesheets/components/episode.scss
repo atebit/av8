@@ -1,0 +1,27 @@
+.episode-player{
+  background:rgba(0,0,0,0.2) asset-url('standby.gif') center center no-repeat;
+  background-size: cover;
+  overflow:hidden;
+  position: relative;
+}
+
+.guest-stream{
+  position: absolute;
+  display: inline-block;
+  width:100%;
+  height:10%;
+  
+}
+
+
+#your-stream{
+  position:absolute;
+  bottom:0px;
+  right:0px;
+}
+
+.fan-lis-item-preview{
+  max-width: 100px !important;
+  max-height: 80px !important;
+  position: relative; 
+}

@@ -1,0 +1,8 @@
+%h2 Home
+
+
+- if current_user.present?
+  = link_to "All Episodes", episodes_path
+- if current_user.blank?
+  = link_to "Sign Up", new_user_registration_path
+  = link_to "Log In", new_user_session_path

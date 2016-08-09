@@ -1,0 +1,9 @@
+%h1 New
+
+= simple_form_for @episode, html: {multipart: true} do |f|
+  = f.error_notification
+  = f.input :title
+  = submit_tag "Create"
+
+
+= link_to "Cancel", episodes_path

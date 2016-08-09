@@ -1,0 +1,978 @@
+/* clearfix */
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.clear:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.clear {
+  display: inline-block;
+}
+
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+* html .clear {
+  height: 1%;
+}
+
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.clear {
+  display: block;
+}
+
+/* Swatches */
+/* primary action */
+/* line 8, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.color5 {
+  color: #ec3362;
+}
+
+/* important action */
+/* line 12, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.color4 {
+  color: #2183b2;
+}
+
+/* important action */
+/* line 16, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.color3 {
+  color: #5bb6d6;
+}
+
+/* standard text color, active secondary button state */
+/* line 21, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.color2 {
+  color: #564a4a;
+}
+
+/* light, but not white */
+/* line 25, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.color1 {
+  color: #f8f9f3;
+}
+
+/* line 30, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.green {
+  color: #00A500;
+}
+
+/* textures, patterns & gradients */
+/* line 36, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.geometry-bg {
+  background: white url(/tei-repeating-geometry.jpg) fixed;
+}
+
+/* line 40, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.grey {
+  color: #c7bebe;
+}
+
+/* line 44, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.buttonEase {
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+/* browser reset */
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+* {
+  ouline: none !important;
+}
+
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+body {
+  line-height: 1;
+}
+
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+blockquote, q {
+  quotes: none;
+}
+
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+blockquote:after, blockquote:before, q:after, q:before {
+  content: '';
+  content: none;
+}
+
+/* line 3, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 5, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+input[type="button"], input[type="reset"], input[type="submit"], input[type="search"] {
+  -webkit-appearance: none;
+}
+
+/* GLOABALS */
+/* line 9, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+* {
+  outline: none;
+}
+
+/* line 11, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+html, body {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2985d1+0,80ed9d+100 */
+  background: #2985d1;
+  /* Old browsers */
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(-45deg, #2985d1 0%, #80ed9d 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: -webkit-linear-gradient(315deg, #2985d1 0%, #80ed9d 100%);
+  background: linear-gradient(135deg, #2985d1 0%, #80ed9d 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2985d1', endColorstr='#80ed9d',GradientType=1 );
+  /* IE6-9 fallback on horizontal gradient */
+  width: 100%;
+  height: 100%;
+}
+
+/* line 25, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: 0.7px;
+}
+
+/* line 35, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+p {
+  margin: 0px 0px 15px 0px;
+}
+
+/* line 39, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+p ul {
+  list-style-type: circle;
+}
+
+/* line 43, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+ol {
+  list-style-type: decimal;
+  margin-left: 24px;
+}
+/* line 46, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+ol li {
+  margin-bottom: 10px;
+}
+
+/* line 51, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+p.small {
+  font-size: 0.8em;
+  line-height: 0.2em;
+}
+
+/* line 56, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+b, strong, .bold, .strong {
+  font-weight: bold;
+}
+
+/* line 60, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+i, em, .italic {
+  font-style: italic !important;
+}
+
+/* line 64, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+h1 {
+  font-size: 1.5em;
+}
+
+/* line 65, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+h2 {
+  font-size: 1.4em;
+}
+
+/* line 66, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+h3 {
+  font-size: 1.3em;
+}
+
+/* line 67, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+h4 {
+  font-size: 1.2em;
+}
+
+/* line 68, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+h5 {
+  font-size: 1.1em;
+}
+
+/* line 69, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+h6 {
+  font-size: 1em;
+}
+
+/* line 71, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+pre {
+  background-color: #eee;
+  padding: 10px;
+  font-size: 11px;
+}
+
+/* line 78, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+div.field, div.actions {
+  margin-bottom: 10px;
+}
+
+/* line 83, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.space {
+  height: 20px;
+  display: block;
+}
+
+/* line 85, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.inline {
+  display: inline-block;
+  position: relative;
+}
+
+/* line 86, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.right {
+  float: right;
+}
+
+/* line 87, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.left {
+  float: left;
+}
+
+/* line 89, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.center, .align-center {
+  text-align: center;
+}
+
+/* line 90, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.align-left {
+  text-align: left;
+}
+
+/* line 91, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.align-right {
+  text-align: right;
+}
+
+/* line 93, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.bottom {
+  position: absolute;
+  bottom: 0px;
+}
+
+/* line 98, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.no-padding {
+  padding: 0px !important;
+}
+
+/* line 101, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.nolink {
+  color: black;
+}
+
+/* line 105, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.small-grey {
+  color: #c7bebe;
+  font-size: 0.8em;
+}
+
+/* line 109, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.small-text {
+  font-size: 0.8em;
+}
+
+/* line 113, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+img {
+  width: 100%;
+  height: auto;
+}
+
+/* line 117, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* line 121, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+iframe, embed, object {
+  width: 100%;
+}
+
+/* line 125, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.block {
+  margin: 40px 0px;
+}
+
+/* line 129, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.maxwidth {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* line 136, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.maxwidth2 {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* line 144, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.cutoff-sides {
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* line 145, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.pad {
+  padding: 20px;
+}
+
+/* line 146, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.pad-left {
+  padding-left: 20px;
+}
+
+/* line 147, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.pad-right {
+  padding-right: 20px;
+}
+
+/* line 148, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.pad-top {
+  padding-top: 10px;
+}
+
+/* line 149, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.pad-bottom {
+  padding-bottom: 10px;
+}
+
+/* line 150, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.pad-y {
+  padding: 10px 0px !important;
+}
+
+/* line 153, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.theme-dark {
+  color: white;
+}
+
+/* line 154, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.downplay {
+  opacity: 0.5;
+}
+
+/* line 155, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.grey-bg {
+  background: rgba(86, 74, 74, 0.05);
+}
+
+/* line 157, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+hr.pad {
+  padding: 0px;
+  margin: 20px 0px;
+}
+
+/* line 162, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.margin-bottom {
+  margin-bottom: 20px;
+}
+
+/* line 166, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.page-title {
+  margin-bottom: 0px;
+  font-weight: 700;
+}
+
+/* line 171, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+.dotted-bottom {
+  border-bottom: 1px dotted rgba(86, 74, 74, 0.1);
+  padding-bottom: 2px;
+  margin-bottom: 2px;
+}
+
+/* line 177, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+a.inactive {
+  color: #c7bebe !important;
+}
+
+@media (max-width: 480px) {
+  /* line 182, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+  body {
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  /* line 187, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/base.scss */
+  .pad {
+    padding: 10px;
+  }
+}
+/* line 1, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/components/card.scss */
+.card {
+  margin-bottom: 5px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 5px 10px;
+}
+/* line 1, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/components/episode.scss */
+.episode-player {
+  background: rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* line 6, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/components/episode.scss */
+.guest-stream {
+  display: inline-block;
+}
+
+/* line 11, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/components/episode.scss */
+#your-stream {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+
+/* line 17, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/components/episode.scss */
+.fan-lis-item-preview {
+  max-width: 100px !important;
+  max-height: 80px !important;
+  position: relative;
+}
+/* clearfix */
+/* line 4, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.clear:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+
+/* line 4, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.clear {
+  display: inline-block;
+}
+
+/* line 4, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+* html .clear {
+  height: 1%;
+}
+
+/* line 4, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.clear {
+  display: block;
+}
+
+/* Swatches */
+/* primary action */
+/* line 9, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.color5 {
+  color: #ec3362;
+}
+
+/* important action */
+/* line 13, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.color4 {
+  color: #2183b2;
+}
+
+/* important action */
+/* line 17, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.color3 {
+  color: #5bb6d6;
+}
+
+/* standard text color, active secondary button state */
+/* line 22, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.color2 {
+  color: #564a4a;
+}
+
+/* light, but not white */
+/* line 26, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.color1 {
+  color: #f8f9f3;
+}
+
+/* line 31, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.green {
+  color: #00A500;
+}
+
+/* textures, patterns & gradients */
+/* line 37, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.geometry-bg {
+  background: white url(/tei-repeating-geometry.jpg) fixed;
+}
+
+/* line 41, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.grey {
+  color: #c7bebe;
+}
+
+/* line 45, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/config/variables.scss */
+.buttonEase {
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+/*
+  Simple Grid
+  Learn More - http://dallasbass.com/simple-grid-a-lightweight-responsive-css-grid/
+  Project Page - http://thisisdallas.github.com/Simple-Grid/
+  Author - Dallas Bass
+  Site - dallasbass.com
+*/
+/* line 10, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+*, *:after, *:before {
+  box-sizing: border-box;
+}
+
+/* line 16, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+[class*='col-'] {
+  float: left;
+  padding-right: 20px;
+  /* column-space */
+}
+
+/* line 21, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.grid {
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* line 29, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.grid:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* line 35, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.grid.no-padding [class*='col-'] {
+  padding-right: 0px;
+}
+
+/* line 39, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.grid-pad {
+  padding-top: 20px;
+  padding-left: 20px;
+  /* grid-space to left */
+  padding-right: 0px;
+  /* grid-space to right: (grid-space-left - column-space) e.g. 20px-20px=0 */
+}
+
+/* line 45, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-right {
+  float: right;
+}
+
+/* Content Columns */
+/* line 48, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-1 {
+  width: 100%;
+}
+
+/* line 49, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-2-3, .col-8-12 {
+  width: 66.66%;
+}
+
+/* line 50, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-2, .col-6-12 {
+  width: 50%;
+}
+
+/* line 51, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-3, .col-4-12 {
+  width: 33.33%;
+}
+
+/* line 52, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-4, .col-3-12 {
+  width: 25%;
+}
+
+/* line 53, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-5 {
+  width: 20%;
+}
+
+/* line 54, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-6, .col-2-12 {
+  width: 16.667%;
+}
+
+/* line 55, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-7 {
+  width: 14.28%;
+}
+
+/* line 56, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-8 {
+  width: 12.5%;
+}
+
+/* line 57, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-9 {
+  width: 11.1%;
+}
+
+/* line 58, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-10 {
+  width: 10%;
+}
+
+/* line 59, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-11 {
+  width: 9.09%;
+}
+
+/* line 60, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-1-12 {
+  width: 8.33%;
+}
+
+/* Layout Columns */
+/* line 63, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-11-12 {
+  width: 91.66%;
+}
+
+/* line 64, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-10-12 {
+  width: 83.333%;
+}
+
+/* line 65, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-9-12 {
+  width: 75%;
+}
+
+/* line 66, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-5-12 {
+  width: 41.66%;
+}
+
+/* line 67, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.col-7-12 {
+  width: 58.33%;
+}
+
+/* Pushing blocks */
+/* line 70, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-2-3, .push-8-12 {
+  margin-left: 66.66%;
+}
+
+/* line 71, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-1-2, .push-6-12 {
+  margin-left: 50%;
+}
+
+/* line 72, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-1-3, .push-4-12 {
+  margin-left: 33.33%;
+}
+
+/* line 73, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-1-4, .push-3-12 {
+  margin-left: 25%;
+}
+
+/* line 74, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-1-5 {
+  margin-left: 20%;
+}
+
+/* line 75, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-1-6, .push-2-12 {
+  margin-left: 16.667%;
+}
+
+/* line 76, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-1-7 {
+  margin-left: 14.28%;
+}
+
+/* line 77, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-1-8 {
+  margin-left: 12.5%;
+}
+
+/* line 78, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-1-9 {
+  margin-left: 11.1%;
+}
+
+/* line 79, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-1-10 {
+  margin-left: 10%;
+}
+
+/* line 80, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-1-11 {
+  margin-left: 9.09%;
+}
+
+/* line 81, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+.push-1-12 {
+  margin-left: 8.33%;
+}
+
+@media handheld, only screen and (max-width: 767px) {
+  /* line 85, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-left: 20px;
+    /* grid-space to left */
+    padding-right: 10px;
+    /* grid-space to right: (grid-space-left - column-space) e.g. 20px-10px=10px */
+  }
+
+  /* line 94, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  [class*='col-'] {
+    width: auto;
+    float: none;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 0px;
+    padding-right: 10px;
+    /* column-space */
+  }
+
+  /* Mobile Layout */
+  /* line 107, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  [class*='mobile-col-'] {
+    float: left;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    padding-left: 0px;
+    padding-right: 10px;
+    /* column-space */
+    padding-bottom: 0px;
+  }
+
+  /* line 118, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-1 {
+    width: 100%;
+  }
+
+  /* line 119, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-2-3, .mobile-col-8-12 {
+    width: 66.66%;
+  }
+
+  /* line 120, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-2, .mobile-col-6-12 {
+    width: 50%;
+  }
+
+  /* line 121, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-3, .mobile-col-4-12 {
+    width: 33.33%;
+  }
+
+  /* line 122, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-4, .mobile-col-3-12 {
+    width: 25%;
+  }
+
+  /* line 123, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-5 {
+    width: 20%;
+  }
+
+  /* line 124, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-6, .mobile-col-2-12 {
+    width: 16.667%;
+  }
+
+  /* line 125, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-7 {
+    width: 14.28%;
+  }
+
+  /* line 126, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-8 {
+    width: 12.5%;
+  }
+
+  /* line 127, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-9 {
+    width: 11.1%;
+  }
+
+  /* line 128, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-10 {
+    width: 10%;
+  }
+
+  /* line 129, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-11 {
+    width: 9.09%;
+  }
+
+  /* line 130, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-1-12 {
+    width: 8.33%;
+  }
+
+  /* Layout Columns */
+  /* line 133, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-11-12 {
+    width: 91.66%;
+  }
+
+  /* line 134, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-10-12 {
+    width: 83.333%;
+  }
+
+  /* line 135, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-9-12 {
+    width: 75%;
+  }
+
+  /* line 136, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-5-12 {
+    width: 41.66%;
+  }
+
+  /* line 137, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .mobile-col-7-12 {
+    width: 58.33%;
+  }
+
+  /* line 139, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .hide-on-mobile {
+    display: none !important;
+    width: 0;
+    height: 0;
+  }
+
+  /* line 146, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap [class*='col-'] {
+    float: left;
+    padding-right: 20px;
+    /* column-space */
+  }
+  /* line 151, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .grid {
+    width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  /* line 157, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .grid:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  /* line 163, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-1 {
+    width: 100%;
+  }
+  /* line 164, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-2-3, .grid.nowrap .col-8-12 {
+    width: 66.66%;
+  }
+  /* line 165, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-2, .grid.nowrap .col-6-12 {
+    width: 50%;
+  }
+  /* line 166, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-3, .grid.nowrap .col-4-12 {
+    width: 33.33%;
+  }
+  /* line 167, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-4, .grid.nowrap .col-3-12 {
+    width: 25%;
+  }
+  /* line 168, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-5 {
+    width: 20%;
+  }
+  /* line 169, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-6, .grid.nowrap .col-2-12 {
+    width: 16.667%;
+  }
+  /* line 170, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-7 {
+    width: 14.28%;
+  }
+  /* line 171, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-8 {
+    width: 12.5%;
+  }
+  /* line 172, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-9 {
+    width: 11.1%;
+  }
+  /* line 173, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-10 {
+    width: 10%;
+  }
+  /* line 174, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-11 {
+    width: 9.09%;
+  }
+  /* line 175, /Users/atebit/Desktop/Grybotech/grybotech-chat/app/assets/stylesheets/grid.scss */
+  .grid.nowrap .col-1-12 {
+    width: 8.33%;
+  }
+}
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ 
+
+
+
+ */
+

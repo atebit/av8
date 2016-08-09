@@ -1,0 +1,13 @@
+.DS_Store
+/.bundle
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/log/*
+!/log/.keep
+/public/uploads
+/tmp
+node_modles/
+dump.rdb
+
+# Ignore application configuration
+/config/application.yml

@@ -1,0 +1,46 @@
+
+// https://robots.thoughtbot.com/controlling-color-with-sass-color-functions
+/* clearfix */ .clear:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; } .clear { display: inline-block; } * html .clear { height: 1%; } .clear { display: block; }
+
+/* Swatches */
+$color5: #ec3362; /* primary action */
+$color5Faded: lighten($color5, 40%);
+.color5{ color:$color5; }
+
+$color4: #2183b2; /* important action */
+$color4Faded: lighten($color4, 40%);
+.color4{ color:$color4; }
+
+$color3: #5bb6d6; /* important action */
+$color3Faded: lighten($color3, 40%);
+.color3{ color:$color3; }
+
+$color2: #564a4a; /* standard text color, active secondary button state */
+$color2Faded: lighten($color2, 45%);
+$color2VeryFaded: lighten($color2, 60%);
+.color2{ color:$color2; }
+
+$color1: #f8f9f3; /* light, but not white */
+$color1Faded: darken($color1, 40%); 
+.color1{ color:$color1; }
+
+$white: rgb(255,255,255);
+$black: rgb(0,0,0);
+
+.green{
+  color: #00A500;
+}
+
+/* textures, patterns & gradients */
+
+.geometry-bg{
+  background: $white asset-url('tei-repeating-geometry.jpg') fixed;
+}
+
+.grey{
+  color:$color2Faded;
+}
+
+.buttonEase{
+  transition:all 0.2s ease;
+}

@@ -1,0 +1,9 @@
+%h1 Edit Episode
+
+= simple_form_for @episode, html: {multipart: true} do |f|
+  = f.error_notification
+  = f.input :title
+  = f.input :avatar
+  = submit_tag "Update"
+
+= link_to "Cancel", episodes_path

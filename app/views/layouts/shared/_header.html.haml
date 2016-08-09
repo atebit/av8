@@ -1,0 +1,18 @@
+
+
+
+- if current_user.present?
+  %script{src:"//js.pusher.com/3.1/pusher.min.js"}
+
+  - if @episode.present?
+    %script{src:"https://static.opentok.com/v2/js/opentok.min.js"}
+    :javascript
+      window.EPISODE_ID = "#{@episode.id}";
+      window.PUSHER_APP_KEY = "#{ENV["PUSHER_KEY"]}";
+      window.API_KEY = "#{ENV["OPENTOK_KEY"]}";
+      window.SESSION_ID = "#{@remote_session_id}";
+      window.SESSION_TOKEN = "#{@token}";
+
+  %p 
+    %span Hello #{current_user.email}, 
+    %span= link_to "Log Out", destroy_user_session_path, method: :delete
