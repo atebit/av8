@@ -1,7 +1,7 @@
 var EpisodePlayerStream = React.createClass({
   
   componentDidMount: function() {
-    console.log("episode player stream mount")
+    // console.log("episode player stream mount")
   },
 
   render: function(){
@@ -19,8 +19,6 @@ var EpisodePlayerStream = React.createClass({
 
 var EpisodePlayer = React.createClass({
 
-  streamObjects:[],
-
   componentWillMount: function() {
     this.playerId = "episode-player-"+Guid.get();
   },
@@ -36,14 +34,29 @@ var EpisodePlayer = React.createClass({
     this.addStreamObjects();    
   },
 
+  getBroadcastingUsers: function(){
+    var broadcasting_users = [];
+    for(var i=0; i < this.props.users.length; i++ ){
+      var user = this.props.users[i];
+      if( user.session_status == "broadcasting" ){
+        broadcasting_users.push( user );
+      }
+    }
+    return broadcasting_users;
+  },
+
   addStreamObjects: function(){
     var self = this;
-    for(var i=0; i < this.props.streams.length; i++){
-      var video_id = "guest-stream-video-"+this.props.streams[i].id;
+    var users = this.getBroadcastingUsers();
+
+    for(var i=0; i < users.length; i++){
+      var user = users[i];
+      // console.log(user)
+      var video_id = "guest-stream-video-"+user.stream.id;
       var width = $("#"+video_id).width(), height = $("#"+video_id).height();
 
       CSEventManager.broadcast("CONNECT_REMOTE_STREAM", { 
-        streamId: this.props.streams[i].id, 
+        identity: user.identity, 
         elementId: video_id, 
         width: width, 
         height: height
@@ -55,7 +68,7 @@ var EpisodePlayer = React.createClass({
   layoutStreamObjects: function(){
     var self = this;
     var player = $("#"+self.playerId);
-    var playerParent = $("#"+self.playerId).parent();
+    var playerParent = player.parent();
     player.css({
       width: playerParent.width(),
       height: playerParent.width() * 9/16
@@ -63,29 +76,23 @@ var EpisodePlayer = React.createClass({
   },
 
   render:function(){
+
     var self = this;
-    this.streamObjects = [].concat();
-
     var player = $("#"+self.playerId);
-    var propStreams = $.unique(this.props.streams);
-    // console.log(propStreams)
+    var users = this.getBroadcastingUsers();
+    var totalUsers = users.length;
+    var streamObjects = [];
 
-    // console.log("streams length", this.props.streams)
-    var streamLength = propStreams.length;
-
-    for(var i=0; i < streamLength; i++){
-      var stream = propStreams[i];
-      var identity = Params.query(stream.connection.data).email;
-      var containerW = player.width() / streamLength;
-      var container_id = "guest-stream-container-"+stream.id;
-      var video_id = "guest-stream-video-"+stream.id;
+    for(var i=0; i < totalUsers; i++){
+      
+      var user = users[i];
+      var containerW = player.width() / totalUsers;
+      var container_id = "guest-stream-container-"+user.stream.id;
+      var video_id = "guest-stream-video-"+user.stream.id;
 
       var origVideoH = $("#"+video_id).height();
       var videoH = player.height();
       var videoW = origVideoH * 9/16;
-      // var videoLeft = (containerW/2)-(videoW/2);
-      // var videoH = 0;
-      // var videoW = 0;
       var videoLeft = 0;
 
       var css = {
@@ -105,16 +112,12 @@ var EpisodePlayer = React.createClass({
         }
       }
 
-      this.streamObjects.push(<EpisodePlayerStream key={i} css={css} container_id={container_id} video_id={video_id} stream_id={stream.id} identity={identity} />);
+      streamObjects.push(<EpisodePlayerStream key={i} css={css} container_id={container_id} video_id={video_id} stream_id={user.stream.id} identity={user.identity} />);
     }
-
-    // console.log(this.streamObjects)
-
-    // console.log(this.streamObjects)
 
     return(
       <div id={this.playerId} className="episode-player">
-        {this.streamObjects}
+        {streamObjects}
       </div>
     )
   }

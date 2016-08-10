@@ -6,9 +6,22 @@ var EpisodeMixin = {
   publisher: undefined,
   stream_id: undefined,
   identity: undefined,
+  role: undefined,
+  broadcast_status: "idle",
 
-  connected_streams: [],
-  published_streams: [],
+  // users:[{
+  //   connection: connectionObject,
+  //   stream: streamObject,
+  //   identity: email,
+  //   role: "GUEST / ADMIN / HOST / CELEBRITY",
+  //   session_status: " CONNECTED / STREAMING / IN_LINE / PREP_TO_BROADCAST / BROADCASTING / BANNED",
+  //   av_status: "ALL / VIDEO_ONLY / AUDIO_ONLY",
+  // }],
+
+  users: [],
+
+  // connected_streams: [],
+  // published_streams: [],
 
   init: function(){
 
@@ -33,34 +46,33 @@ var EpisodeMixin = {
       // signal:type, for listening to specific signals...
       // self.session.on("signal:foo", self.signalFoo);
       self.session.on("mediaStopped", self.mediaStopped);
+      // start the app..
       self.connectLocalSession();
     }else{
       console.log("This browser does not support WebRTC");
     }
   },
 
-  logSessionInfo: function(){
-    console.log("::::: LOG CONNECTED USERS :::::");
-    console.log(" --- Connected Streams");
-    for(var i=0; i < this.connected_streams.length; i++){
-      var stream = this.connected_streams[i];
-      console.log( " -> stream_id:", stream.id, "identity:", Params.query( stream.connection.data ).email );
-    }
-    console.log(" --- Published Streams");
-    for(var i=0; i < this.published_streams.length; i++){
-      var stream = this.published_streams[i];
-      console.log( " -> stream_id:", stream.id, "identity:", Params.query( stream.connection.data ).email );
-    }
+  // Session Methods
+
+  connectLocalSession: function(){
+    var self = this;
+    self.session.connect(SESSION_TOKEN, function(error) {
+      if (error) {
+        console.log("Error connecting: ", error.code, error.message);
+      }else{
+        // success
+      }
+    });
+  },
+
+  disconnectLocalSession: function(){
+    this.removeStreamReference(this.session.stream);
+    this.session.disconnect();
   },
 
 
-  // Event Listeners
-
-  archiveStarted: function(e){ },
-
-  archiveStopped: function(e){ },
-
-  mediaStopped:function(e){ },
+  // Session Events
 
   sessionConnected: function(e){ 
     // console.log("sessionConnected", e.target.sessionId);
@@ -72,45 +84,181 @@ var EpisodeMixin = {
       console.log("Your network connection terminated.")
     }
   },
+  sessionReconnecting: function(e) {  /* console.log("sessionReconnecting", e); */ },
+  sessionReconnected: function(e) { /* console.log("sessionReconnecting", e); */ },
 
-  sessionReconnecting: function(e) { 
-    // console.log("sessionReconnecting", e);
-  },
 
-  sessionReconnected: function(e) {
-    // console.log("sessionReconnecting", e);
-  },
+  // Archive Events
 
+  archiveStarted: function(e){ },
+  archiveStopped: function(e){ },
+
+  mediaStopped:function(e){ },
+
+
+  // Connection Events
   connectionCreated: function(e){
-    var newConnectionID = e.connection.id;
-    if( newConnectionID == this.session.connection.id ){
-      if(this.subclassName == "Backstage"){
-        this.connectLocalStream();
-      }
-    }else{
-      // console.log("connectionCreated", e.connection.data);
-    }
+    // console.log("connection created", e.connection);
+    this.identity = Params.query(this.session.connection.data ).email;
+    this.addNewUser( e.connection );
   },
 
   connectionDestroyed: function(e){
-    var self = this;
-    var identity = Params.query( e.connection.data ).email;
-    self.sendGlobalSignal("GUEST_LEFT_ROOM", identity); 
+    console.log("connection destroyed", e.connection);
+    var identity = Params.query(e.connection.data).email;
+    var role = Params.query(e.connection.data).role;
+    this.removeUser( identity );
+    if( role == "admin" ){
+      
+    }
   },
 
+
+  // User Table Methods
+  addNewUser: function( connection ){
+    // if no reference object, create it.
+    if(this.users == undefined) this.users = [];
+    // create a reference to this user.
+    var identity = Params.query(connection.data).email;
+    var role = Params.query(connection.data).role;
+    var user = {
+      identity: identity,
+      role: role,
+      connection: connection,
+      session_status: "connected",
+      player_status: "idle",
+      av_stats: "all"
+    };
+    // add to the users table
+    this.users.push( user );
+    // is this the current user?
+    var newConnectionID = connection.id;
+    if( newConnectionID == this.session.connection.id ){
+      // yes
+      if(this.subclassName == "Backstage"){
+        // this is backstage, create a local stream immediately.
+        this.connectLocalStream();
+      }else{
+        // if not, announce that you're here..
+        this.sendGlobalSignal("GUEST_JOINED_ROOM", identity);
+      }
+    }else{
+      // no
+    }
+  },
+
+  // update user session status
+  updateUserSessionStatus: function( identity, session_status ){
+    // remove the guest from the users table..
+    for(var i=0; i < this.users.length; i++){
+      var user = this.users[i];
+      var user_identity = user.identity;
+      if( identity == user_identity ){
+        user.session_status = session_status;
+      }
+    }
+
+    // if we're the moderator, send a signal directly to the person who needs updated..
+    if( this.subclassName == "Backstage"){
+      if( identity != this.identity ){
+        // this.sendDirectSignal( identity, "UPDATE_SESSION_STATUS", session_status );  
+      }
+    }
+  },
+
+  // add stream object..
+  addStreamToUser: function( identity, stream ){
+    console.log("add stream to user", identity)
+    // remove the guest from the users table..
+    for(var i=0; i < this.users.length; i++){
+      var user = this.users[i];
+      var user_identity = user.identity;
+      if( identity == user_identity ){
+        user.stream = stream;
+      }
+    }
+    this.updateUserSessionStatus( identity, "streaming" );
+  },
+
+  // remove stream object..
+  removeStreamFromUser: function( identity ){
+    // remove the guest from the users table..
+    for(var i=0; i < this.users.length; i++){
+      var user = this.users[i];
+      var user_identity = user.identity;
+      if( identity == user_identity ){
+        user.stream = undefined;
+      }
+    }
+    this.updateUserSessionStatus( identity, "connected" );
+  },
+
+  removeUser: function( identity ){
+    // remove the guest from the users table..
+    for(var i=0; i < this.users.length; i++){
+      var user = this.users[i];
+      var user_identity = user.identity;
+      if( identity == user_identity ){
+        this.users.splice(i,1);
+      }
+    }
+    // alert the room
+    this.sendGlobalSignal("GUEST_LEFT_ROOM", identity); 
+  },
+
+  getUserByIdentity: function( identity ){
+    // remove the guest from the users table..
+    for(var i=0; i < this.users.length; i++){
+      var user = this.users[i];
+      var user_identity = user.identity;
+      if( identity == user_identity ){
+        return user;
+      }
+    }
+  },
+
+
+  // Stream Events
+
+  streamCreated: function(e){
+    // console.log("stream created", identity);
+    var identity = Params.query(e.stream.connection.data).email;
+    this.addStreamToUser( identity, e.stream );
+  },
+
+  streamDestroyed: function(e){
+    // console.log("stream destroyed", identity);
+    var identity = Params.query(e.stream.connection.data).email;
+    this.removeStreamFromUser( identity );
+    // reset state..
+    if(this.subclassName == "Backstage"){
+      this.setState({});
+    }
+  },
+
+  streamPropertyChanged: function(e){ },
+
+
+
+  // Send Signals
+
   sendDirectSignal: function(identity, type, data){
-    console.log(this.session)
-    // var connectionObj = this.session.
-    // // var connectionObject = this.session.getConnection()
-    // this.session.signal({
-    //   to: connectionObject
-    //   type: type,
-    //   data: data
-    // }, function(error){
-    //   if( error ){
-    //     console.log("Signal Error: ", error.message);
-    //   }
-    // });
+
+    // console.log("send direct signal to:", identity );
+
+    var user = this.getUserByIdentity( identity );
+
+    data.identity = user.identity;
+
+    this.session.signal({
+      to: user.connection,
+      type: type,
+      data: data
+    }, function(error){
+      if( error ){
+        console.log("Signal Error: ", error.message);
+      }
+    });
   },
 
   sendGlobalSignal: function(type, data){
@@ -124,82 +272,7 @@ var EpisodeMixin = {
     });
   },
 
-  addStreamReference: function( stream ){
-    if(stream){
-      if(this.connected_streams == undefined) this.connected_streams = [];
-      this.connected_streams.push( stream );
-      this.connected_streams = $.unique(this.connected_streams); // remove dups 
-    }
-  },
-
-  removeStreamReference: function( stream ){
-    if(stream){
-      for(var i=0; i < this.connected_streams.length; i++) {
-        if( this.connected_streams[i].id == stream.id ){
-          this.connected_streams.splice(i,1);
-        }  
-      } 
-      for(var i=0; i < this.published_streams.length; i++){
-        if( this.published_streams[i].id == stream.id ){
-          this.published_streams.splice(i,1);
-        }  
-      }
-      if(this.subclassName == "Backstage"){
-        this.removeGuestFromLine(stream.id);
-      } 
-    }
-  },
-
-  getStreamByIdentity: function( identity ){
-    for(var i=0; i < this.connected_streams.length; i++) {
-      var stream = this.connected_streams[i];
-      var stream_identity = Params.query( stream.connection.data ).email;
-      if(identity == stream_identity) return stream;
-    }
-  },
-
-  getStreamById: function( streamId ){
-    for(var i=0; i < this.connected_streams.length; i++) {
-      if(streamId == this.connected_streams[i].id) return this.connected_streams[i];
-    }
-  },
-
-  streamCreated: function(e){
-    // console.log("streamCreated", e.stream.connection.data);
-    this.addStreamReference( e.stream );
-  },
-
-  streamDestroyed: function(e){
-    // console.log("streamDestroyed", e.stream.connection.data);
-    this.removeStreamReference( e.stream );
-
-    if(this.subclassName == "Backstage"){
-      this.setState({});
-    }
-  },
-
-  streamPropertyChanged: function(e){ },
-
-
   // Local User Methods
-
-  connectLocalSession: function(){
-    var self = this;
-    self.session.connect(SESSION_TOKEN, function(error) {
-      if (error) {
-        console.log("Error connecting: ", error.code, error.message);
-      }else{
-        // set self identity and then announce you're here..
-        self.identity = Params.query(self.session.connection.data ).email;
-        self.sendGlobalSignal("GUEST_JOINED_ROOM", self.identity); 
-      }
-    });
-  },
-
-  disconnectLocalSession: function(){
-    this.removeStreamReference(this.session.stream);
-    this.session.disconnect();
-  },
 
   connectLocalStream: function(){
     var self = this;
@@ -217,14 +290,15 @@ var EpisodeMixin = {
             if (error) {
               console.log(error);
             } else {
-              self.stream_id = self.publisher.stream.id;
-              // console.log(self.identity)
-              self.addStreamReference( self.publisher.stream );
+              // update user object with new 
+              var identity = self.identity;
+              self.updateUserSessionStatus( identity, "streaming" );
+              self.addStreamToUser( identity, self.publisher.stream );
 
-              // when publisher object is ready, tell the backstage manager you're here..
+              // if user is public user, send a signal they joined the line and reset this page to that state.
               if(self.subclassName == "Public"){
-                // console.log(self);
-                self.sendGlobalSignal("GUEST_JOINED_LINE", self.stream_id);  
+                self.sendGlobalSignal("GUEST_JOINED_LINE", identity);  
+                self.updateUserSessionStatus( identity, "in_line" );
                 // set the state to "connected and watching".
                 self.setState({guest_state: "IN_LINE"}); 
               }
@@ -233,51 +307,44 @@ var EpisodeMixin = {
         }
       });
     } else {
-        // The client cannot publish.
+        // The client cannot publish. 
         // You may want to notify the user.
         console.log("WebRTC not available..")
     }
   },
 
   disconnectLocalStream: function(){
-    this.removeStreamReference( this.publisher.stream );
-    this.session.unpublish( this.publisher);
+    var identity = this.identity;
+    this.updateUserSessionStatus( identity, "connected" );
+    this.removeStreamFromUser( identity );
+    this.session.unpublish( this.publisher );
   },
-
 
   connectRemoteStreamHandler: function( data ){
-    this.connectToRemoteStream(data.streamId, data.elementId);
+    this.connectToRemoteStream( data.identity, data.elementId );
   },
 
-  connectToRemoteStream: function( streamId, elementId ){
+  connectToRemoteStream: function( identity, elementId ){
 
-    var stream = undefined;
-    for( var s in this.connected_streams ){
-      var loopStream = this.connected_streams[s];
-      if(loopStream){
-        if( streamId == loopStream.id ) {
-          stream = loopStream;
-          break;
+    var user = this.getUserByIdentity( identity );
+
+    if(user.player_status != "mounted"){
+      user.player_status = "mounted";
+
+      var stream = user.stream;
+      console.log("connect to stream", identity)
+
+      if(stream){
+        var streamOptions = {
+          subscribeToVideo: true,
+          subscribeToAudio: false,
+          width: "100%",
+          height: "100%"
         }
+        this.session.subscribe(stream, elementId, streamOptions); 
       }
-    }
 
-    if(stream){
-      var streamOptions = {
-        subscribeToVideo: true,
-        subscribeToAudio: false,
-        width: "100%",
-        height: "100%"
-      }
-      this.session.subscribe(stream, elementId, streamOptions); 
-    }
-  },
-
-  removeAllStreams:function(){
-    this.connected_streams = [].concat();
-    this.published_streams = [].concat();
-    if(this.subclassName == "Backstage"){
-      this.guests_in_line = [].concat();
     }
   }
+
 };

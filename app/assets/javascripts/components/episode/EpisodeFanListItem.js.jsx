@@ -4,13 +4,12 @@ var EpisodeFanListItem = React.createClass({
     // listeners... init, etc
 
     // local vars
-    this.userData = Params.query(this.props.stream.connection.data);
-    this.listItemId = "fan-list-item-"+this.props.stream.id;
-    this.previewVidId = "fan-list-item-preview-"+this.props.stream.id;
-    this.previewBtnId = "fan-list-item-preview-btn-"+this.props.stream.id;
-    this.publishBtnId = "fan-list-item-publish-btn-"+this.props.stream.id;
-    this.ignoreBtnId = "fan-list-item-ignore-btn-"+this.props.stream.id;
-    this.messageId = "fan-list-item-message-btn-"+this.props.stream.id;
+    this.listItemId = "fan-list-item-"+this.props.user.stream.id;
+    this.previewVidId = "fan-list-item-preview-"+this.props.user.stream.id;
+    this.previewBtnId = "fan-list-item-preview-btn-"+this.props.user.stream.id;
+    this.publishBtnId = "fan-list-item-publish-btn-"+this.props.user.stream.id;
+    this.ignoreBtnId = "fan-list-item-ignore-btn-"+this.props.user.stream.id;
+    this.messageId = "fan-list-item-message-btn-"+this.props.user.stream.id;
   },
   
   componentDidMount: function() {
@@ -18,24 +17,35 @@ var EpisodeFanListItem = React.createClass({
     var self = this;
     $("#"+self.previewBtnId).off();
     $("#"+self.previewBtnId).on("click", function(e){
-      CSEventManager.broadcast("PREVIEW_GUEST", { streamId: self.props.stream.id, elementId: self.previewVidId });
+
+      if( self.preview_state == "preview" ){
+        self.preview_state = "idle";
+        CSEventManager.broadcast("HIDE_PREVIEW_GUEST", { identity: self.props.user.identity, elementId: self.previewVidId }); 
+      }else{
+        self.preview_state = "preview";
+        CSEventManager.broadcast("PREVIEW_GUEST", { identity: self.props.user.identity, elementId: self.previewVidId }); 
+      }
+      self.forceUpdate();
     });
 
     $("#"+self.publishBtnId).off();
     $("#"+self.publishBtnId).on("click", function(e){
-      CSEventManager.broadcast("PUBLISH_GUEST", { stream: self.props.stream });
-      // $("#"+self.listItemId).remove();
+      if(self.props.user.session_status == "broadcasting"){
+        CSEventManager.broadcast("UNPUBLISH_GUEST", { identity: self.props.user.identity });
+      }else{
+        CSEventManager.broadcast("PUBLISH_GUEST", { identity: self.props.user.identity });        
+      }
     });
 
     $("#"+self.ignoreBtnId).off();
     $("#"+self.ignoreBtnId).on("click", function(e){
-      CSEventManager.broadcast("IGNORE_IN_LINE_GUEST", { stream: self.props.stream });
+      CSEventManager.broadcast("IGNORE_IN_LINE_GUEST", { identity: self.props.user.identity });
     });
 
 
     $("#"+self.messageId).off();
     $("#"+self.messageId).on("click", function(e){
-      CSEventManager.broadcast("INITIATE_CHAT", { stream: self.props.stream });
+      CSEventManager.broadcast("INITIATE_CHAT", { identity: self.props.user.identity });
     });
   },
 
@@ -45,6 +55,30 @@ var EpisodeFanListItem = React.createClass({
 
   render:function(){
 
+    console.log(this.props.user)
+
+    var previewComponent = <button id={this.previewBtnId}>Preview</button>;
+    if(this.preview_state == "preview"){
+      previewComponent = <button id={this.previewBtnId}>Hide Preview</button>;
+    }
+    if(this.props.user.session_status == "broadcasting"){
+      previewComponent = "";
+    }
+
+    var publishComponent = <button id={this.publishBtnId}>Publish</button>;
+    if(this.props.user.session_status == "broadcasting"){
+      publishComponent = <button id={this.publishBtnId}>Unpublish</button>;
+    }
+
+    var publishComponent = <button id={this.publishBtnId}>Publish</button>;
+    if(this.props.user.session_status == "broadcasting"){
+      publishComponent = <button id={this.publishBtnId}>Unpublish</button>;
+    }
+
+    var ignoreComponent = "";
+    if(this.props.user.session_status != "broadcasting"){
+      ignoreComponent = <button id={this.ignoreBtnId}>Ignore</button>;
+    }
     // console.log(this.props);
 
     return(
@@ -53,10 +87,10 @@ var EpisodeFanListItem = React.createClass({
           <div id={this.previewVidId} className="fan-lis-item-preview"></div>
         </div>
         <div className="col-10-12">
-          <div className="username">{this.userData.email}</div>
-          <button id={this.previewBtnId}>Preview</button>
-          <button id={this.publishBtnId}>Publish</button>
-          <button id={this.ignoreBtnId}>Ignore</button>
+          <div className="username">{this.props.user.identity}</div>
+          {previewComponent}
+          {publishComponent}
+          {ignoreComponent}
         </div>
       </div>
     )
