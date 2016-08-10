@@ -163,7 +163,7 @@ var EpisodePublic = React.createClass({
     // this.logSessionInfo();
 
     return(
-      <div className="container">
+      <div className="container max-video-width">
         <header>
           {inlineButton}
           <div>{this.session_state}</div>

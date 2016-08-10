@@ -286,7 +286,7 @@ var EpisodeBackstage = React.createClass({
 
     return(
 
-      <div className="container">
+      <div className="container max-video-width">
         <header>
           {prevBtn}
           {startBtn}
