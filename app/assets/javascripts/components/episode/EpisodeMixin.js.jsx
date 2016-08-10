@@ -5,6 +5,7 @@ var EpisodeMixin = {
   session: undefined,
   publisher: undefined,
   stream_id: undefined,
+  identity: undefined,
 
   connected_streams: [],
   published_streams: [],
@@ -32,11 +33,23 @@ var EpisodeMixin = {
       // signal:type, for listening to specific signals...
       // self.session.on("signal:foo", self.signalFoo);
       self.session.on("mediaStopped", self.mediaStopped);
-
       self.connectLocalSession();
-
     }else{
       console.log("This browser does not support WebRTC");
+    }
+  },
+
+  logSessionInfo: function(){
+    console.log("::::: LOG CONNECTED USERS :::::");
+    console.log(" --- Connected Streams");
+    for(var i=0; i < this.connected_streams.length; i++){
+      var stream = this.connected_streams[i];
+      console.log( " -> stream_id:", stream.id, "identity:", Params.query( stream.connection.data ).email );
+    }
+    console.log(" --- Published Streams");
+    for(var i=0; i < this.published_streams.length; i++){
+      var stream = this.published_streams[i];
+      console.log( " -> stream_id:", stream.id, "identity:", Params.query( stream.connection.data ).email );
     }
   },
 
@@ -80,10 +93,14 @@ var EpisodeMixin = {
   },
 
   connectionDestroyed: function(e){
-    // console.log("connectionDestroyed", e.connection.data);
+    var self = this;
+    var identity = Params.query( e.connection.data ).email;
+    self.sendGlobalSignal("GUEST_LEFT_ROOM", identity); 
   },
 
-  sendDirectSignal: function(stream_id, type, data){
+  sendDirectSignal: function(identity, type, data){
+    console.log(this.session)
+    // var connectionObj = this.session.
     // // var connectionObject = this.session.getConnection()
     // this.session.signal({
     //   to: connectionObject
@@ -133,6 +150,14 @@ var EpisodeMixin = {
     }
   },
 
+  getStreamByIdentity: function( identity ){
+    for(var i=0; i < this.connected_streams.length; i++) {
+      var stream = this.connected_streams[i];
+      var stream_identity = Params.query( stream.connection.data ).email;
+      if(identity == stream_identity) return stream;
+    }
+  },
+
   getStreamById: function( streamId ){
     for(var i=0; i < this.connected_streams.length; i++) {
       if(streamId == this.connected_streams[i].id) return this.connected_streams[i];
@@ -163,6 +188,10 @@ var EpisodeMixin = {
     self.session.connect(SESSION_TOKEN, function(error) {
       if (error) {
         console.log("Error connecting: ", error.code, error.message);
+      }else{
+        // set self identity and then announce you're here..
+        self.identity = Params.query(self.session.connection.data ).email;
+        self.sendGlobalSignal("GUEST_JOINED_ROOM", self.identity); 
       }
     });
   },
@@ -189,6 +218,7 @@ var EpisodeMixin = {
               console.log(error);
             } else {
               self.stream_id = self.publisher.stream.id;
+              // console.log(self.identity)
               self.addStreamReference( self.publisher.stream );
 
               // when publisher object is ready, tell the backstage manager you're here..
@@ -240,6 +270,14 @@ var EpisodeMixin = {
         height: "100%"
       }
       this.session.subscribe(stream, elementId, streamOptions); 
+    }
+  },
+
+  removeAllStreams:function(){
+    this.connected_streams = [].concat();
+    this.published_streams = [].concat();
+    if(this.subclassName == "Backstage"){
+      this.guests_in_line = [].concat();
     }
   }
 };

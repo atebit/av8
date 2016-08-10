@@ -1,6 +1,7 @@
 var EpisodePublic = React.createClass({
 
   mixins: [EpisodeMixin],
+  session_state: "IDLE",
 
   etInitialState: function() {
     return {
@@ -10,6 +11,7 @@ var EpisodePublic = React.createClass({
 
   componentWillMount: function() {
     this.subclassName = "Public";
+    this.session_state = "IDLE";
   },
   
   componentDidMount: function() {
@@ -24,20 +26,17 @@ var EpisodePublic = React.createClass({
         if( self.state.guest_state == undefined || self.state.guest_state == "WATCHING"){
           self.connectLocalStream();      
         }
-
         if(self.state.guest_state == "IN_LINE"){
           self.disconnectLocalStream(); 
           self.sendGlobalSignal("GUEST_LEFT_LINE", self.stream_id);
-          self.setState({guest_state: "WATCHING"});  
-        } 
-
+          self.setState({ guest_state: "WATCHING" });  
+        }
         if(self.state.guest_state == "BROADCASTING"){
           self.disconnectLocalStream(); 
           self.sendGlobalSignal("GUEST_LEFT_BROADCAST", self.stream_id);
           self.setState({guest_state: "WATCHING"});  
         }
       }
-
     });
 
     // initial state..
@@ -50,17 +49,31 @@ var EpisodePublic = React.createClass({
 
   receiveGlobalSignal: function(e){ 
     var self = this;
+    var data = e.data;
 
-    if(e.type == "signal:UPDATE_BROADCAST"){
-      var publishedStreamIds = e.data.split(",");
-      this.updateBroadcastPlayer( publishedStreamIds );
+    switch( e.type ){
+      case "signal:UPDATE_BROADCAST":
+        var publishedStreamIds = e.data.split(",");
+        this.updateBroadcastPlayer( publishedStreamIds );
+        break;
+
+      case "signal:ESPISODE_STATUS_UPDATE":
+        this.session_state = data;
+        if( data == "ENDED" ){
+          this.removeAllStreams();
+          this.forceUpdate();
+        }
+        break;
     }
   },
-
 
   // update the player
 
   updateBroadcastPlayer: function( publishedStreamIds ){
+
+    // TODO: check to see if the player needs to update or not... 
+    // If not, don't update because it causes a blink to the users that don't need it.
+
     var isSelfStream = false;
     for(var i=0; i < publishedStreamIds.length; i++){
       for(var j=0; j < this.connected_streams.length; j++){
@@ -98,6 +111,7 @@ var EpisodePublic = React.createClass({
       } 
     }
 
+    // this.logSessionInfo();
 
     return(
       <div className="container">

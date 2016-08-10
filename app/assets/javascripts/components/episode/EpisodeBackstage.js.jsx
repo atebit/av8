@@ -3,11 +3,12 @@ var EpisodeBackstage = React.createClass({
   mixins: [EpisodeMixin],
 
   guests_in_line: [],
+  session_state: "IDLE",
+
 
   componentWillMount: function() {
     // listeners... init, etc
     this.subclassName = "Backstage";
-    
     this.guest_state = "WATCHING";
     this.session_state = "IDLE";
   },
@@ -52,18 +53,24 @@ var EpisodeBackstage = React.createClass({
 
     $("#start-btn").off();
     $("#start-btn").on("click", function(e){
-      
+      self.session_state = "LIVE";
+      self.sendGlobalSignal("ESPISODE_STATUS_UPDATE", self.session_state);
+      self.updateBroadcast();
+      self.forceUpdate();
     });
 
     $("#end-btn").off();
     $("#end-btn").on("click", function(e){
-      
+      self.session_state = "ENDED";
+      self.sendGlobalSignal("ESPISODE_STATUS_UPDATE", self.session_state);
+      self.updateBroadcast();
+      self.forceUpdate();
     });
 
-    $("#preview-btn").off();
-    $("#preview-btn").on("click", function(e){
+    // $("#preview-btn").off();
+    // $("#preview-btn").on("click", function(e){
       
-    });
+    // });
   },
 
   // event listener relays
@@ -91,22 +98,54 @@ var EpisodeBackstage = React.createClass({
 
   receiveGlobalSignal: function(e){ 
     var self = this;
-    var streamId = e.data;
+    var data = e.data;
 
     switch( e.type ){
+      case "signal:GUEST_JOINED_ROOM":
+        this.guestJoinedRoom( data );
+        break;
+
+      case "signal:GUEST_LEFT_ROOM":
+        this.guestLeftRoom( data );
+        break;
 
       case "signal:GUEST_JOINED_LINE":
-        this.addGuestToLine( streamId );
+        this.addGuestToLine( data );
         break;
 
       case "signal:GUEST_LEFT_LINE":
-        this.removeGuestFromLine( streamId );
+        this.removeGuestFromLine( data );
         break;
 
       case "signal:GUEST_LEFT_BROADCAST":
-        this.removeGuestFromBroadcast( streamId );
+        this.removeGuestFromBroadcast( data );
         break;
 
+    }
+  },
+
+  guestJoinedRoom: function( identity ){
+    var self = this;
+    if( identity != self.identity ){
+      console.log("guest joined room", identity) 
+      if( self.session_state == "LIVE" ){
+        self.updateBroadcast(); 
+      }else if(self.session_state == "ENDED"){
+        // self.endEpisode();
+      }
+    }
+  },
+
+
+  guestLeftRoom: function( identity ){
+    var self = this;
+    console.log("guest left room", identity);
+    var stream = self.getStreamByIdentity(identity);
+
+    if( stream ){
+      self.removeGuestFromLine( stream.id );
+      self.removeGuestFromBroadcast( stream.id );
+      this.updateBroadcast(); 
     }
   },
 
@@ -128,7 +167,6 @@ var EpisodeBackstage = React.createClass({
         this.removeStreamReference(this.guests_in_line[i]);
       }
     }
-
     this.forceUpdate();
   },
 
@@ -140,7 +178,6 @@ var EpisodeBackstage = React.createClass({
 
     // remove from guest line...
     this.removeGuestFromLine( streamId );
-
     this.updateBroadcast();
     this.forceUpdate();
   },
@@ -155,22 +192,26 @@ var EpisodeBackstage = React.createClass({
     }
     // and remove from line...
     this.removeGuestFromLine( streamId );
-
     this.updateBroadcast();
     this.forceUpdate();
   },
 
   updateBroadcast: function(){
-    var streamIds = [];
-    for( var s in this.published_streams) streamIds.push(this.published_streams[s].id);
-    var publishedStreamIds = streamIds.toString();
-    this.sendGlobalSignal("UPDATE_BROADCAST", publishedStreamIds);
-    this.forceUpdate();
+    if( this.session_state == "LIVE"){
+      var streamIds = [];
+      for( var s in this.published_streams) streamIds.push(this.published_streams[s].id);
+      var publishedStreamIds = streamIds.toString();
+      this.sendGlobalSignal("UPDATE_BROADCAST", publishedStreamIds);
+      this.forceUpdate(); 
+    }else if(this.session_state == "ENDED"){
+      this.removeAllStreams();
+      this.forceUpdate();
+
+    }
   },
 
 
   // view
-
   render:function(){
 
     var self = this;
@@ -182,14 +223,15 @@ var EpisodeBackstage = React.createClass({
       }
     }
 
-
     var prevBtn,
         startBtn,
         endBtn;
 
+    // this.logSessionInfo();
+
     switch(this.session_state){
         case "IDLE":
-          prevBtn = <button id="prev-btn">Preview</button>;
+          // prevBtn = <button id="prev-btn">Preview</button>;
           startBtn = <button id="start-btn">Start Show</button>;
           // endBtn = <button id="end-btn">End Show</button>;
         break;

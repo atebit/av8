@@ -10,6 +10,7 @@ var EpisodePlayerStream = React.createClass({
     return(
       <div id={this.props.container_id} className="guest-stream" style={css.container}>
         <div id={this.props.video_id} style={css.video}></div>
+        <div className="stream-identity">{this.props.identity}</div>
       </div> 
     )
   }
@@ -74,6 +75,7 @@ var EpisodePlayer = React.createClass({
 
     for(var i=0; i < streamLength; i++){
       var stream = propStreams[i];
+      var identity = Params.query(stream.connection.data).email;
       var containerW = player.width() / streamLength;
       var container_id = "guest-stream-container-"+stream.id;
       var video_id = "guest-stream-video-"+stream.id;
@@ -103,7 +105,7 @@ var EpisodePlayer = React.createClass({
         }
       }
 
-      this.streamObjects.push(<EpisodePlayerStream key={i} css={css} container_id={container_id} video_id={video_id} stream_id={stream.id} />);
+      this.streamObjects.push(<EpisodePlayerStream key={i} css={css} container_id={container_id} video_id={video_id} stream_id={stream.id} identity={identity} />);
     }
 
     // console.log(this.streamObjects)
