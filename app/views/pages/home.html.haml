@@ -1,8 +1,14 @@
-%h2 Home
+.maxwidth3.center
+  %header.av8-header
+    %img.logo{:src => image_path("aviatertc.svg"), :title => "AviateRTC 'Av8' logo graphic"}/
+    %h1{ style: "font-size:1em;"}
+      AviateRTC: Moderated Online Video Experience
 
+  %section
 
-- if current_user.present?
-  = link_to "All Episodes", episodes_path
-- if current_user.blank?
-  = link_to "Sign Up", new_user_registration_path
-  = link_to "Log In", new_user_session_path
+    .block
+    - if current_user.present?
+      = link_to "All Episodes", episodes_path
+    - if current_user.blank?
+      = link_to "Sign Up", new_user_registration_path, class: "button"
+      = link_to "Log In", new_user_session_path, class: "button"

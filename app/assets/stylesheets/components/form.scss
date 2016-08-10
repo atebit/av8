@@ -1,0 +1,63 @@
+@import "config/variables";
+
+
+
+
+input{
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight:300;
+  font-size:1em;
+  border:0px;
+  border-bottom: 1px solid #8215fc;
+  margin-bottom: 20px;
+  color: #8215fc;
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+}
+
+input[type="submit"], button, .button{
+  border:0px;
+  color: #fff !important;
+  background: #cd0266;
+  padding: 5px 30px;
+  font-weight: 400;
+  display:inline-block;
+}
+
+input[type="checkbox"]{
+  width:auto;
+}
+
+a.button{
+  padding: 7px 30px !important;
+}
+
+::-webkit-input-placeholder { color: #c6c1ff; }
+:-moz-placeholder { color: #c6c1ff; }
+::-moz-placeholder { color: #c6c1ff; }
+:-ms-input-placeholder { color: #c6c1ff; }
+
+
+
+
+
+// Mailchimp
+
+.signup-box{
+  margin-top: 70px;
+  color: #897aff;
+  border: 1px solid #e7e5ff;
+  border-radius: 10px;
+  width: 100%;
+  text-align:center;
+}
+
+.signup-box form{
+  padding:20px;
+}
+
+#mc_embed_signup div.mce_inline_error {
+  color: #ff0870;
+  margin-bottom: 20px;
+}

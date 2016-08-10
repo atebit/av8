@@ -231,7 +231,6 @@ var EpisodeBackstage = React.createClass({
         <div className="grid no-padding">
           <div className="col-10-12">
             <div className="episode-player-container">
-              <p>Stream</p>
               <EpisodePlayer streams={this.published_streams} context={this} />
             </div>
           </div>

@@ -52,7 +52,7 @@ gem 'sidekiq'
 gem "devise-async"
 
 gem 'airbrake'
-# gem 'rename'
+gem 'rename'
 gem 'local_time'
 
 group :development do
