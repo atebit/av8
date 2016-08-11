@@ -114,7 +114,7 @@ var EpisodePublic = React.createClass({
       user.player_status = "removed";
 
       for(var i=0; i < published_identities.length; i++){
-        var loop_identity = published_identities[j];
+        var loop_identity = published_identities[i];
         // if user is one of the identities
         if( user.identity == loop_identity ){
           // set the props
