@@ -320,6 +320,16 @@ var EpisodeMixin = {
     this.session.unpublish( this.publisher );
   },
 
+  removeAllStreams: function(){
+    for(var j=0; j < this.users.length; j++){
+      var user = this.users[j];
+      if( user.session_status == "broadcasting" ){
+        user.session_status = "removed";
+        user.player_status = "removed";
+      }
+    }
+  },
+
   connectRemoteStreamHandler: function( data ){
     this.connectToRemoteStream( data.identity, data.elementId );
   },

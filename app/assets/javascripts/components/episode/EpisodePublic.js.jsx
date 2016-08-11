@@ -84,6 +84,10 @@ var EpisodePublic = React.createClass({
         this.updateBroadcastPlayer( publishedStreamIdentities );
         break;
 
+      case "signal:BROADCAT_ENDED":
+        console.log("broadcast ended");
+        break;
+
       case "signal:ESPISODE_STATUS_UPDATE":
         this.session_state = data;
         console.log("episode status update", data);
@@ -126,13 +130,7 @@ var EpisodePublic = React.createClass({
     // if no users were passed, remove any that are on the broadcast..
     console.log(published_identities)
     if(published_identities.length == 0 || published_identities[0] == ""){
-      for(var j=0; j < this.users.length; j++){
-        var user = this.users[j];
-        if( user.session_status == "broadcasting" ){
-          user.session_status = "removed";
-          user.player_status = "removed";
-        }
-      }
+      this.removeAllStreams();
     }
 
 
@@ -172,9 +170,13 @@ var EpisodePublic = React.createClass({
 
     return(
       <div className="container max-video-width episode-container">
-        <div className="episode-menu-left">
-          <div>Episode Status: {this.session_state}</div>
-          {inlineButton}
+        <div className="episode-menu menu-left">
+          <div className="menu-left-controls">
+            <div>{this.session_state}</div>
+          </div>
+          <div className="episode-menu-inner">
+            {inlineButton}
+          </div>
         </div>
         <EpisodePlayer users={ this.users } context={this} />
         <div id="your-stream" className={yourStreamClasses}></div>

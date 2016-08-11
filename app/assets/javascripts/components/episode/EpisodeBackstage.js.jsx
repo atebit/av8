@@ -4,6 +4,12 @@ var EpisodeBackstage = React.createClass({
 
   session_state: "PRESHOW",
 
+
+  // TODO: save the current state of the USERS table to the persons cookies.
+  // that way, if the admin drops off for a sec, they will be able to refresh.
+  // another good way is to maybe periodically send that info to the api just in case
+  
+
   componentWillMount: function() {
     // listeners... init, etc
     this.subclassName = "Backstage";
@@ -205,8 +211,9 @@ var EpisodeBackstage = React.createClass({
 
     }else if(this.session_state == "ENDED"){
 
-      this.sendGlobalSignal("UPDATE_BROADCAST", "");
-      // this.removeAllStreams();
+      this.sendGlobalSignal("BROADCAST_ENDED");
+      this.removeAllStreams();
+
       this.forceUpdate();
     }
   },
@@ -283,20 +290,27 @@ var EpisodeBackstage = React.createClass({
     return(
 
       <div className="container max-video-width episode-container">
-        <div className="episode-menu-left">
-          <div>Episode Status: {this.session_state}</div>
-          {prevBtn}
-          {startBtn}
-          {endBtn}
-          {joinBtn}
+        <div className="episode-menu menu-left">
+          <div className="menu-left-controls">
+            <div className="inline"><span className="fa fa-bars"></span></div>
+            <div className="inline">{this.session_state}</div>
+          </div>
+          <div className="episode-menu-inner">
+            {prevBtn}
+            {startBtn}
+            {endBtn}
+            {joinBtn}
+          </div>
         </div>
 
         <div className="episode-player-container">
           <EpisodePlayer users={ this.users } context={this} />
         </div>
 
-        <div className="episode-menu-right">
-        {guestsInLineComponent}
+        <div className="episode-menu menu-right">
+          <div className="episode-menu-inner">
+            {guestsInLineComponent}
+          </div>
         </div>
 
         <div id="your-stream" className={yourStreamClasses}></div>

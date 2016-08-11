@@ -48,6 +48,8 @@
   left: -47px;
   border: 2px solid #fff;
 }
+
+
 .fan-list-item-username{
   font-size:0.6em;
   margin-bottom:7px; 
@@ -72,28 +74,27 @@
   position:relative;
 }
 
-.episode-menu-left{
+.episode-menu-inner{
+  margin-top:20px;
+  // background: rgba(#fff, 0.2);
+  // min-width:300px;
+}
+
+.episode-menu{
   color:#fff;
   display: inline-block;
-  min-width:300px;
-  background: rgba(#fff, 0.2);
   position:absolute;
-  top:0px;
-  left:0px;
   z-index: 400;
   padding: 10px;
 }
 
-.episode-menu-right{
-  color:#fff;
-  display: inline-block;
-  min-width:300px;
-  background: rgba(#fff, 0.2);
-  position:absolute;
+.menu-left{
+  top:0px;
+  left:0px;
+}
+.menu-right{
   top:0px;
   right:0px;
-  z-index: 400;
-  padding: 10px;
 }
 
 
