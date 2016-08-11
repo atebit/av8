@@ -1,6 +1,8 @@
 var EpisodeFanListItem = React.createClass({
 
-  componentWillMount: function(){
+  componentWillMount: function() {
+    // listeners... init, etc
+
     // local vars
     this.listItemId = "fan-list-item-"+this.props.user.stream.id;
     this.previewVidId = "fan-list-item-preview-"+this.props.user.stream.id;
@@ -15,12 +17,13 @@ var EpisodeFanListItem = React.createClass({
     var self = this;
     $("#"+self.previewBtnId).off();
     $("#"+self.previewBtnId).on("click", function(e){
+
       if( self.preview_state == "preview" ){
         self.preview_state = "idle";
-        CSEventManager.broadcast("HIDE_GUEST_PREVIEW", { identity: self.props.user.identity, elementId: self.previewVidId }); 
+        CSEventManager.broadcast("SHOW_GUEST_PREVIEW", { identity: self.props.user.identity, elementId: self.previewVidId }); 
       }else{
         self.preview_state = "preview";
-        CSEventManager.broadcast("SHOW_GUEST_PREVIEW", { identity: self.props.user.identity, elementId: self.previewVidId }); 
+        CSEventManager.broadcast("HIDE_GUEST_PREVIEW", { identity: self.props.user.identity, elementId: self.previewVidId }); 
       }
       self.forceUpdate();
     });
@@ -39,6 +42,7 @@ var EpisodeFanListItem = React.createClass({
       CSEventManager.broadcast("IGNORE_IN_LINE_GUEST", { identity: self.props.user.identity });
     });
 
+
     $("#"+self.messageId).off();
     $("#"+self.messageId).on("click", function(e){
       CSEventManager.broadcast("INITIATE_CHAT", { identity: self.props.user.identity });
@@ -52,14 +56,12 @@ var EpisodeFanListItem = React.createClass({
   render:function(){
 
 
-
-    var previewButtonComponent = <button className="fan-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye"></span></button>;
+    var previewComponent = <button className="fan-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye"></span></button>;
     if(this.preview_state == "preview"){
-      previewButtonComponent = <button className="fan-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye-slash"></span></button>;
+      previewComponent = <button className="fan-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye-slash"></span></button>;
     }
-
     if(this.props.user.session_status == "broadcasting"){
-      previewButtonComponent = "";
+      previewComponent = "";
     }
 
     var publishComponent = <button className="fan-list-item-btn" id={this.publishBtnId}><span className="fa fa-video-camera"></span></button>;
@@ -80,7 +82,7 @@ var EpisodeFanListItem = React.createClass({
           <div className="fan-list-item-preview">
             <div id={this.previewVidId}></div>
           </div>
-          {previewButtonComponent}
+          {previewComponent}
           {publishComponent}
           {ignoreComponent}
         </div>

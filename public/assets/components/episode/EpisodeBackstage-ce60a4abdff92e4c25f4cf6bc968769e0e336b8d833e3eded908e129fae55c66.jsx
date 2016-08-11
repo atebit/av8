@@ -191,7 +191,7 @@ var EpisodeBackstage = React.createClass({
 
   updateBroadcast: function(){
     console.log("admin: update broadcast");
-    //
+
     if( this.session_state == "LIVE"){
       var broadcasting_users = [];
       // push identities of the current broadcasters..
@@ -210,10 +210,10 @@ var EpisodeBackstage = React.createClass({
       this.forceUpdate(); 
 
     }else if(this.session_state == "ENDED"){
-      //
+
       this.sendGlobalSignal("BROADCAST_ENDED");
       this.removeAllStreams();
-      //
+
       this.forceUpdate();
     }
   },
@@ -241,10 +241,10 @@ var EpisodeBackstage = React.createClass({
     var guestsInLineComponent = "";
     if(guestsInLineList.length > 0){
       guestsInLineComponent = 
-        <div className="guests-in-line">
-          <p>Guests in line</p>
-          <div id="fan-list">{guestsInLineList}</div>
-        </div>;
+          <div className="guests-in-line">
+            <p>Guests in line</p>
+            <div id="fan-list">{guestsInLineList}</div>
+          </div>;
     }
 
 

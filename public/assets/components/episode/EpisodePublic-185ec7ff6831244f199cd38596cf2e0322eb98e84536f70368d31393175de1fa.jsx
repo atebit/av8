@@ -84,13 +84,17 @@ var EpisodePublic = React.createClass({
         this.updateBroadcastPlayer( publishedStreamIdentities );
         break;
 
+      case "signal:BROADCAT_ENDED":
+        console.log("broadcast ended");
+        break;
+
       case "signal:ESPISODE_STATUS_UPDATE":
         this.session_state = data;
         console.log("episode status update", data);
         if( data == "ENDED" ){
 
-          this.removeAllStreams();
-          this.setState({guest_state: "ENDED"});  
+          // this.removeAllStreams();
+          this.forceUpdate();
         }
         break;
     }
@@ -102,19 +106,15 @@ var EpisodePublic = React.createClass({
 
     // TODO: check to see if the player needs to update or not... 
     // If not, don't update because it causes a blink to the users that don't need it.
+
     var isSelfStream = false;
 
     // loop through passed identities
+    for(var i=0; i < published_identities.length; i++){
+      var loop_identity = published_identities[i];
       // loop through users
-    for(var j=0; j < this.users.length; j++){
-      var user = this.users[j];
-
-      // auto set the users status to nope
-      user.session_status = "removed";
-      user.player_status = "removed";
-
-      for(var i=0; i < published_identities.length; i++){
-        var loop_identity = published_identities[j];
+      for(var j=0; j < this.users.length; j++){
+        var user = this.users[j];
         // if user is one of the identities
         if( user.identity == loop_identity ){
           // set the props
@@ -124,7 +124,6 @@ var EpisodePublic = React.createClass({
             isSelfStream = true;
           }
         }
-
       }
     }
 
@@ -138,7 +137,7 @@ var EpisodePublic = React.createClass({
     if(isSelfStream){
       this.setState({guest_state:"BROADCASTING"});
     }else{
-      this.setState({guest_state:"WATCHING"});
+      this.forceUpdate(); 
     }
   },
 
@@ -150,6 +149,8 @@ var EpisodePublic = React.createClass({
 
     console.log("render", this.state)
 
+
+
     if(this.state){
       if(this.state.guest_state == "IN_LINE"){
         inlineButton = <button id="get-in-line-btn">Leave Line</button>;
@@ -158,7 +159,8 @@ var EpisodePublic = React.createClass({
         inlineButton = <button id="get-in-line-btn">Leave Broadcast</button>;
         yourStreamClasses = " hidden ";
       } 
-      if(this.state.guest_state == "ENDED"){
+
+      if(this.state == "ended"){
         inlineButton = "";
         yourStreamClasses = " hidden ";
       }
