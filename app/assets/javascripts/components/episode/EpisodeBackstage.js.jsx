@@ -2,13 +2,13 @@ var EpisodeBackstage = React.createClass({
 
   mixins: [EpisodeMixin],
 
-  session_state: "IDLE",
+  session_state: "PRESHOW",
 
   componentWillMount: function() {
     // listeners... init, etc
     this.subclassName = "Backstage";
     this.guest_state = "WATCHING";
-    this.session_state = "IDLE";
+    this.session_state = "PRESHOW";
   },
   
   componentDidMount: function() {
@@ -230,7 +230,7 @@ var EpisodeBackstage = React.createClass({
   render:function(){
 
     var self = this;
-    var fanListComponent = [];
+    var guestsInLineList = [];
 
     if(this.users.length > 0){
       for(var i=0; i < this.users.length; i++){
@@ -238,12 +238,22 @@ var EpisodeBackstage = React.createClass({
         if( user ){
           if( user.session_status == "in_line" || user.session_status == "broadcasting"){
             if( user.role != "admin" ){
-              fanListComponent.push(<EpisodeFanListItem user={ user } key={i} />);
+              guestsInLineList.push(<EpisodeFanListItem user={ user } key={i} />);
             }
           }
         }
       }
     }
+
+    var guestsInLineComponent = "";
+    if(guestsInLineList.length > 0){
+      guestsInLineComponent = 
+          <div className="guests-in-line">
+            <p>Guests in line</p>
+            <div id="fan-list">{guestsInLineList}</div>
+          </div>;
+    }
+
 
     var prevBtn,
         startBtn,
@@ -252,7 +262,7 @@ var EpisodeBackstage = React.createClass({
     // this.logSessionInfo();
 
     switch(this.session_state){
-        case "IDLE":
+        case "PRESHOW":
           // prevBtn = <button id="prev-btn">Preview</button>;
           startBtn = <button id="start-btn">Start Show</button>;
           // endBtn = <button id="end-btn">End Show</button>;
@@ -286,26 +296,21 @@ var EpisodeBackstage = React.createClass({
 
     return(
 
-      <div className="container max-video-width">
-        <header>
+      <div className="container max-video-width episode-container">
+        <div className="episode-menu-left">
+          <div>Episode Status: {this.session_state}</div>
           {prevBtn}
           {startBtn}
           {endBtn}
           {joinBtn}
-        </header>
+        </div>
 
-        <div className="grid no-padding">
-          <div className="col-10-12">
-            <div className="episode-player-container">
-              <EpisodePlayer users={ this.users } context={this} />
-            </div>
-          </div>
-          <div className="col-2-12">
-            <div>
-              <p>Guests in line</p>
-              <div id="fan-list">{fanListComponent}</div>
-            </div>
-          </div>
+        <div className="episode-player-container">
+          <EpisodePlayer users={ this.users } context={this} />
+        </div>
+
+        <div className="episode-menu-right">
+        {guestsInLineComponent}
         </div>
 
         <div id="your-stream" className={yourStreamClasses}></div>

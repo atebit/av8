@@ -55,39 +55,33 @@ var EpisodeFanListItem = React.createClass({
 
   render:function(){
 
-    console.log(this.props.user)
 
-    var previewComponent = <button id={this.previewBtnId}>Preview</button>;
+    var previewComponent = <button className="fan-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye"></span></button>;
     if(this.preview_state == "preview"){
-      previewComponent = <button id={this.previewBtnId}>Hide Preview</button>;
+      previewComponent = <button className="fan-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye-slash"></span></button>;
     }
     if(this.props.user.session_status == "broadcasting"){
       previewComponent = "";
     }
 
-    var publishComponent = <button id={this.publishBtnId}>Publish</button>;
+    var publishComponent = <button className="fan-list-item-btn" id={this.publishBtnId}><span className="fa fa-video-camera"></span></button>;
     if(this.props.user.session_status == "broadcasting"){
-      publishComponent = <button id={this.publishBtnId}>Unpublish</button>;
-    }
-
-    var publishComponent = <button id={this.publishBtnId}>Publish</button>;
-    if(this.props.user.session_status == "broadcasting"){
-      publishComponent = <button id={this.publishBtnId}>Unpublish</button>;
+      publishComponent = <button className="fan-list-item-btn" id={this.publishBtnId}><span className="fa fa-thumbs-down"></span></button>;
     }
 
     var ignoreComponent = "";
     if(this.props.user.session_status != "broadcasting"){
-      ignoreComponent = <button id={this.ignoreBtnId}>Ignore</button>;
+      ignoreComponent = <button className="fan-list-item-btn" id={this.ignoreBtnId}><span className="fa fa-thumbs-down"></span></button>;
     }
     // console.log(this.props);
 
     return(
-      <div id={this.listItemId} className="fan-list-item card grid">
-        <div className="col-2-12">
-          <div id={this.previewVidId} className="fan-lis-item-preview"></div>
-        </div>
-        <div className="col-10-12">
-          <div className="username">{this.props.user.identity}</div>
+      <div id={this.listItemId} className="fan-list-item card">
+        <div className="fan-list-item-username">{this.props.user.identity}</div>
+        <div>
+          <div className="fan-list-item-preview">
+            <div id={this.previewVidId}></div>
+          </div>
           {previewComponent}
           {publishComponent}
           {ignoreComponent}

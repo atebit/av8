@@ -11,7 +11,7 @@ var EpisodePublic = React.createClass({
 
   componentWillMount: function() {
     this.subclassName = "Public";
-    this.session_state = "IDLE";
+    this.session_state = "PRESHOW";
   },
   
   componentDidMount: function() {
@@ -163,11 +163,11 @@ var EpisodePublic = React.createClass({
     // this.logSessionInfo();
 
     return(
-      <div className="container max-video-width">
-        <header>
+      <div className="container max-video-width episode-container">
+        <div className="episode-menu-left">
+          <div>Episode Status: {this.session_state}</div>
           {inlineButton}
-          <div>{this.session_state}</div>
-        </header>
+        </div>
         <EpisodePlayer users={ this.users } context={this} />
         <div id="your-stream" className={yourStreamClasses}></div>
       </div>
