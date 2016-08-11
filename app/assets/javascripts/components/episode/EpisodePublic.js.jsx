@@ -1,7 +1,7 @@
 var EpisodePublic = React.createClass({
 
   mixins: [EpisodeMixin],
-  session_state: "WAITING",
+  session_state: "PRESHOW",
 
   etInitialState: function() {
     return {
@@ -21,7 +21,6 @@ var EpisodePublic = React.createClass({
     this.session.on("signal", this.receiveSignal);
 
     $("#get-in-line-btn").on("click", function(e){
-
       if(self.state){
         if( self.state.guest_state == undefined || self.state.guest_state == "WATCHING"){
           self.connectLocalStream();      
@@ -61,12 +60,21 @@ var EpisodePublic = React.createClass({
       case "signal:REMOVED_FROM_LINE":
         console.log("Moderator removed you from line", data);
 
-        var user = this.getUserByIdentity( data.identity );
+        var user = this.getUserByIdentity( this.identity );
         user.session_status = "removed";
         this.disconnectLocalStream(); 
-        this.sendGlobalSignal("GUEST_LEFT_BROADCAST", user.identity);
         this.setState({guest_state: "WATCHING"});  
         alert("The moderator removed you from the line.")
+
+        break;
+
+      case "signal:REMOVED_FROM_BROADCAST":
+        console.log("Moderator removed you from broadcast", data);
+        var user = this.getUserByIdentity( this.identity );
+        user.session_status = "removed";
+        this.disconnectLocalStream(); 
+        this.setState({guest_state: "WATCHING"});  
+        alert("The moderator removed you from the broadcast.")
 
         break;
 

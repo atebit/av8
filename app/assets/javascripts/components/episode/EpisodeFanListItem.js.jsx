@@ -20,10 +20,10 @@ var EpisodeFanListItem = React.createClass({
 
       if( self.preview_state == "preview" ){
         self.preview_state = "idle";
-        CSEventManager.broadcast("HIDE_PREVIEW_GUEST", { identity: self.props.user.identity, elementId: self.previewVidId }); 
+        CSEventManager.broadcast("SHOW_GUEST_PREVIEW", { identity: self.props.user.identity, elementId: self.previewVidId }); 
       }else{
         self.preview_state = "preview";
-        CSEventManager.broadcast("PREVIEW_GUEST", { identity: self.props.user.identity, elementId: self.previewVidId }); 
+        CSEventManager.broadcast("HIDE_GUEST_PREVIEW", { identity: self.props.user.identity, elementId: self.previewVidId }); 
       }
       self.forceUpdate();
     });
