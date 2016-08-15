@@ -163,7 +163,7 @@ var EpisodeMixin = {
       method: method,
       data: data
     }).complete(function ( response ) {
-      console.log("updated episode_state, api response: ", response );
+      // console.log("updated episode_state, api response: ", response );
     });
     
   },
@@ -245,7 +245,7 @@ var EpisodeMixin = {
         method: method,
         data: data
       }).complete(function ( response ) {
-        console.log("updated user session status, api response: ", response );
+        // console.log("updated user session status, api response: ", response );
       });
     }
   },

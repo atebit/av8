@@ -15,21 +15,28 @@ var EpisodeBackstage = React.createClass({
   
   componentDidMount: function() {
 
-    // from the EpisodeFanListItem
-    CSEventManager.addListener("SHOW_GUEST_PREVIEW", this, "showGuestPreview");
-    CSEventManager.addListener("HIDE_GUEST_PREVIEW", this, "hideGuestPreview");
-    CSEventManager.addListener("IGNORE_IN_LINE_GUEST", this, "ignoreInlineGuest");
-    CSEventManager.addListener("PUBLISH_GUEST", this, "publishGuest");
-    CSEventManager.addListener("UNPUBLISH_GUEST", this, "unpublishGuest");
+    if( this.episode_state == "ENDED" ){
 
-    CSEventManager.addListener("UPDATE_GUESTS", this, "updateGuests");
-    CSEventManager.addListener("INITIATE_CHAT", this, "initiateChat");
+      console.log("This Episode has ended.");
+    }else{
 
-    // super class init
-    this.init();
-    this.session.on("signal", this.receiveSignal);
+      // from the EpisodeFanListItem
+      CSEventManager.addListener("SHOW_GUEST_PREVIEW", this, "showGuestPreview");
+      CSEventManager.addListener("HIDE_GUEST_PREVIEW", this, "hideGuestPreview");
+      CSEventManager.addListener("IGNORE_IN_LINE_GUEST", this, "ignoreInlineGuest");
+      CSEventManager.addListener("PUBLISH_GUEST", this, "publishGuest");
+      CSEventManager.addListener("UNPUBLISH_GUEST", this, "unpublishGuest");
 
-    this.setInteractions();
+      CSEventManager.addListener("UPDATE_GUESTS", this, "updateGuests");
+      CSEventManager.addListener("INITIATE_CHAT", this, "initiateChat");
+
+      // super class init
+      this.init();
+      this.session.on("signal", this.receiveSignal);
+
+      this.setInteractions();
+
+    }
   },
 
   // event listener relays
@@ -215,71 +222,68 @@ var EpisodeBackstage = React.createClass({
   // view
   render:function(){
 
-    var self = this;
-    var guestsInLineList = [];
+    var guestsInLineComponent = "",
+        prevBtn = "",
+        startBtn = "",
+        endBtn = "",
+        joinBtn = "";
 
-    if(this.users.length > 0){
-      for(var i=0; i < this.users.length; i++){
-        var user = this.users[i];
-        if( user ){
-          if( user.guest_state == "IN_LINE" || user.guest_state == "BROADCASTING"){
-            if( user.role != "admin" ){
-              guestsInLineList.push(<EpisodeFanListItem user={ user } key={i} />);
+    var yourStreamClasses = "";
+
+    if( this.episode_state != "ENDED"){
+      var guestsInLineList = [];
+
+      if(this.users.length > 0){
+        for(var i=0; i < this.users.length; i++){
+          var user = this.users[i];
+          if( user ){
+            if( user.guest_state == "IN_LINE" || user.guest_state == "BROADCASTING"){
+              if( user.role != "admin" ){
+                guestsInLineList.push(<EpisodeFanListItem user={ user } key={i} />);
+              }
             }
           }
         }
       }
+
+      if(guestsInLineList.length > 0){
+        guestsInLineComponent = 
+          <div className="guests-in-line">
+            <p>Guests in line</p>
+            <div id="fan-list">{guestsInLineList}</div>
+          </div>;
+      }
+
+      // this.logSessionInfo();
+
+      switch(this.episode_state){
+          case "PRESHOW":
+          case "FUTURE":
+            // prevBtn = <button id="prev-btn">Preview</button>;
+            startBtn = <button id="start-btn">Start Show</button>;
+            // endBtn = <button id="end-btn">End Show</button>;
+          break;
+
+        case "PREVIEW":
+            // prevBtn = <button id="prev-btn">Preview</button>;
+            startBtn = <button id="start-btn">Start Show</button>;
+            // endBtn = <button id="end-btn">End Show</button>;
+          break;
+
+        case "LIVE":
+            // prevBtn = <button id="prev-btn">Preview</button>;
+            // startBtn = <button id="start-btn">Start Show</button>;
+            endBtn = <button id="end-btn">End Show</button>;
+
+      }
+        
+      joinBtn = <button id="join-btn">Join Broadcast</button>;
+
+      if(this.guest_state == "BROADCASTING" ){
+        joinBtn = <button id="leave-btn">Leave Broadcast</button>;
+        yourStreamClasses = " hidden ";
+      } 
     }
-
-    var guestsInLineComponent = "";
-    if(guestsInLineList.length > 0){
-      guestsInLineComponent = 
-        <div className="guests-in-line">
-          <p>Guests in line</p>
-          <div id="fan-list">{guestsInLineList}</div>
-        </div>;
-    }
-
-
-    var prevBtn,
-        startBtn,
-        endBtn;
-
-    // this.logSessionInfo();
-
-    switch(this.episode_state){
-        case "PRESHOW":
-        case "FUTURE":
-          // prevBtn = <button id="prev-btn">Preview</button>;
-          startBtn = <button id="start-btn">Start Show</button>;
-          // endBtn = <button id="end-btn">End Show</button>;
-        break;
-
-      case "PREVIEW":
-          // prevBtn = <button id="prev-btn">Preview</button>;
-          startBtn = <button id="start-btn">Start Show</button>;
-          // endBtn = <button id="end-btn">End Show</button>;
-        break;
-
-      case "LIVE":
-          // prevBtn = <button id="prev-btn">Preview</button>;
-          // startBtn = <button id="start-btn">Start Show</button>;
-          endBtn = <button id="end-btn">End Show</button>;
-
-      case "ENDED":
-          // prevBtn = <button id="prev-btn">Preview</button>;
-          // startBtn = <button id="start-btn">Start Show</button>;
-          // endBtn = <button id="end-btn">End Show</button>;
-
-    }
-      
-    var joinBtn = <button id="join-btn">Join Broadcast</button>;
-    var yourStreamClasses = "";
-
-    if(this.guest_state == "BROADCASTING" ){
-      joinBtn = <button id="leave-btn">Leave Broadcast</button>;
-      yourStreamClasses = " hidden ";
-    } 
 
     return(
 
