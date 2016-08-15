@@ -1,45 +1,48 @@
 var EpisodePublic = React.createClass({
 
   mixins: [EpisodeMixin],
-  session_state: "PRESHOW",
-
-  etInitialState: function() {
-    return {
-      guest_state: ""
-    };
-  },
 
   componentWillMount: function() {
     this.subclassName = "Public";
-    this.session_state = "PRESHOW";
+    this.episode_state = this.props.episode_state;
   },
   
   componentDidMount: function() {
-    var self = this;
-    /// click events, etc
-    self.init();
-    this.session.on("signal", this.receiveSignal);
 
-    $("#get-in-line-btn").on("click", function(e){
-      if(self.state){
-        if( self.state.guest_state == undefined || self.state.guest_state == "WATCHING"){
-          self.connectLocalStream();      
-        }
-        if(self.state.guest_state == "IN_LINE"){
-          self.disconnectLocalStream(); 
-          self.sendGlobalSignal("GUEST_LEFT_LINE", self.identity);
-          self.setState({ guest_state: "WATCHING" });  
-        }
-        if(self.state.guest_state == "BROADCASTING"){
-          self.disconnectLocalStream(); 
-          self.sendGlobalSignal("GUEST_LEFT_BROADCAST", self.identity);
-          self.setState({guest_state: "WATCHING"});  
-        }
-      }
-    });
+    if( this.episode_state == "ENDED" ){
 
-    // initial state..
-    this.setState({guest_state: "WATCHING"});  
+      console.log("This Episode has ended.");
+
+    }else{
+
+      var self = this;
+      /// click events, etc
+      self.init();
+      this.session.on("signal", this.receiveSignal);
+
+      $("#get-in-line-btn").on("click", function(e){
+        if(self.guest_state){
+          if( self.guest_state == undefined || self.guest_state == "WATCHING"){
+            self.connectLocalStream();      
+          }
+          if(self.guest_state == "IN_LINE"){
+            self.disconnectLocalStream(); 
+            self.sendGlobalSignal("GUEST_LEFT_LINE", self.identity);
+            self.setState({ guest_state: "WATCHING" });  
+          }
+          if(self.guest_state == "BROADCASTING"){
+            self.disconnectLocalStream(); 
+            self.sendGlobalSignal("GUEST_LEFT_BROADCAST", self.identity);
+            self.setState({guest_state: "WATCHING"});  
+          }
+        }
+      });
+
+      // initial state..
+      this.guest_state = "WATCHING";
+      this.forceUpdate();
+
+    }
   },
 
   componentDidUpdate: function(){
@@ -61,9 +64,13 @@ var EpisodePublic = React.createClass({
         console.log("Moderator removed you from line", data);
 
         var user = this.getUserByIdentity( this.identity );
-        user.session_status = "removed";
+        user.guest_state = "REMOVED";
         this.disconnectLocalStream(); 
-        this.setState({guest_state: "WATCHING"});  
+
+        this.forceUpdate();
+
+        // this.setState({guest_state: "WATCHING"});  
+
         alert("The moderator removed you from the line.")
 
         break;
@@ -71,9 +78,13 @@ var EpisodePublic = React.createClass({
       case "signal:REMOVED_FROM_BROADCAST":
         console.log("Moderator removed you from broadcast", data);
         var user = this.getUserByIdentity( this.identity );
-        user.session_status = "removed";
+        user.guest_state = "REMOVED";
         this.disconnectLocalStream(); 
-        this.setState({guest_state: "WATCHING"});  
+
+        this.guest_state = "WATCHING"
+        this.forceUpdate();
+
+        // this.setState({guest_state: "WATCHING"});  
         alert("The moderator removed you from the broadcast.")
 
         break;
@@ -84,13 +95,23 @@ var EpisodePublic = React.createClass({
         this.updateBroadcastPlayer( publishedStreamIdentities );
         break;
 
+      case "signal:MODERATOR_CONNECTED":
+        console.log("Moderator has joined, fetch state from the server.");
+        // var publishedStreamIdentities = e.data.split(",");
+        // this.updateBroadcastPlayer( publishedStreamIdentities );
+        // TODO: hack to reload based on moderator dropping out..
+        self.getEpisodeState();
+
+        // location.reload();
+        break;
+
       case "signal:ESPISODE_STATUS_UPDATE":
-        this.session_state = data;
+        this.episode_state = data;
         console.log("episode status update", data);
         if( data == "ENDED" ){
-
           this.removeAllStreams();
-          this.setState({guest_state: "ENDED"});  
+          this.guest_state = "ENDED"
+          this.forceUpdate();
         }
         break;
     }
@@ -110,16 +131,16 @@ var EpisodePublic = React.createClass({
       var user = this.users[j];
 
       // auto set the users status to nope
-      user.session_status = "removed";
-      user.player_status = "removed";
+      user.guest_state = "REMOVED";
+      user.player_status = "REMOVED";
 
       for(var i=0; i < published_identities.length; i++){
         var loop_identity = published_identities[i];
         // if user is one of the identities
         if( user.identity == loop_identity ){
           // set the props
-          user.player_status = "can_mount";
-          user.session_status = "broadcasting";
+          user.guest_state = "BROADCASTING";
+          user.player_status = "CAN_MOUNT";
           if( this.identity == user.identity ){
             isSelfStream = true;
           }
@@ -136,29 +157,31 @@ var EpisodePublic = React.createClass({
 
 
     if(isSelfStream){
-      this.setState({guest_state:"BROADCASTING"});
+      this.guest_state = "BROADCASTING"
+      this.forceUpdate();
     }else{
-      this.setState({guest_state:"WATCHING"});
+      this.guest_state = "WATCHING"
+      this.forceUpdate();
     }
   },
 
   render:function(){
 
-    // local vars
-    var inlineButton = <button id="get-in-line-btn">Get In Line</button>;
+    var inlineButton = "";
     var yourStreamClasses = "";
 
-    console.log("render", this.state)
+    
+    if( this.episode_state != "ENDED" ){
+      inlineButton = <button id="get-in-line-btn">Get In Line</button>;
 
-    if(this.state){
-      if(this.state.guest_state == "IN_LINE"){
+      if(this.guest_state == "IN_LINE"){
         inlineButton = <button id="get-in-line-btn">Leave Line</button>;
       } 
-      if(this.state.guest_state == "BROADCASTING"){
+      if(this.guest_state == "BROADCASTING"){
         inlineButton = <button id="get-in-line-btn">Leave Broadcast</button>;
         yourStreamClasses = " hidden ";
       } 
-      if(this.state.guest_state == "ENDED"){
+      if(this.guest_state == "ENDED"){
         inlineButton = "";
         yourStreamClasses = " hidden ";
       }
@@ -170,7 +193,7 @@ var EpisodePublic = React.createClass({
       <div className="container max-video-width episode-container">
         <div className="episode-menu menu-left">
           <div className="menu-left-controls">
-            <div>{this.session_state}</div>
+            <div>{this.episode_state}</div>
           </div>
           <div className="episode-menu-inner">
             {inlineButton}

@@ -11,11 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160621225350) do
+ActiveRecord::Schema.define(version: 20160815233611) do
+
+  create_table "episode_rsvps", force: :cascade do |t|
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.integer  "user_id",                      null: false
+    t.integer  "episode_id",                   null: false
+    t.string   "rsvp_status", default: "none"
+    t.string   "live_state"
+    t.string   "av_state"
+  end
+
+  add_index "episode_rsvps", ["episode_id"], name: "index_episode_rsvps_on_episode_id"
+  add_index "episode_rsvps", ["user_id"], name: "index_episode_rsvps_on_user_id"
 
   create_table "episodes", force: :cascade do |t|
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
     t.datetime "started_at"
     t.datetime "archived_at"
     t.integer  "user_id"
@@ -23,6 +36,10 @@ ActiveRecord::Schema.define(version: 20160621225350) do
     t.string   "title"
     t.text     "info"
     t.string   "avatar"
+    t.datetime "ended_at"
+    t.string   "episode_state",          default: "FUTURE"
+    t.string   "archive_compile_config"
+    t.string   "archive_assets_path"
   end
 
   create_table "users", force: :cascade do |t|

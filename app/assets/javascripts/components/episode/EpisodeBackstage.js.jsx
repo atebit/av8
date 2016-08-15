@@ -2,9 +2,6 @@ var EpisodeBackstage = React.createClass({
 
   mixins: [EpisodeMixin],
 
-  session_state: "PRESHOW",
-
-
   // TODO: save the current state of the USERS table to the persons cookies.
   // that way, if the admin drops off for a sec, they will be able to refresh.
   // another good way is to maybe periodically send that info to the api just in case
@@ -13,11 +10,11 @@ var EpisodeBackstage = React.createClass({
   componentWillMount: function() {
     // listeners... init, etc
     this.subclassName = "Backstage";
-    this.guest_state = "WATCHING";
-    this.session_state = "PRESHOW";
+    this.episode_state = this.props.episode_state;
   },
   
   componentDidMount: function() {
+
     // from the EpisodeFanListItem
     CSEventManager.addListener("SHOW_GUEST_PREVIEW", this, "showGuestPreview");
     CSEventManager.addListener("HIDE_GUEST_PREVIEW", this, "hideGuestPreview");
@@ -69,18 +66,12 @@ var EpisodeBackstage = React.createClass({
 
     $("#start-btn").off();
     $("#start-btn").on("click", function(e){
-      self.session_state = "LIVE";
-      self.sendGlobalSignal("ESPISODE_STATUS_UPDATE", self.session_state);
-      self.updateBroadcast();
-      self.forceUpdate();
+      self.setEpisodeState("LIVE");
     });
 
     $("#end-btn").off();
     $("#end-btn").on("click", function(e){
-      self.session_state = "ENDED";
-      self.sendGlobalSignal("ESPISODE_STATUS_UPDATE", self.session_state);
-      self.updateBroadcast();
-      self.forceUpdate();
+      self.setEpisodeState("ENDED");
     });
 
     // $("#preview-btn").off();
@@ -91,7 +82,9 @@ var EpisodeBackstage = React.createClass({
 
   // tokbox message signal..
   receiveSignal: function(e){
+    
     // console.log("signal received: ", e);
+
     var self = this;
     var data = e.data;
 
@@ -126,9 +119,9 @@ var EpisodeBackstage = React.createClass({
     if( identity != self.identity ){
       // console.log("guest joined room", identity);
       // TODO:  SEND A SPECIFIC MESSAGE TO THE PERSON WHO JOINED.
-      if( self.session_state == "LIVE" ){
+      if( self.episode_state == "LIVE" ){
         self.updateBroadcast(); 
-      }else if(self.session_state == "ENDED"){
+      }else if(self.episode_state == "ENDED"){
         // self.endEpisode();
       }
     }
@@ -148,8 +141,8 @@ var EpisodeBackstage = React.createClass({
   // conference management functions..
 
   addGuestToLine: function( identity ){
-    // console.log("Admin: guest joined line", identity);
-    this.updateUserSessionStatus( identity, "in_line" );
+    console.log("Admin: guest joined line", identity);
+    this.updateUserSessionStatus( identity, "IN_LINE" );
     // update this page
     this.forceUpdate();
   },
@@ -157,8 +150,8 @@ var EpisodeBackstage = React.createClass({
   removeGuestFromLine: function( identity ){
     // console.log("admin: guest left line", identity);
     var user = this.getUserByIdentity( identity );
-    user.player_status = "removed";
-    user.session_status = "removed";
+    user.player_status = "REMOVED";
+    user.guest_state = "REMOVED";
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_LINE", {identity: identity});
     // update this page
@@ -168,8 +161,8 @@ var EpisodeBackstage = React.createClass({
   addGuestToBroadcast: function( identity ){
     // console.log("admin: add guest to broadcast", identity)
     var user = this.getUserByIdentity( identity );
-    user.player_status = "can_mount";
-    user.session_status = "broadcasting";
+    user.player_status = "CAN_MOUNT";
+    user.guest_state = "BROADCASTING";
     // update the broadcast with new guest..
     this.updateBroadcast();
     // reload this page..
@@ -179,8 +172,8 @@ var EpisodeBackstage = React.createClass({
   removeGuestFromBroadcast: function( identity ){
     console.log("Admin: remove guest", identity);
     var user = this.getUserByIdentity( identity );
-    user.player_status = "removed";
-    user.session_status = "removed";
+    user.player_status = "REMOVED";
+    user.guest_state = "REMOVED";
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_BROADCAST", {identity: identity});
     // update the broadcast..
@@ -192,13 +185,13 @@ var EpisodeBackstage = React.createClass({
   updateBroadcast: function(){
     console.log("admin: update broadcast");
     //
-    if( this.session_state == "LIVE"){
+    if( this.episode_state == "LIVE"){
       var broadcasting_users = [];
       // push identities of the current broadcasters..
       for(var i=0; i < this.users.length; i++){
         var user = this.users[i];
         var identity = user.identity;
-        if(user.session_status == "broadcasting"){
+        if(user.guest_state == "BROADCASTING"){
           broadcasting_users.push( identity ); 
         }
       }
@@ -209,7 +202,7 @@ var EpisodeBackstage = React.createClass({
       // update this page.
       this.forceUpdate(); 
 
-    }else if(this.session_state == "ENDED"){
+    }else if(this.episode_state == "ENDED"){
       //
       this.sendGlobalSignal("BROADCAST_ENDED");
       this.removeAllStreams();
@@ -229,7 +222,7 @@ var EpisodeBackstage = React.createClass({
       for(var i=0; i < this.users.length; i++){
         var user = this.users[i];
         if( user ){
-          if( user.session_status == "in_line" || user.session_status == "broadcasting"){
+          if( user.guest_state == "IN_LINE" || user.guest_state == "BROADCASTING"){
             if( user.role != "admin" ){
               guestsInLineList.push(<EpisodeFanListItem user={ user } key={i} />);
             }
@@ -254,8 +247,9 @@ var EpisodeBackstage = React.createClass({
 
     // this.logSessionInfo();
 
-    switch(this.session_state){
+    switch(this.episode_state){
         case "PRESHOW":
+        case "FUTURE":
           // prevBtn = <button id="prev-btn">Preview</button>;
           startBtn = <button id="start-btn">Start Show</button>;
           // endBtn = <button id="end-btn">End Show</button>;
@@ -293,7 +287,7 @@ var EpisodeBackstage = React.createClass({
         <div className="episode-menu menu-left">
           <div className="menu-left-controls">
             <div className="inline"><span className="fa fa-bars"></span></div>
-            <div className="inline">{this.session_state}</div>
+            <div className="inline">{this.episode_state}</div>
           </div>
           <div className="episode-menu-inner">
             {prevBtn}

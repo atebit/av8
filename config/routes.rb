@@ -8,7 +8,14 @@ Rails.application.routes.draw do
     get "/archives", to: "episodes#archives", as: "archives"
   end
 
-  post "/api/episodes/:episode_id/update", to: "api/episodes#update"
+  namespace :api do
+    post "/episodes/:episode_id/start_episode", to: "episodes#start_episode", as: "episode_start"
+    post "/episodes/:episode_id/end_episode", to: "episodes#end_episode", as: "episode_end"
+
+    get "/episodes/:episode_id/get_episode_state", to: "episodes#get_episode_state", as: "get_episode_state"
+    post "/episodes/:episode_id/set_episode_state", to: "episodes#set_episode_state", as: "set_episode_state"
+    post "/episodes/:episode_id/update_rsvps", to: "episodes#update_rsvps", as: "episode_update_rsvps"
+  end
 
   root to: 'pages#home'
 end

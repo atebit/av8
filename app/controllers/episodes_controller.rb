@@ -11,22 +11,32 @@ class EpisodesController < OpentokController
   end
 
 
-
   def show
     # TODO: when a new person views, send their user information along with session data within token.
     @episode = Episode.find( params[:id] )
     @remote_session_id = @episode.remote_session_id
 
     time = Time.now
-    data_string = "email="+current_user.email+"&role="+current_user.role+"&time="+time.to_s
+    data_string = "user_id="+current_user.id.to_s+"&email="+current_user.email+"&role="+current_user.role+"&time="+time.to_s
 
     @token = @opentok.generate_token( @remote_session_id, {
       # :role => :moderator,
       :data => data_string
     })
+
+    # add self to RSVP list, for now
+    episode_rsvp_check = EpisodeRsvp.where(episode_id: @episode.id, user_id: current_user.id ).first
+    if episode_rsvp_check.blank?
+      EpisodeRsvp.create(
+        user_id: current_user.id,
+        episode_id: @episode.id,
+        rsvp_status: "attending"
+      )
+    end
+
+    @episode_state = @episode.episode_state
+    @attendees = get_episode_attendees( @episode.id )
   end
-
-
 
   def backstage
     # TODO: when a new person views, send their user information along with session data within token.
@@ -35,12 +45,25 @@ class EpisodesController < OpentokController
     @remote_session_id = @episode.remote_session_id
 
     time = Time.now
-    data_string = "email="+current_user.email+"&role="+current_user.role+"&time="+time.to_s
+    data_string = "user_id="+current_user.id.to_s+"&email="+current_user.email+"&role="+current_user.role+"&time="+time.to_s
 
     @token = @opentok.generate_token( @remote_session_id, {
       :role => :moderator,
       :data => data_string
     })
+
+    # add self to RSVP list, for now
+    episode_rsvp_check = EpisodeRsvp.where(episode_id: @episode.id, user_id: current_user.id ).first
+    if episode_rsvp_check.blank?
+      EpisodeRsvp.create(
+        user_id: current_user.id,
+        episode_id: @episode.id,
+        rsvp_status: "attending"
+      )
+    end
+
+    @episode_state = @episode.episode_state
+    @attendees = get_episode_attendees( @episode.id )
 
   end
 
@@ -107,6 +130,29 @@ class EpisodesController < OpentokController
     params.require(:episode).permit(
       :title
     )
+  end
+
+
+  def get_episode_attendees( episode_id )
+
+    attendees = []
+    rsvps = EpisodeRsvp.where(episode_id: episode_id)
+
+    if rsvps.present?
+      rsvps.each do |rsvp|
+        user = User.find_by_id( rsvp.user_id )
+        if user.present?
+          user_data = {}
+          user_data[:id] = user.id
+          # user_data[:name] = user.full_name
+          user_data[:email] = user.email
+          user_data[:rsvp_status] = rsvp.rsvp_status
+          attendees.push( user_data )
+        end
+      end
+    end
+
+    return attendees
   end
 
 
