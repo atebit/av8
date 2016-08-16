@@ -58,17 +58,17 @@ var EpisodeFanListItem = React.createClass({
       previewButtonComponent = <button className="fan-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye-slash"></span></button>;
     }
 
-    if(this.props.user.session_status == "broadcasting"){
+    if(this.props.user.guest_status == "broadcasting"){
       previewButtonComponent = "";
     }
 
     var publishComponent = <button className="fan-list-item-btn" id={this.publishBtnId}><span className="fa fa-video-camera"></span></button>;
-    if(this.props.user.session_status == "broadcasting"){
+    if(this.props.user.guest_status == "broadcasting"){
       publishComponent = <button className="fan-list-item-btn" id={this.publishBtnId}><span className="fa fa-thumbs-down"></span></button>;
     }
 
     var ignoreComponent = "";
-    if(this.props.user.session_status != "broadcasting"){
+    if(this.props.user.guest_status != "broadcasting"){
       ignoreComponent = <button className="fan-list-item-btn" id={this.ignoreBtnId}><span className="fa fa-thumbs-down"></span></button>;
     }
     // console.log(this.props);

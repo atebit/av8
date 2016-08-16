@@ -61,53 +61,49 @@ var EpisodePublic = React.createClass({
         break;
 
       case "signal:REMOVED_FROM_LINE":
-        console.log("Moderator removed you from line", data);
+        // console.log("Moderator removed you from line");
 
         var user = this.getUserByIdentity( this.identity );
-        user.guest_state = "REMOVED";
+        user.guest_state = "WATCHING";
+
         this.disconnectLocalStream(); 
-
+        this.guest_state = "WATCHING";
         this.forceUpdate();
-
-        // this.setState({guest_state: "WATCHING"});  
-
-        alert("The moderator removed you from the line.")
-
+        
         break;
 
       case "signal:REMOVED_FROM_BROADCAST":
-        console.log("Moderator removed you from broadcast", data);
+        // console.log("Moderator removed you from broadcast");
+        
         var user = this.getUserByIdentity( this.identity );
-        user.guest_state = "REMOVED";
+        user.guest_state = "WATCHING";
+
         this.disconnectLocalStream(); 
-
-        this.guest_state = "WATCHING"
+        this.guest_state = "WATCHING";
         this.forceUpdate();
-
-        // this.setState({guest_state: "WATCHING"});  
-        alert("The moderator removed you from the broadcast.")
 
         break;
 
       case "signal:UPDATE_BROADCAST":
-        console.log("global update broadcast");
+        // console.log("global update broadcast");
         var publishedStreamIdentities = e.data.split(",");
         this.updateBroadcastPlayer( publishedStreamIdentities );
         break;
 
       case "signal:MODERATOR_CONNECTED":
-        console.log("Moderator has joined, fetch state from the server.");
+      case "signal:MODERATOR_DISCONNECTED":
+        // console.log("Moderator has joined, fetch state from the server.");
         // var publishedStreamIdentities = e.data.split(",");
         // this.updateBroadcastPlayer( publishedStreamIdentities );
         // TODO: hack to reload based on moderator dropping out..
-        self.getEpisodeState();
+        // self.getEpisodeState();
 
-        // location.reload();
+        location.reload();
         break;
 
       case "signal:ESPISODE_STATUS_UPDATE":
         this.episode_state = data;
-        console.log("episode status update", data);
+        // console.log("episode status update", data);
         if( data == "ENDED" ){
           this.removeAllStreams();
           this.guest_state = "ENDED"
@@ -150,7 +146,7 @@ var EpisodePublic = React.createClass({
     }
 
     // if no users were passed, remove any that are on the broadcast..
-    console.log(published_identities)
+    // console.log(published_identities)
     if(published_identities.length == 0 || published_identities[0] == ""){
       this.removeAllStreams();
     }
@@ -170,8 +166,11 @@ var EpisodePublic = React.createClass({
     var inlineButton = "";
     var yourStreamClasses = "";
 
+    console.log("render", this.guest_state);
+
     
     if( this.episode_state != "ENDED" ){
+
       inlineButton = <button id="get-in-line-btn">Get In Line</button>;
 
       if(this.guest_state == "IN_LINE"){

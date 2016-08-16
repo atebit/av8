@@ -38,7 +38,7 @@ var EpisodePlayer = React.createClass({
     var broadcasting_users = [];
     for(var i=0; i < this.props.users.length; i++ ){
       var user = this.props.users[i];
-      if( user.live_state == "broadcasting" ){
+      if( user.guest_state == "BROADCASTING" ){
         broadcasting_users.push( user );
       }
     }

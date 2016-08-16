@@ -142,32 +142,6 @@ var EpisodeMixin = {
     }.bind(self));
   },
 
-  setEpisodeState: function( episode_state ){
-    var self = this;
-    // save local
-    self.episode_state = episode_state;
-    // update streamers
-    self.sendGlobalSignal("ESPISODE_STATUS_UPDATE", self.episode_state);
-    // update broadcast
-    self.updateBroadcast();
-    // update player
-    self.forceUpdate();
-    // save to DB
-    var self = this;
-    var api = '/api/episodes/'+self.episode_id+'/set_episode_state';
-    var method = "post";
-    var data = { episode_state: this.episode_state };
-
-    self.serverRequest = $.ajax({
-      url: api,
-      method: method,
-      data: data
-    }).complete(function ( response ) {
-      // console.log("updated episode_state, api response: ", response );
-    });
-    
-  },
-
 
   // User Table Methods
   addNewUser: function( connection ){
@@ -211,9 +185,7 @@ var EpisodeMixin = {
 
   // update user session status
   updateUserSessionStatus: function( identity, guest_state ){
-
-    console.log("update user.guest_state ", identity, guest_state)
-
+    // console.log("update user.guest_state ", identity, guest_state)
     var updated_attendees = [];
     // loop through, find and change
     for(var i=0; i < this.users.length; i++){
@@ -252,7 +224,8 @@ var EpisodeMixin = {
 
   // add stream object..
   addStreamToUser: function( identity, stream ){
-    console.log("add stream to user", identity);
+    // console.log("add stream to user", identity);
+
     // remove the guest from the users table..
     for(var i=0; i < this.users.length; i++){
       var user = this.users[i];
@@ -266,7 +239,7 @@ var EpisodeMixin = {
 
   // remove stream object..
   removeStreamFromUser: function( identity ){
-    console.log("remove stream from user", identity);
+    // console.log("remove stream from user", identity);
     // remove the guest from the users table..
     for(var i=0; i < this.users.length; i++){
       var user = this.users[i];
@@ -279,7 +252,7 @@ var EpisodeMixin = {
   },
 
   removeUser: function( identity ){
-    console.log("remove user", identity);
+    // console.log("remove user", identity);
     // remove the guest from the users table..
     for(var i=0; i < this.users.length; i++){
       var user = this.users[i];
@@ -306,13 +279,13 @@ var EpisodeMixin = {
 
   // Stream Events
   streamCreated: function(e){
-    console.log("stream created", identity);
+    // console.log("stream created", identity);
     var identity = Params.query(e.stream.connection.data).email;
     this.addStreamToUser( identity, e.stream );
   },
 
   streamDestroyed: function(e){
-    console.log("stream destroyed", identity);
+    // console.log("stream destroyed", identity);
     var identity = Params.query(e.stream.connection.data).email;
     this.removeStreamFromUser( identity );
     // reset state..
@@ -399,7 +372,7 @@ var EpisodeMixin = {
   },
 
   disconnectLocalStream: function(){
-    console.log("disconnect local stream");
+    // console.log("disconnect local stream");
     var identity = this.identity;
     this.updateUserSessionStatus( identity, "CONNECTED" );
     this.removeStreamFromUser( identity );
@@ -428,7 +401,7 @@ var EpisodeMixin = {
       user.player_status = "MOUNTED";
 
       var stream = user.stream;
-      console.log("connect to stream", identity)
+      // console.log("connect to stream", identity)
 
       if(stream){
         var streamOptions = {

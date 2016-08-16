@@ -87,6 +87,32 @@ var EpisodeBackstage = React.createClass({
     // });
   },
 
+  setEpisodeState: function( episode_state ){
+    var self = this;
+    // save local
+    self.episode_state = episode_state;
+    // update streamers
+    self.sendGlobalSignal("ESPISODE_STATUS_UPDATE", self.episode_state);
+    // update broadcast
+    self.updateBroadcast();
+    // update player
+    self.forceUpdate();
+    // save to DB
+    var self = this;
+    var api = '/api/episodes/'+self.episode_id+'/set_episode_state';
+    var method = "post";
+    var data = { episode_state: this.episode_state };
+
+    self.serverRequest = $.ajax({
+      url: api,
+      method: method,
+      data: data
+    }).complete(function ( response ) {
+      // console.log("updated episode_state, api response: ", response );
+    });
+    
+  },
+
   // tokbox message signal..
   receiveSignal: function(e){
     
@@ -148,7 +174,7 @@ var EpisodeBackstage = React.createClass({
   // conference management functions..
 
   addGuestToLine: function( identity ){
-    console.log("Admin: guest joined line", identity);
+    // console.log("Admin: guest joined line", identity);
     this.updateUserSessionStatus( identity, "IN_LINE" );
     // update this page
     this.forceUpdate();
@@ -158,7 +184,7 @@ var EpisodeBackstage = React.createClass({
     // console.log("admin: guest left line", identity);
     var user = this.getUserByIdentity( identity );
     user.player_status = "REMOVED";
-    user.guest_state = "REMOVED";
+    user.guest_state = "WATCHING";
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_LINE", {identity: identity});
     // update this page
@@ -177,10 +203,10 @@ var EpisodeBackstage = React.createClass({
   },
 
   removeGuestFromBroadcast: function( identity ){
-    console.log("Admin: remove guest", identity);
+    // console.log("Admin: remove guest", identity);
     var user = this.getUserByIdentity( identity );
     user.player_status = "REMOVED";
-    user.guest_state = "REMOVED";
+    user.guest_state = "WATCHING";
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_BROADCAST", {identity: identity});
     // update the broadcast..
@@ -190,7 +216,7 @@ var EpisodeBackstage = React.createClass({
   },
 
   updateBroadcast: function(){
-    console.log("admin: update broadcast");
+    // console.log("admin: update broadcast");
     //
     if( this.episode_state == "LIVE"){
       var broadcasting_users = [];
