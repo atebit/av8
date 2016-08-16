@@ -177,7 +177,7 @@ var EpisodeBackstage = React.createClass({
     // console.log("Admin: guest joined line", identity);
     this.updateUserSessionStatus( identity, "IN_LINE" );
     // update this page
-    this.forceUpdate();
+    this.setState({});
   },
 
   removeGuestFromLine: function( identity ){
@@ -188,7 +188,7 @@ var EpisodeBackstage = React.createClass({
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_LINE", {identity: identity});
     // update this page
-    this.forceUpdate();
+    this.setState({});
   },
 
   addGuestToBroadcast: function( identity ){
@@ -199,7 +199,7 @@ var EpisodeBackstage = React.createClass({
     // update the broadcast with new guest..
     this.updateBroadcast();
     // reload this page..
-    this.forceUpdate();
+    this.setState({});
   },
 
   removeGuestFromBroadcast: function( identity ){
@@ -240,7 +240,7 @@ var EpisodeBackstage = React.createClass({
       this.sendGlobalSignal("BROADCAST_ENDED");
       this.removeAllStreams();
       //
-      this.forceUpdate();
+      this.setState({});
     }
   },
 

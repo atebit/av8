@@ -27,7 +27,7 @@ var EpisodeFanListItem = React.createClass({
 
     $("#"+self.publishBtnId).off();
     $("#"+self.publishBtnId).on("click", function(e){
-      if(self.props.user.session_status == "broadcasting"){
+      if(self.props.user.guest_state == "BROADCASTING"){
         CSEventManager.broadcast("UNPUBLISH_GUEST", { identity: self.props.user.identity });
       }else{
         CSEventManager.broadcast("PUBLISH_GUEST", { identity: self.props.user.identity });        
@@ -51,24 +51,26 @@ var EpisodeFanListItem = React.createClass({
 
   render:function(){
 
+    console.log("render in line", this.props)
 
+    var ignoreComponent = "";
 
+    var publishComponent = <button className="fan-list-item-btn" id={this.publishBtnId}><span className="fa fa-video-camera"></span></button>;
     var previewButtonComponent = <button className="fan-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye"></span></button>;
+    
     if(this.preview_state == "preview"){
       previewButtonComponent = <button className="fan-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye-slash"></span></button>;
     }
 
-    if(this.props.user.guest_status == "broadcasting"){
+    if(this.props.user.guest_state == "BROADCASTING"){
       previewButtonComponent = "";
     }
 
-    var publishComponent = <button className="fan-list-item-btn" id={this.publishBtnId}><span className="fa fa-video-camera"></span></button>;
-    if(this.props.user.guest_status == "broadcasting"){
+    if(this.props.user.guest_state == "BROADCASTING"){
       publishComponent = <button className="fan-list-item-btn" id={this.publishBtnId}><span className="fa fa-thumbs-down"></span></button>;
     }
 
-    var ignoreComponent = "";
-    if(this.props.user.guest_status != "broadcasting"){
+    if(this.props.user.guest_state != "BROADCASTING"){
       ignoreComponent = <button className="fan-list-item-btn" id={this.ignoreBtnId}><span className="fa fa-thumbs-down"></span></button>;
     }
     // console.log(this.props);
