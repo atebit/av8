@@ -34,7 +34,7 @@ class Api::EpisodesController < Api::ApiController
 
   def set_episode_state
 
-  # session_state: NONE, ATTENDING, BOOTED, PAID
+    # TODO: shouldn't be able to modify after "ENDED"
 
     @episode = Episode.find( params[:episode_id] )
     @episode.episode_state = params[:episode_state]
@@ -83,7 +83,7 @@ class Api::EpisodesController < Api::ApiController
 
   private
 
-  
+
 
   def get_episode_attendees( episode_id )
 
