@@ -111,6 +111,12 @@ var EpisodeBackstage = React.createClass({
       // console.log("updated episode_state, api response: ", response );
     });
     
+    if(episode_state == "ENDED"){
+      self.removeAllStreams();
+      self.disconnectLocalStream();
+      self.forceUpdate(); 
+    }
+
   },
 
   // tokbox message signal..

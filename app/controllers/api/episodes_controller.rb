@@ -39,6 +39,13 @@ class Api::EpisodesController < Api::ApiController
     @episode = Episode.find( params[:episode_id] )
     @episode.episode_state = params[:episode_state]
 
+    # save start/end times..
+    if params[:episode_state] == "LIVE"
+      @episode.started_at = Time.now
+    elsif params[:episode_state] == "ENDED"
+      @episode.ended_at = Time.now
+    end
+
     if @episode.save
       render json: {
         status: 200,
@@ -64,45 +71,6 @@ class Api::EpisodesController < Api::ApiController
 
   end
 
-  def start_episode
-    @episode = Episode.find( params[:episode_id] )
-    @episode.started_at = Time.now
-    @episode.episode_state = Episode::SESSION_STATE_LIVE
-    # start archiving
-
-    if @episode.save
-      render json: {
-        status: 200,
-        message: "Episode start time saved."
-      }.to_json
-    else
-      render json: {
-        status: 204,
-        message: "Could not save Episode start time."
-      }.to_json
-    end
-  end
-
-  def end_episode
-    # save end time
-    @episode = Episode.find( params[:episode_id] )
-    @episode.episode_state = Episode::SESSION_STATE_ENDED
-    @episode.ended_at = Time.now
-    # start compile and archive processs??
-
-    if @episode.save
-      render json: {
-        status: 200,
-        message: "Episode end time saved."
-      }.to_json
-    else
-      render json: {
-        status: 204,
-        message: "Could not save Episode end time."
-      }.to_json
-    end
-  end
-
   def update_archive_compile_config
     # a function for updating the configuration 
     # for use by ffmpeg to compile assets later
@@ -111,9 +79,11 @@ class Api::EpisodesController < Api::ApiController
 
 
 
+
+
   private
 
-
+  
 
   def get_episode_attendees( episode_id )
 
