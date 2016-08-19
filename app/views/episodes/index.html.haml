@@ -1,20 +1,30 @@
-%h1 Index
+
+.maxwidth
+  %h1 Episodes
 
 
-- if @episodes.present?
-  - @episodes.each do |episode|
-    .episode
-      = link_to episode_path( episode ) do
-        %span View #{episode.title}
 
-      - if current_user.role == "admin"
-        %span - 
-        = link_to edit_episode_path( episode.id ) do
-          %span Edit
+  - if @episodes.present?
+    .episodes-list
+      - @episodes.each do |episode|
+        .episode.card.clear
+          = link_to episode_path( episode ) do
+            .left
+              %span.bold #{episode.title.upcase}
+              %span #{episode.episode_state.downcase}
 
-        %span - 
-        = link_to episode_backstage_path( episode.id ) do
-          %span Backstage
+          - if current_user.role == "admin"
+            .right 
+              = link_to episode_path( episode.id ) do
+                %span Guest View
+              %span - 
 
-- if current_user.role == "admin"
-  = link_to "New", new_episode_path
+              = link_to edit_episode_path( episode.id ) do
+                %span Edit
+
+              %span - 
+              = link_to episode_backstage_path( episode.id ) do
+                %span Backstage View
+
+  - if current_user.role == "admin"
+    = button_to "New", new_episode_path, method: :get, class: "inline"

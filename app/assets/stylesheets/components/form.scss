@@ -12,17 +12,39 @@ input{
   margin-bottom: 20px;
   color: #8215fc;
   width: 100%;
-  max-width: 300px;
-  text-align: center;
+  max-width: 400px;
+  // text-align: center;
+  padding: 8px 0px;
+  background: transparent;
 }
+
+textarea{
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight:300;
+  padding:8px;
+  background: transparent;
+  color: #8215fc;
+  font-size:1em;
+  border:0px;
+  border-bottom: 1px solid #8215fc;
+  width:100%;
+  max-width:400px;
+}
+
+
+
+
 
 input[type="submit"], button, .button{
   border:0px;
   color: #fff !important;
   background: #cd0266;
-  padding: 5px 30px;
+  padding: 8px 17px;
   font-weight: 400;
   display:inline-block;
+  font-size:0.8em;
+  width: auto;
+  cursor:pointer;
 }
 
 input[type="checkbox"]{

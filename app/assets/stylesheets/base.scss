@@ -12,6 +12,8 @@ html, body{
 
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2985d1+0,80ed9d+100 */
   background: #fff; /* Old browsers */
+  background: asset-url('abstract-bg.jpg') center center;
+  background-size: cover;
   // background: -moz-linear-gradient(-45deg,  #2985d1 0%, #80ed9d 100%); /* FF3.6-15 */
   // background: -webkit-linear-gradient(-45deg,  #2985d1 0%,#80ed9d 100%); Chrome10-25,Safari5.1-6
   // background: linear-gradient(135deg,  #2985d1 0%,#80ed9d 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
@@ -28,7 +30,7 @@ body {
   margin: 0;
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: 300;
-  font-size: 18px;
+  font-size: 16px;
   letter-spacing: 0.7px;
   color:$color4;
 

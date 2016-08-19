@@ -91,7 +91,7 @@ class EpisodesController < OpentokController
 
     if @episode.save
       flash[:notice] = "Your event saved"
-      redirect_to episode_path( @episode )
+      redirect_to episode_backstage_path( @episode )
     else
       flash[:error] = "Unable to save"
       redirect_to :back

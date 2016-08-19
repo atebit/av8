@@ -1,5 +1,19 @@
 @import "config/variables";
 
+.episodes-list{
+  margin: 10px 0px;
+  .episode{
+    // padding:5px 10px;
+    // border-bottom:1px solid rgba(black, 0.2);
+  }
+  .episode:last-child{
+    // padding:5px 10px;
+    // border-bottom:0px;
+  }
+}
+
+
+
 .max-video-width{
   width:100%;
   max-width:1024px;

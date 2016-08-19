@@ -1,14 +1,14 @@
+.block
+  = render "layouts/shared/public_header"
+
+
 .maxwidth3.center
-  %header.av8-header
-    %img.logo{:src => image_path("aviatertc.svg"), :title => "AviateRTC 'Av8' logo graphic"}/
-    %h1{ style: "font-size:1em;"}
-      AviateRTC: Moderated Online Video Experience
 
   %section
-
-    .block
     - if current_user.present?
-      = link_to "All Episodes", episodes_path
+      = button_to "View All Episodes", episodes_path, method: :get
+
+
     - if current_user.blank?
       = link_to "Sign Up", new_user_registration_path, class: "button"
       = link_to "Log In", new_user_session_path, class: "button"

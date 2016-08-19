@@ -33,4 +33,17 @@ class User < ActiveRecord::Base
 
   has_many :episode_rsvps
 
+
+  def name
+    if self.first_name.present? and self.last_name.blank?
+      self.first_name
+    elsif self.first_name.blank? and self.last_name.present?
+      self.last_name
+    elsif self.first_name.present? and self.last_name.present?
+      self.first_name + " " + self.last_name
+    elsif
+      self.email
+    end
+  end
+
 end

@@ -1,9 +1,25 @@
-%h1 Edit Episode
+.maxwidth
+  %h1 Edit Episode: #{@episode.title}
 
-= simple_form_for @episode, html: {multipart: true} do |f|
-  = f.error_notification
-  = f.input :title
-  = f.input :avatar
-  = submit_tag "Update"
+  .card
+    - if @episode.episode_state == "FUTURE" or @episode.episode_state == "PRESHOW"
+      = simple_form_for @episode, html: {multipart: true} do |f|
+        = f.error_notification
+        = f.input :title
+        = f.input :avatar
+        = submit_tag "Update"
 
-= link_to "Cancel", episodes_path
+    - elsif @episode.episode_state == "LIVE"
+      %p This episode is LIVE! You cannot edit it.
+
+    - elsif @episode.episode_state == "ENDED"
+      
+      %p This Episode has ended.
+      %button Watch Episode
+      %button Download Assets
+      %button Publish Episode
+
+
+    
+
+  = link_to "Back", episodes_path

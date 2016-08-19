@@ -1,9 +1,17 @@
-%h1 New
+.maxwidth
+  %h1 Create New Episode
 
-= simple_form_for @episode, html: {multipart: true} do |f|
-  = f.error_notification
-  = f.input :title
-  = submit_tag "Create"
+  .card
+    %br
+
+    = simple_form_for @episode, html: {multipart: true} do |f|
+      = f.error_notification
+      = f.input :title, placeholder: "Episode Title (required)", label: false
+      = f.input :info, placeholder: "Episode Description", label: false
+      /= f.input :avatar
+
+      %br
+      = submit_tag "Create"
 
 
-= link_to "Cancel", episodes_path
+  = link_to "Cancel", episodes_path
