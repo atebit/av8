@@ -17,5 +17,9 @@ Rails.application.routes.draw do
     post "/episodes/:episode_id/update_rsvps", to: "episodes#update_rsvps", as: "episode_update_rsvps"
   end
 
+  namespace :webhook do
+    post '/opentok/archive_complete', to: "opentok_webhook_controller#archive_complete", as: "archive_complete"
+  end
+
   root to: 'pages#home'
 end

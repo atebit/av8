@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160815233611) do
+ActiveRecord::Schema.define(version: 20160819033145) do
 
   create_table "episode_rsvps", force: :cascade do |t|
     t.datetime "created_at",                   null: false
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20160815233611) do
     t.string   "episode_state",          default: "FUTURE"
     t.string   "archive_compile_config"
     t.string   "archive_assets_path"
+    t.string   "archive_id"
   end
 
   create_table "users", force: :cascade do |t|

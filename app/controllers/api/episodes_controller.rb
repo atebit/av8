@@ -34,28 +34,45 @@ class Api::EpisodesController < Api::ApiController
 
   def set_episode_state
 
-    # TODO: shouldn't be able to modify after "ENDED"
-
     @episode = Episode.find( params[:episode_id] )
-    @episode.episode_state = params[:episode_state]
 
-    # save start/end times..
-    if params[:episode_state] == "LIVE"
-      @episode.started_at = Time.now
-    elsif params[:episode_state] == "ENDED"
-      @episode.ended_at = Time.now
-    end
+    if @episode.episode_state != "ENDED"
 
-    if @episode.save
-      render json: {
-        status: 200,
-        message: "Episode session state updated."
-      }.to_json
-    else
-      render json: {
-        status: 204,
-        message: "Could not set episode state."
-      }.to_json
+      @episode.episode_state = params[:episode_state]
+
+      # save start/end times..
+      if params[:episode_state] == "LIVE"
+        @episode.started_at = Time.now
+
+        # save the archive id for later
+        # archive = opentok.archives.create session_id :name => "Important Presentation"
+        archive = @opentok.archives.create @episode.remote_session_id, :output_mode => :individual, :name => @episode.title
+        @episode.archive_id = archive.id
+
+      elsif params[:episode_state] == "ENDED"
+        @episode.ended_at = Time.now
+
+        # stop archive
+        @opentok.archives.stop_by_id @episode.archive_id
+
+      end
+
+      # binding.pry
+
+      if @episode.save
+        
+        # binding.pry
+
+        render json: {
+          status: 200,
+          message: "Episode session state updated."
+        }.to_json
+      else
+        render json: {
+          status: 204,
+          message: "Could not set episode state."
+        }.to_json
+      end
     end
   end
 
@@ -70,6 +87,8 @@ class Api::EpisodesController < Api::ApiController
     render json: data.to_json
 
   end
+
+
 
   def update_archive_compile_config
     # a function for updating the configuration 

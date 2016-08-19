@@ -86,7 +86,7 @@ class EpisodesController < OpentokController
     opentok_session = @opentok.create_session :media_mode => :routed
     remote_session_id = opentok_session.session_id
 
-    @episode = Episode.new(session_params)
+    @episode = Episode.new(episode_params)
     @episode.remote_session_id = remote_session_id
 
     if @episode.save
