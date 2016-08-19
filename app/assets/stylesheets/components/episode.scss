@@ -1,5 +1,97 @@
 @import "config/variables";
 
+
+.episode-controls{
+  position:absolute;
+  top:0px;
+  right:0px;
+  color:white;
+  font-size: 0.8em;
+
+  .control-menu{
+
+    .menu-item{
+      cursor:pointer;
+      display:inline-block;
+      margin-right:20px;
+      text-align:center;
+      text-transform: uppercase;
+      border-top:2px solid transparent;
+
+      .icon{
+        font-size:1em;
+        margin: 10px 0px;
+        opacity:0.4;
+      }
+
+      .title{
+        font-size:0.6em;
+        opacity:0.4;
+      }
+
+      .pending-count{
+        display:none;
+      }
+    }
+  }
+
+  .menu-item.focused{
+    .icon, .title{ opacity:1; }
+    .icon-broadcast-state{
+      opacity:1;
+      color:#50ff50;
+    }
+  }
+
+  .menu-item:hover{
+    border-top:2px solid #fff;
+  }
+
+  .episode-control-content{
+    // display:none;
+  }
+
+
+
+  .episode-guest-list{
+
+    .guest-list-item{
+      margin:2px 0px;
+      .guest-info{
+        cursor:pointer;
+        background: rgba(white, 0.2);
+        padding:5px 10px;
+
+        .email{
+          font-size:0.7em;
+          margin-top:3px;
+        }
+      }
+
+      .guest-controls{
+        .menu-item{
+          display:inline-block;
+        }
+      }
+    }
+
+    .guest-list-item.state_broadcasting{
+      
+    }
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
 .episodes-list{
   margin: 10px 0px;
   .episode{
@@ -78,7 +170,7 @@
 #your-stream{
   position:absolute;
   bottom:0px;
-  right:0px;
+  left:0px;
 }
 
 #your-stream-elem{

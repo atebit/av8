@@ -254,7 +254,7 @@ var EpisodeBackstage = React.createClass({
   // view
   render:function(){
 
-    var guestsInLineComponent = "",
+    var guestListComponent = "",
         prevBtn = "",
         startBtn = "",
         endBtn = "",
@@ -263,7 +263,7 @@ var EpisodeBackstage = React.createClass({
     var yourStreamClasses = "";
 
     if( this.episode_state != "ENDED"){
-      var guestsInLineList = [];
+      var guestList = [];
 
       if(this.users.length > 0){
         for(var i=0; i < this.users.length; i++){
@@ -271,18 +271,17 @@ var EpisodeBackstage = React.createClass({
           if( user ){
             if( user.guest_state == "IN_LINE" || user.guest_state == "BROADCASTING"){
               if( user.role != "admin" ){
-                guestsInLineList.push(<EpisodeFanListItem user={ user } key={i} />);
+                guestList.push(<EpisodeFanListItem user={ user } key={i} />);
               }
             }
           }
         }
       }
 
-      if(guestsInLineList.length > 0){
-        guestsInLineComponent = 
-          <div className="guests-in-line">
-            <p>Guests in line</p>
-            <div id="fan-list">{guestsInLineList}</div>
+      if(guestList.length > 0){
+        guestListComponent = 
+          <div className="guest-list">
+            {guestList}
           </div>;
       }
 
@@ -337,9 +336,12 @@ var EpisodeBackstage = React.createClass({
           <EpisodePlayer users={ this.users } context={this} />
         </div>
 
+        <EpisodeControls />
+
+
         <div className="episode-menu menu-right">
           <div className="episode-menu-inner">
-            {guestsInLineComponent}
+            {guestListComponent}
           </div>
         </div>
 

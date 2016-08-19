@@ -1,13 +1,13 @@
-var EpisodeFanListItem = React.createClass({
+var EpisodeGuestListItem = React.createClass({
 
   componentWillMount: function(){
     // local vars
-    this.listItemId = "fan-list-item-"+this.props.user.stream.id;
-    this.previewVidId = "fan-list-item-preview-"+this.props.user.stream.id;
-    this.previewBtnId = "fan-list-item-preview-btn-"+this.props.user.stream.id;
-    this.publishBtnId = "fan-list-item-publish-btn-"+this.props.user.stream.id;
-    this.ignoreBtnId = "fan-list-item-ignore-btn-"+this.props.user.stream.id;
-    this.messageId = "fan-list-item-message-btn-"+this.props.user.stream.id;
+    this.listItemId = "guest-list-item-"+this.props.user.stream.id;
+    this.previewVidId = "guest-list-item-preview-"+this.props.user.stream.id;
+    this.previewBtnId = "guest-list-item-preview-btn-"+this.props.user.stream.id;
+    this.publishBtnId = "guest-list-item-publish-btn-"+this.props.user.stream.id;
+    this.ignoreBtnId = "guest-list-item-ignore-btn-"+this.props.user.stream.id;
+    this.messageId = "guest-list-item-message-btn-"+this.props.user.stream.id;
   },
   
   componentDidMount: function() {
@@ -55,11 +55,11 @@ var EpisodeFanListItem = React.createClass({
 
     var ignoreComponent = "";
 
-    var publishComponent = <button className="fan-list-item-btn" id={this.publishBtnId}><span className="fa fa-video-camera"></span></button>;
-    var previewButtonComponent = <button className="fan-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye"></span></button>;
+    var publishComponent = <button className="guest-list-item-btn" id={this.publishBtnId}><span className="fa fa-video-camera"></span></button>;
+    var previewButtonComponent = <button className="guest-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye"></span></button>;
     
     if(this.preview_state == "preview"){
-      previewButtonComponent = <button className="fan-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye-slash"></span></button>;
+      previewButtonComponent = <button className="guest-list-item-btn" id={this.previewBtnId}><span className="fa fa-eye-slash"></span></button>;
     }
 
     if(this.props.user.guest_state == "BROADCASTING"){
@@ -67,19 +67,19 @@ var EpisodeFanListItem = React.createClass({
     }
 
     if(this.props.user.guest_state == "BROADCASTING"){
-      publishComponent = <button className="fan-list-item-btn" id={this.publishBtnId}><span className="fa fa-thumbs-down"></span></button>;
+      publishComponent = <button className="guest-list-item-btn" id={this.publishBtnId}><span className="fa fa-thumbs-down"></span></button>;
     }
 
     if(this.props.user.guest_state != "BROADCASTING"){
-      ignoreComponent = <button className="fan-list-item-btn" id={this.ignoreBtnId}><span className="fa fa-thumbs-down"></span></button>;
+      ignoreComponent = <button className="guest-list-item-btn" id={this.ignoreBtnId}><span className="fa fa-thumbs-down"></span></button>;
     }
     // console.log(this.props);
 
     return(
-      <div id={this.listItemId} className="fan-list-item card">
-        <div className="fan-list-item-username">{this.props.user.identity}</div>
+      <div id={this.listItemId} className="guest-list-item card">
+        <div className="guest-list-item-username">{this.props.user.identity}</div>
         <div>
-          <div className="fan-list-item-preview">
+          <div className="guest-list-item-preview">
             <div id={this.previewVidId}></div>
           </div>
           {previewButtonComponent}
