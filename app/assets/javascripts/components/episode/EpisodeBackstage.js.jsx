@@ -8,15 +8,12 @@ var EpisodeBackstage = React.createClass({
   
 
   componentWillMount: function() {
-    // listeners... init, etc
-    this.subclassName = "Backstage";
-    this.episode_state = this.props.episode_state;
+    this.preInitialize({subclass_name: "Backstage", episode_state: this.props.episode_state});
   },
   
   componentDidMount: function() {
 
-    if( this.episode_state == "ENDED" ){
-
+    if( this.episodeData.episode_state == "ENDED" ){
       console.log("This Episode has ended.");
     }else{
 
@@ -30,13 +27,36 @@ var EpisodeBackstage = React.createClass({
       CSEventManager.addListener("UPDATE_GUESTS", this, "updateGuests");
       CSEventManager.addListener("INITIATE_CHAT", this, "initiateChat");
 
+      // CONTROLS
+      CSEventManager.addListener("SET_EPISODE_STATE", this, "onSetEpisodeState");
+      CSEventManager.addListener("SET_MODERATOR_STATE", this, "onSetModeratorState");
+      CSEventManager.addListener("SET_CONTROLS_VIEW_STATE", this, "onSetControlsViewState");
+
       // super class init
-      this.init();
+      this.initialize();
       this.session.on("signal", this.receiveSignal);
-
-      this.setInteractions();
-
     }
+  },
+
+  // when EpisodeBroadcastStateBtn is toggled
+  onSetEpisodeState: function( episode_state ){ this.setEpisodeState( episode_state );  },
+  // when EpisodeModeratorStateBtn is toggled
+  onSetModeratorState: function( moderator_state ){ 
+
+    if( this.episodeData.guest_state == "WATCHING" ){
+      this.addGuestToBroadcast( this.episodeData.identity );
+      this.episodeData.guest_state = moderator_state;
+      this.setState({});
+    }else{
+      this.removeGuestFromBroadcast( this.episodeData.identity );
+      this.episodeData.guest_state = moderator_state;
+      this.setState({});
+    }
+  },
+  // when EpisodeModeratorStateBtn is toggled
+  onSetControlsViewState: function( controls_view_state ){
+    this.episodeData.controls_view_state = controls_view_state;
+    this.forceUpdate();
   },
 
   // event listener relays
@@ -48,60 +68,24 @@ var EpisodeBackstage = React.createClass({
   updateGuests: function(data){ /* this.removeGuestFromBroadcast( data.stream.id ); */ },
 
 
-  componentDidUpdate: function(){
-    // component updated.
-    this.setInteractions();
-  },
+  componentDidUpdate: function(){ },
 
-  setInteractions: function(){
-    var self = this;
-    $("#join-btn").off();
-    $("#join-btn").on("click", function(e){
-      console.log("join")
-      self.addGuestToBroadcast( self.identity );
-      self.guest_state = "BROADCASTING";
-      self.forceUpdate();
-    });
-
-    $("#leave-btn").off();
-    $("#leave-btn").on("click", function(e){
-      console.log("leave")
-      self.removeGuestFromBroadcast( self.identity );
-      self.guest_state = "WATCHING";
-      self.forceUpdate();
-    });
-
-    $("#start-btn").off();
-    $("#start-btn").on("click", function(e){
-      self.setEpisodeState("LIVE");
-    });
-
-    $("#end-btn").off();
-    $("#end-btn").on("click", function(e){
-      self.setEpisodeState("ENDED");
-    });
-
-    // $("#preview-btn").off();
-    // $("#preview-btn").on("click", function(e){
-      
-    // });
-  },
 
   setEpisodeState: function( episode_state ){
     var self = this;
     // save local
-    self.episode_state = episode_state;
+    self.episodeData.episode_state = episode_state;
     // update streamers
-    self.sendGlobalSignal("ESPISODE_STATUS_UPDATE", self.episode_state);
+    self.sendGlobalSignal("ESPISODE_STATUS_UPDATE", episode_state);
     // update broadcast
     self.updateBroadcast();
     // update player
     self.forceUpdate();
     // save to DB
     var self = this;
-    var api = '/api/episodes/'+self.episode_id+'/set_episode_state';
+    var api = '/api/episodes/'+self.episodeData.episode_id+'/set_episode_state';
     var method = "post";
-    var data = { episode_state: this.episode_state };
+    var data = { episode_state: episode_state };
 
     self.serverRequest = $.ajax({
       url: api,
@@ -114,7 +98,7 @@ var EpisodeBackstage = React.createClass({
     if(episode_state == "ENDED"){
       self.removeAllStreams();
       self.disconnectLocalStream();
-      self.forceUpdate(); 
+      self.setState({}); 
     }
 
   },
@@ -129,6 +113,7 @@ var EpisodeBackstage = React.createClass({
 
     switch( e.type ){
       case "signal:GUEST_JOINED_ROOM":
+      console.log("join room",data)
         this.guestJoinedRoom( data );
         break;
 
@@ -155,12 +140,12 @@ var EpisodeBackstage = React.createClass({
 
   guestJoinedRoom: function( identity ){
     var self = this;
-    if( identity != self.identity ){
+    if( identity != self.episodeData.identity ){
       // console.log("guest joined room", identity);
       // TODO:  SEND A SPECIFIC MESSAGE TO THE PERSON WHO JOINED.
-      if( self.episode_state == "LIVE" ){
+      if( self.episodeData.episode_state == "LIVE" ){
         self.updateBroadcast(); 
-      }else if(self.episode_state == "ENDED"){
+      }else if(self.episodeData.episode_state == "ENDED"){
         // self.endEpisode();
       }
     }
@@ -224,11 +209,12 @@ var EpisodeBackstage = React.createClass({
   updateBroadcast: function(){
     // console.log("admin: update broadcast");
     //
-    if( this.episode_state == "LIVE"){
+    if( this.episodeData.episode_state == "LIVE"){
       var broadcasting_users = [];
       // push identities of the current broadcasters..
-      for(var i=0; i < this.users.length; i++){
-        var user = this.users[i];
+      var users = this.episodeData.users;
+      for(var i=0; i < users.length; i++){
+        var user = users[i];
         var identity = user.identity;
         if(user.guest_state == "BROADCASTING"){
           broadcasting_users.push( identity ); 
@@ -241,7 +227,7 @@ var EpisodeBackstage = React.createClass({
       // update this page.
       this.forceUpdate(); 
 
-    }else if(this.episode_state == "ENDED"){
+    }else if(this.episodeData.episode_state == "ENDED"){
       //
       this.sendGlobalSignal("BROADCAST_ENDED");
       this.removeAllStreams();
@@ -254,96 +240,18 @@ var EpisodeBackstage = React.createClass({
   // view
   render:function(){
 
-    var guestListComponent = "",
-        prevBtn = "",
-        startBtn = "",
-        endBtn = "",
-        joinBtn = "";
-
     var yourStreamClasses = "";
-
-    if( this.episode_state != "ENDED"){
-      var guestList = [];
-
-      if(this.users.length > 0){
-        for(var i=0; i < this.users.length; i++){
-          var user = this.users[i];
-          if( user ){
-            if( user.guest_state == "IN_LINE" || user.guest_state == "BROADCASTING"){
-              if( user.role != "admin" ){
-                guestList.push(<EpisodeFanListItem user={ user } key={i} />);
-              }
-            }
-          }
-        }
-      }
-
-      if(guestList.length > 0){
-        guestListComponent = 
-          <div className="guest-list">
-            {guestList}
-          </div>;
-      }
-
-      // this.logSessionInfo();
-
-      switch(this.episode_state){
-          case "PRESHOW":
-          case "FUTURE":
-            // prevBtn = <button id="prev-btn">Preview</button>;
-            startBtn = <button id="start-btn">Start Show</button>;
-            // endBtn = <button id="end-btn">End Show</button>;
-          break;
-
-        case "PREVIEW":
-            // prevBtn = <button id="prev-btn">Preview</button>;
-            startBtn = <button id="start-btn">Start Show</button>;
-            // endBtn = <button id="end-btn">End Show</button>;
-          break;
-
-        case "LIVE":
-            // prevBtn = <button id="prev-btn">Preview</button>;
-            // startBtn = <button id="start-btn">Start Show</button>;
-            endBtn = <button id="end-btn">End Show</button>;
-
-      }
-        
-      joinBtn = <button id="join-btn">Join Broadcast</button>;
-
-      if(this.guest_state == "BROADCASTING" ){
-        joinBtn = <button id="leave-btn">Leave Broadcast</button>;
+    if( this.episodeData.episode_state != "ENDED"){
+      if(this.episodeData.guest_state == "BROADCASTING" ){
         yourStreamClasses = " hidden ";
       } 
     }
 
     return(
+      <div className="container max-video-width episode-container noselect">
 
-      <div className="container max-video-width episode-container">
-        <div className="episode-menu menu-left">
-          <div className="menu-left-controls">
-            <div className="inline"><span className="fa fa-bars"></span></div>
-            <div className="inline">{this.episode_state}</div>
-          </div>
-          <div className="episode-menu-inner">
-            {prevBtn}
-            {startBtn}
-            {endBtn}
-            {joinBtn}
-          </div>
-        </div>
-
-        <div className="episode-player-container">
-          <EpisodePlayer users={ this.users } context={this} />
-        </div>
-
-        <EpisodeControls />
-
-
-        <div className="episode-menu menu-right">
-          <div className="episode-menu-inner">
-            {guestListComponent}
-          </div>
-        </div>
+        <EpisodePlayer users={ this.episodeData.users } context={this} />
+        <EpisodeBackstageControls episodeData={ this.episodeData } />
 
         <div id="your-stream" className={yourStreamClasses}></div>
 

@@ -8,7 +8,30 @@
   color:white;
   font-size: 0.8em;
 
+
+  .broadcast-status-icon{
+    position:relative;
+    border-radius:999px;
+    width:8px;
+    height:8px;
+    display:inline-block;
+   background: rgba(white, 1);
+  }
+  .broadcast-status-icon:after{
+    content:"";
+    position:absolute;
+    top:-2px;
+    left:-2px;
+    width:12px;
+    height:12px;
+    border-radius:999px;
+    border: 1px solid rgba(white, 1);
+  }
+
+
+
   .control-menu{
+    margin-bottom:20px;
 
     .menu-item{
       cursor:pointer;
@@ -37,9 +60,22 @@
 
   .menu-item.focused{
     .icon, .title{ opacity:1; }
+
     .icon-broadcast-state{
       opacity:1;
       color:#50ff50;
+    }
+    .icon-broadcast-state.live{
+      opacity:1;
+      color:$color1;
+    }
+    .icon-guest-state{
+      opacity:1;
+      color:#50ff50;
+    }
+    .icon-guest-state.in-line{
+      opacity:1;
+      color:yellow;
     }
   }
 
@@ -55,29 +91,61 @@
 
   .episode-guest-list{
 
+    width:220px;
+    float: right;
+
     .guest-list-item{
       margin:2px 0px;
+
       .guest-info{
         cursor:pointer;
-        background: rgba(white, 0.2);
-        padding:5px 10px;
+        background: rgba(white, 0.3);
 
-        .email{
-          font-size:0.7em;
-          margin-top:3px;
+        .avatar{
+          height: 40px;
+          width: 40px;
+          float:left;
+          margin-right:10px;
+        }
+        .identity{
+          padding:5px 10px;
+          // float:left;
+          .email{
+            font-size:0.7em;
+            margin-top:3px;
+          } 
         }
       }
 
       .guest-controls{
+        background:rgba(white, 0.2);
         .menu-item{
+          border:0px;
+          text-align:center;
           display:inline-block;
+          width:24.9%;
+          padding:10px 0px;
+          text-transform: uppercase;
+          cursor:pointer;
+          .icon{
+            font-size:1em; 
+            margin-bottom: 5px;
+          }
+          .title{
+            font-size:0.7em; 
+          }
         }
       }
     }
 
     .guest-list-item.state_broadcasting{
-      
+      background: rgba(green, 0.5);
     }
+
+    .guest-list-item.state_in_line{
+      opacity:0.4;
+    }
+
   }
 
 }
