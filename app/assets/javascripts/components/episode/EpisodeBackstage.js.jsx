@@ -56,7 +56,7 @@ var EpisodeBackstage = React.createClass({
   // when EpisodeModeratorStateBtn is toggled
   onSetControlsViewState: function( controls_view_state ){
     this.episodeData.controls_view_state = controls_view_state;
-    this.forceUpdate();
+    this.setState({});
   },
 
   // event listener relays
@@ -80,7 +80,7 @@ var EpisodeBackstage = React.createClass({
     // update broadcast
     self.updateBroadcast();
     // update player
-    self.forceUpdate();
+    self.setState({});
     // save to DB
     var self = this;
     var api = '/api/episodes/'+self.episodeData.episode_id+'/set_episode_state';
@@ -208,7 +208,6 @@ var EpisodeBackstage = React.createClass({
 
   updateBroadcast: function(){
     // console.log("admin: update broadcast");
-    //
     if( this.episodeData.episode_state == "LIVE"){
       var broadcasting_users = [];
       // push identities of the current broadcasters..

@@ -374,7 +374,7 @@ var EpisodeMixin = {
                 self.updateUserSessionStatus( identity, "IN_LINE" );
                 // set the state to "connected and watching".
                 self.episodeData.guest_state = "IN_LINE";
-                self.forceUpdate();
+                self.setState({});
               }else if( self.subclassName == "Backstage"){
               }
             }

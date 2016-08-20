@@ -22,7 +22,7 @@ var EpisodePublic = React.createClass({
 
       // initial state..
       this.episodeData.guest_state = "WATCHING";
-      this.forceUpdate();
+      this.setState({});
     }
   },
 
@@ -60,7 +60,8 @@ var EpisodePublic = React.createClass({
 
       case "signal:UPDATE_SESSION_STATUS":
         console.log("signal recieved to update SESSION STATUS", data);
-        this.updatedUserSessionStatus( self.episodeData.identity, data )
+        this.updatedUserSessionStatus( self.episodeData.identity, data );
+        
         break;
 
       case "signal:REMOVED_FROM_LINE":
@@ -71,7 +72,7 @@ var EpisodePublic = React.createClass({
 
         this.disconnectLocalStream(); 
         this.episodeData.guest_state = "WATCHING";
-        this.forceUpdate();
+        this.setState({});
         
         break;
 
@@ -83,7 +84,7 @@ var EpisodePublic = React.createClass({
 
         this.disconnectLocalStream(); 
         this.episodeData.guest_state = "WATCHING";
-        this.forceUpdate();
+        this.setState({});
 
         break;
 
@@ -109,8 +110,8 @@ var EpisodePublic = React.createClass({
         // console.log("episode status update", data);
         if( data == "ENDED" ){
           this.removeAllStreams();
-          this.episodeData.guest_state = "ENDED"
-          this.forceUpdate();
+          this.episodeData.guest_state = "ENDED";
+          this.setState({});
         }
         break;
     }
@@ -157,11 +158,11 @@ var EpisodePublic = React.createClass({
 
 
     if(isSelfStream){
-      this.episodeData.guest_state = "BROADCASTING"
-      this.forceUpdate();
+      this.episodeData.guest_state = "BROADCASTING";
+      this.setState({});
     }else{
-      this.episodeData.guest_state = "WATCHING"
-      this.forceUpdate();
+      this.episodeData.guest_state = "WATCHING";
+      this.setState({});
     }
   },
 
@@ -172,7 +173,6 @@ var EpisodePublic = React.createClass({
 
     console.log("render", this.episodeData.guest_state);
 
-    
     if( this.episodeData.episode_state != "ENDED" ){
 
       inlineButton = <button id="get-in-line-btn">Get In Line</button>;
