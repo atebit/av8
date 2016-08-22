@@ -21,6 +21,7 @@ gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'omniauth-facebook'
 # gem 'omniauth-linkedin'
+gem "recaptcha", require: "recaptcha/rails"
 
 gem 'haml-rails' ## run $ rake haml:erb2haml
 # gem "fog", "~> 1.35"

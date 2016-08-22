@@ -63,7 +63,6 @@ a.button{
 
 
 
-
 // Mailchimp
 
 .signup-box{
@@ -82,4 +81,11 @@ a.button{
 #mc_embed_signup div.mce_inline_error {
   color: #ff0870;
   margin-bottom: 20px;
+}
+
+
+
+.g-recaptcha{
+  display:inline-block;
+  margin-bottom:40px;
 }

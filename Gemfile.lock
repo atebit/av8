@@ -441,6 +441,8 @@ GEM
       execjs
       rails (>= 3.2)
       tilt
+    recaptcha (3.3.0)
+      json
     redis (3.3.1)
     rename (1.0.2)
       rails (>= 3.0.0)
@@ -575,6 +577,7 @@ DEPENDENCIES
   rails-audit
   rails_12factor
   react-rails (~> 1.6.0)
+  recaptcha
   rename
   rspec-rails
   sass-rails (~> 5.0)

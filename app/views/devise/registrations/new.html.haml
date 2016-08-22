@@ -10,6 +10,9 @@
         = f.input :email, required: true, autofocus: true, label:false, placeholder: "Email"
         = f.input :password, required: true, label:false, placeholder: "Password"
         = f.input :password_confirmation, required: true, label:false, placeholder: "Confirm Password"
+      .center
+        = recaptcha_tags
       .form-actions
+
         = f.button :submit, "Sign up"
     = render "devise/shared/links"
