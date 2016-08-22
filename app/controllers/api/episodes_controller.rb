@@ -20,7 +20,10 @@ class Api::EpisodesController < Api::ApiController
             episode_rsvp.live_state = submitted_rsvp["live_state"] if submitted_rsvp["live_state"].present?
             episode_rsvp.av_state = submitted_rsvp["av_state"] if submitted_rsvp["av_state"].present?
             if episode_rsvp.save
-              updated_rsvp_list.push( submitted_rsvp["identity"] )
+              updated_rsvp_list.push( {
+                identity: submitted_rsvp["identity"],
+                guest_state: submitted_rsvp["live_state"]
+              })
               # binding.pry
             end
           end

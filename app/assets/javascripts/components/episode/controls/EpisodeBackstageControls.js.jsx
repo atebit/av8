@@ -7,6 +7,7 @@ var EpisodeBackstageControls = React.createClass({
   render:function(){
 
     return(
+
       <section className="episode-controls">
 
         <header>

@@ -27,7 +27,7 @@ var EpisodeGuestStateBtn = React.createClass({
 
   render:function(){
 
-    // console.log(this.props.episodeData)
+    console.log("Guest State Btn: ",this.props.episodeData)
 
     var text = "",
         stateClasses = "menu-item";
@@ -40,7 +40,7 @@ var EpisodeGuestStateBtn = React.createClass({
     }else if( this.props.episodeData.guest_state == "IN_LINE" ){
       // broadcasting
       text = "In Line";
-      stateClasses += " focused  ";
+      stateClasses += " in-line  ";
 
     }else{
       // not broadcasting, not ended..

@@ -18,6 +18,24 @@ var GuestListStateBtn = React.createClass({
 
   render:function(){
 
+
+    var guestListCount = 0;
+    var users = this.props.episodeData.users;
+
+    if(users.length > 0){
+      for(var i=0; i < users.length; i++){
+        var user = users[i];
+        if( user ){
+          if( user.guest_state == "IN_LINE" || user.guest_state == "BROADCASTING"){
+            if( user.role != "admin" ){
+              guestListCount++;
+            }
+          }
+        }
+      }
+    }
+
+
     var stateClasses = "menu-item",
         pendingCountComponent = "";
 
@@ -25,8 +43,10 @@ var GuestListStateBtn = React.createClass({
       // on guestlist state
       stateClasses += " focused ";
     }else{
-      // not on guestlist state
-      pendingCountComponent = <div className="pending-count">88</div>;
+      if( guestListCount > 0 ){
+        // not on guestlist state
+        pendingCountComponent = <div className="pending-count">{guestListCount}</div>; 
+      }
     }
 
     return(

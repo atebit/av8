@@ -41,15 +41,13 @@ var EpisodeBackstage = React.createClass({
   onSetEpisodeState: function( episode_state ){ this.setEpisodeState( episode_state );  },
   // when EpisodeModeratorStateBtn is toggled
   onSetModeratorState: function( moderator_state ){ 
-    if( this.episodeData.guest_state == "WATCHING" ){
+    if( moderator_state == "BROADCASTING" ){
       this.addGuestToBroadcast( this.episodeData.identity );
-      this.episodeData.guest_state = moderator_state;
-      this.setState({});
     }else{
       this.removeGuestFromBroadcast( this.episodeData.identity );
-      this.episodeData.guest_state = moderator_state;
-      this.setState({});
     }
+    this.updateUserGuestState( this.episodeData.identity, moderator_state );
+    this.setState({});
   },
   // when EpisodeModeratorStateBtn is toggled
   onSetControlsViewState: function( controls_view_state ){
@@ -59,11 +57,51 @@ var EpisodeBackstage = React.createClass({
 
   // event listener relays
   ignoreInlineGuest: function(data){ this.removeGuestFromLine( data.identity ); },
-  showGuestPreview: function(data){ this.connectToRemoteStream( data.identity, data.elementId ); },
-  hideGuestPreview: function(data){ /* this.forceUpdate(); */ },
+  showGuestPreview: function(data){ this.connectPreviewStream( data.identity, data.elementId ); },
+  hideGuestPreview: function(data){ this.disconnectPreviewStream( data.identity ); },
   publishGuest: function(data){ this.addGuestToBroadcast( data.identity ); },
   unpublishGuest: function(data){ this.removeGuestFromBroadcast( data.identity ); },
   updateGuests: function(data){ /* this.removeGuestFromBroadcast( data.stream.id ); */ },
+
+
+  // adding / removing preview windows...
+
+  previewSubscribers: [],
+  connectPreviewStream: function( identity, elementId ){
+    var user = this.getUserByIdentity( identity );
+
+    // console.log(elementId)
+    // return;
+   
+    var tempID = 'preview-'+Guid.get();
+    $("#"+elementId).append("<div id='"+tempID+"'></div>");
+
+    var stream = user.stream;
+    // console.log("connect to stream", identity)
+    if(stream){
+      var streamOptions = {
+        subscribeToVideo: true,
+        subscribeToAudio: false,
+        width: "100%",
+        height: "100%"
+      }
+      this.previewSubscribers.push({
+        identity: identity,
+        subscriber: this.session.subscribe(stream, tempID, streamOptions)
+      });
+    }
+    this.setState({});
+  },
+
+  disconnectPreviewStream: function(identity){
+    for(var i=0; i < this.previewSubscribers.length; i++){
+      var s = this.previewSubscribers[i];
+      if( s.identity == identity ){
+        this.session.unsubscribe( s.subscriber );
+      }
+    }
+    this.setState({});
+  },
 
 
   componentDidUpdate: function(){ },
@@ -158,19 +196,16 @@ var EpisodeBackstage = React.createClass({
 
   // conference management functions..
   addGuestToLine: function( identity ){
-    console.log("Admin::addGuestToLine", identity);
+    console.log("Admin::addGuestToLine", identity); 
     this.updateUserGuestState( identity, "IN_LINE" );
+    this.sendDirectSignal( identity, "ADDED_TO_LINE", {identity: identity});
     // update this page
-    // console.log("add guest before state", this.episodeData.users);
     this.setState({});
-    // console.log("add guest after state", this.episodeData.users);
   },
 
   removeGuestFromLine: function( identity ){
     console.log("Admin::removeGuestFromLine", identity);
-    var user = this.getUserByIdentity( identity );
-    user.player_status = "REMOVED";
-    user.guest_state = "WATCHING";
+    this.updateUserGuestState( identity, "REMOVED_FROM_LINE" );
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_LINE", {identity: identity});
     // update this page
@@ -179,9 +214,7 @@ var EpisodeBackstage = React.createClass({
 
   addGuestToBroadcast: function( identity ){
     console.log("Admin::addGuestToBroadcast", identity);
-    var user = this.getUserByIdentity( identity );
-    user.player_status = "CAN_MOUNT";
-    user.guest_state = "BROADCASTING";
+    this.updateUserGuestState( identity, "ADDED_TO_BROADCAST" );
     // update the broadcast with new guest..
     this.updateBroadcast();
     // reload this page..
@@ -190,9 +223,7 @@ var EpisodeBackstage = React.createClass({
 
   removeGuestFromBroadcast: function( identity ){
     console.log("Admin::removeGuestFromBroadcast", identity);
-    var user = this.getUserByIdentity( identity );
-    user.player_status = "REMOVED";
-    user.guest_state = "WATCHING";
+    this.updateUserGuestState( identity, "REMOVED_FROM_BROADCAST" );
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_BROADCAST", {identity: identity});
     // update the broadcast..

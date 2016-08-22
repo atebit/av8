@@ -2,27 +2,25 @@ var EpisodeGuestListItem = React.createClass({
 
   componentWillMount: function(){
 
-
-    console.log(this.props);
-
     this.control_view_state = "HIDDEN";
     this.preview_state = "HIDDEN";
 
     // local vars
-    var stream_id = Guid.get();
+    var guid = Guid.get();
 
-    this.listItemId = "guest-list-item-"+stream_id;
-
-    this.guestInfoId = "guest-list-guestinfo-"+stream_id;
-
-    this.previewVidId = "guest-list-item-preview-"+stream_id;
-    this.previewBtnId = "guest-list-item-preview-btn-"+stream_id;
-    this.publishBtnId = "guest-list-item-publish-btn-"+stream_id;
-    this.ignoreBtnId = "guest-list-item-ignore-btn-"+stream_id;
-    this.messageId = "guest-list-item-message-btn-"+stream_id;
+    this.listItemId = "guest-list-item-"+guid;
+    this.guestInfoId = "guest-list-guestinfo-"+guid;
+    this.previewVidId = "guest-list-item-preview-container-"+guid;
+    this.previewBtnId = "guest-list-item-preview-btn-"+guid;
+    this.publishBtnId = "guest-list-item-publish-btn-"+guid;
+    this.ignoreBtnId = "guest-list-item-ignore-btn-"+guid;
+    this.messageId = "guest-list-item-message-btn-"+guid;
   },
   
-  componentDidMount: function() {
+  componentDidMount: function() { this.setInteraction(); },
+  componentDidUpdate: function(){ this.setInteraction(); },
+
+  setInteraction: function(){
     /// click events, etc
     var self = this;
 
@@ -54,7 +52,7 @@ var EpisodeGuestListItem = React.createClass({
     $("#"+self.publishBtnId).off();
     $("#"+self.publishBtnId).on("click", function(e){
       if(self.props.user.guest_state == "BROADCASTING"){
-        CSEventManager.broadcast("UNPUBLISH_GUEST", { identity: self.props.user.identity });
+        // CSEventManager.broadcast("UNPUBLISH_GUEST", { identity: self.props.user.identity });
       }else{
         CSEventManager.broadcast("PUBLISH_GUEST", { identity: self.props.user.identity });        
       }
@@ -71,10 +69,6 @@ var EpisodeGuestListItem = React.createClass({
     $("#"+self.messageId).on("click", function(e){
       CSEventManager.broadcast("INITIATE_CHAT", { identity: self.props.user.identity });
     });
-  },
-
-  componentDidUpdate: function(){
-    // component updated.
   },
 
 
@@ -184,6 +178,9 @@ var EpisodeGuestListItem = React.createClass({
     // render the guest controls component
     var guestControlsComponent = "";
     if( this.control_view_state != "HIDDEN" ){
+
+      stateClasses += " focused ";
+
       guestControlsComponent = 
         <div className="guest-controls">
           { previewComponent }
@@ -196,7 +193,9 @@ var EpisodeGuestListItem = React.createClass({
     return(
       <div className={ stateClasses }>
         <div id={ this.guestInfoId } className="guest-info clear">
-          <div className="avatar"></div>
+          <div className="avatar">
+            <div id={this.previewVidId} ></div>
+          </div>
           <div className="identity">
             <div className="name">{identity}</div>
             <div className="email">{role}</div>

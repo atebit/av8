@@ -153,7 +153,7 @@ var EpisodePublic = React.createClass({
     // if no users were passed, remove any that are on the broadcast..
     // console.log(published_identities)
     if(published_identities.length == 0 || published_identities[0] == ""){
-      this.removeAllStreams();
+      // this.removeAllStreams();
     }
 
 
@@ -170,25 +170,7 @@ var EpisodePublic = React.createClass({
 
     var inlineButton = "";
     var yourStreamClasses = "";
-
-    console.log("render", this.episodeData.guest_state);
-
-    if( this.episodeData.episode_state != "ENDED" ){
-
-      inlineButton = <button id="get-in-line-btn">Get In Line</button>;
-
-      if(this.episodeData.guest_state == "IN_LINE"){
-        inlineButton = <button id="get-in-line-btn">Leave Line</button>;
-      } 
-      if(this.episodeData.guest_state == "BROADCASTING"){
-        inlineButton = <button id="get-in-line-btn">Leave Broadcast</button>;
-        yourStreamClasses = " hidden ";
-      } 
-      if(this.episodeData.guest_state == "ENDED"){
-        inlineButton = "";
-        yourStreamClasses = " hidden ";
-      }
-    }
+    console.log("public player render", this.episodeData);
 
     // this.logSessionInfo();
 

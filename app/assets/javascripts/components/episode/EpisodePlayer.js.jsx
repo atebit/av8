@@ -39,7 +39,11 @@ var EpisodePlayer = React.createClass({
     for(var i=0; i < this.props.users.length; i++ ){
       var user = this.props.users[i];
       if( user.guest_state == "BROADCASTING" ){
-        broadcasting_users.push( user );
+        if( user.connection != undefined && user.stream != undefined ){
+          broadcasting_users.push( user ); 
+        }else{
+          return false;
+        }
       }
     }
     return broadcasting_users;
@@ -47,21 +51,25 @@ var EpisodePlayer = React.createClass({
 
   addStreamObjects: function(){
     var self = this;
-    var users = this.getBroadcastingUsers();
 
-    for(var i=0; i < users.length; i++){
-      var user = users[i];
-      // console.log(user)
-      var video_id = "guest-stream-video-"+user.stream.id;
-      var width = $("#"+video_id).width(), height = $("#"+video_id).height();
+    setTimeout(function(){
+      var users = self.getBroadcastingUsers();
+      if( users ){
+        for(var i=0; i < users.length; i++){
+          var user = users[i];
+          // console.log(user)
+          var video_id = "guest-stream-video-"+user.stream.id;
+          var width = $("#"+video_id).width(), height = $("#"+video_id).height();
 
-      CSEventManager.broadcast("CONNECT_REMOTE_STREAM", { 
-        identity: user.identity, 
-        elementId: video_id, 
-        width: width, 
-        height: height
-      });
-    }
+          CSEventManager.broadcast("CONNECT_REMOTE_STREAM", { 
+            identity: user.identity, 
+            elementId: video_id, 
+            width: width, 
+            height: height
+          });
+        }
+      }
+    }, 200)
 
   },
 
@@ -78,41 +86,47 @@ var EpisodePlayer = React.createClass({
   render:function(){
 
     var self = this;
-    var player = $("#"+self.playerId);
     var users = this.getBroadcastingUsers();
-    var totalUsers = users.length;
     var streamObjects = [];
 
-    for(var i=0; i < totalUsers; i++){
-      
-      var user = users[i];
-      var containerW = player.width() / totalUsers;
-      var container_id = "guest-stream-container-"+user.stream.id;
-      var video_id = "guest-stream-video-"+user.stream.id;
+    console.log("Player::RENDER", users);
 
-      var origVideoH = $("#"+video_id).height();
-      var videoH = player.height();
-      var videoW = origVideoH * 9/16;
-      var videoLeft = 0;
+    if(users){
 
-      var css = {
-        container: {
-          position:"absolute",
-          width: containerW,
-          height: player.height(),
-          left: i*containerW,
-          overflow: "hidden"
-        },
+      var player = $("#"+self.playerId);
+      var totalUsers = users.length;
 
-        video: {
-          position:"absolute",
-          // width: videoW,
-          // height: videoH,
-          // left: videoLeft
+      for(var i=0; i < totalUsers; i++){
+        
+        var user = users[i];
+        var containerW = player.width() / totalUsers;
+        var container_id = "guest-stream-container-"+user.stream.id;
+        var video_id = "guest-stream-video-"+user.stream.id;
+
+        var origVideoH = $("#"+video_id).height();
+        var videoH = player.height();
+        var videoW = origVideoH * 9/16;
+        var videoLeft = 0;
+
+        var css = {
+          container: {
+            position:"absolute",
+            width: containerW,
+            height: player.height(),
+            left: i*containerW,
+            overflow: "hidden"
+          },
+
+          video: {
+            position:"absolute",
+            // width: videoW,
+            // height: videoH,
+            // left: videoLeft
+          }
         }
+        streamObjects.push(<EpisodePlayerStream key={i} css={css} container_id={container_id} video_id={video_id} stream_id={user.stream.id} identity={user.identity} />);
       }
 
-      streamObjects.push(<EpisodePlayerStream key={i} css={css} container_id={container_id} video_id={video_id} stream_id={user.stream.id} identity={user.identity} />);
     }
 
     return(

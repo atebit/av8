@@ -6,7 +6,7 @@ var EpisodeModeratorStateBtn = React.createClass({
     var self = this;
     $("#moderator-state-btn").off();
     $("#moderator-state-btn").on("click", function(e){
-      if( self.props.episodeData.guest_state == "WATCHING"){
+      if( self.props.episodeData.guest_state != "BROADCASTING"){
         CSEventManager.broadcast("SET_MODERATOR_STATE", "BROADCASTING");
       }else{
         CSEventManager.broadcast("SET_MODERATOR_STATE", "WATCHING");
