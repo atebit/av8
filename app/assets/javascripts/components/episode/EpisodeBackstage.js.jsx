@@ -16,7 +16,6 @@ var EpisodeBackstage = React.createClass({
     if( this.episodeData.episode_state == "ENDED" ){
       console.log("This Episode has ended.");
     }else{
-
       // from the EpisodeFanListItem
       CSEventManager.addListener("SHOW_GUEST_PREVIEW", this, "showGuestPreview");
       CSEventManager.addListener("HIDE_GUEST_PREVIEW", this, "hideGuestPreview");
@@ -42,7 +41,6 @@ var EpisodeBackstage = React.createClass({
   onSetEpisodeState: function( episode_state ){ this.setEpisodeState( episode_state );  },
   // when EpisodeModeratorStateBtn is toggled
   onSetModeratorState: function( moderator_state ){ 
-
     if( this.episodeData.guest_state == "WATCHING" ){
       this.addGuestToBroadcast( this.episodeData.identity );
       this.episodeData.guest_state = moderator_state;
@@ -100,20 +98,17 @@ var EpisodeBackstage = React.createClass({
       self.disconnectLocalStream();
       self.setState({}); 
     }
-
   },
 
   // tokbox message signal..
   receiveSignal: function(e){
-    
     // console.log("signal received: ", e);
-
     var self = this;
     var data = e.data;
-
+    // logic
     switch( e.type ){
       case "signal:GUEST_JOINED_ROOM":
-      console.log("join room",data)
+      // console.log("join room",data)
         this.guestJoinedRoom( data );
         break;
 
@@ -132,16 +127,14 @@ var EpisodeBackstage = React.createClass({
       case "signal:GUEST_LEFT_BROADCAST":
         this.removeGuestFromBroadcast( data );
         break;
-
     }
   },
 
   // guest handlers..
-
   guestJoinedRoom: function( identity ){
     var self = this;
     if( identity != self.episodeData.identity ){
-      // console.log("guest joined room", identity);
+      console.log("guestJoinedRoom", identity);
       // TODO:  SEND A SPECIFIC MESSAGE TO THE PERSON WHO JOINED.
       if( self.episodeData.episode_state == "LIVE" ){
         self.updateBroadcast(); 
@@ -151,9 +144,10 @@ var EpisodeBackstage = React.createClass({
     }
   },
 
+  // 
   guestLeftRoom: function( identity ){
     var self = this;
-    // console.log("guest left room", identity);
+    console.log("guestLeftRoom", identity);
     var user = self.getUserByIdentity( identity );
     if( user ){
       self.removeGuestFromLine( identity );
@@ -163,16 +157,17 @@ var EpisodeBackstage = React.createClass({
   },
 
   // conference management functions..
-
   addGuestToLine: function( identity ){
-    // console.log("Admin: guest joined line", identity);
-    this.updateUserSessionStatus( identity, "IN_LINE" );
+    console.log("Admin::addGuestToLine", identity);
+    this.updateUserGuestState( identity, "IN_LINE" );
     // update this page
+    // console.log("add guest before state", this.episodeData.users);
     this.setState({});
+    // console.log("add guest after state", this.episodeData.users);
   },
 
   removeGuestFromLine: function( identity ){
-    // console.log("admin: guest left line", identity);
+    console.log("Admin::removeGuestFromLine", identity);
     var user = this.getUserByIdentity( identity );
     user.player_status = "REMOVED";
     user.guest_state = "WATCHING";
@@ -183,7 +178,7 @@ var EpisodeBackstage = React.createClass({
   },
 
   addGuestToBroadcast: function( identity ){
-    // console.log("admin: add guest to broadcast", identity)
+    console.log("Admin::addGuestToBroadcast", identity);
     var user = this.getUserByIdentity( identity );
     user.player_status = "CAN_MOUNT";
     user.guest_state = "BROADCASTING";
@@ -194,7 +189,7 @@ var EpisodeBackstage = React.createClass({
   },
 
   removeGuestFromBroadcast: function( identity ){
-    // console.log("Admin: remove guest", identity);
+    console.log("Admin::removeGuestFromBroadcast", identity);
     var user = this.getUserByIdentity( identity );
     user.player_status = "REMOVED";
     user.guest_state = "WATCHING";
@@ -208,12 +203,11 @@ var EpisodeBackstage = React.createClass({
 
   updateBroadcast: function(){
     // console.log("admin: update broadcast");
-    if( this.episodeData.episode_state == "LIVE"){
+    // if( this.episodeData.episode_state == "LIVE"){
       var broadcasting_users = [];
       // push identities of the current broadcasters..
-      var users = this.episodeData.users;
-      for(var i=0; i < users.length; i++){
-        var user = users[i];
+      for(var i=0; i < this.episodeData.users.length; i++){
+        var user = this.episodeData.users[i];
         var identity = user.identity;
         if(user.guest_state == "BROADCASTING"){
           broadcasting_users.push( identity ); 
@@ -226,18 +220,19 @@ var EpisodeBackstage = React.createClass({
       // update this page.
       this.forceUpdate(); 
 
-    }else if(this.episodeData.episode_state == "ENDED"){
-      //
-      this.sendGlobalSignal("BROADCAST_ENDED");
-      this.removeAllStreams();
-      //
-      this.setState({});
-    }
+    // }else if(this.episodeData.episode_state == "ENDED"){
+    //   //
+    //   this.sendGlobalSignal("BROADCAST_ENDED");
+    //   this.removeAllStreams();
+    //   //
+    //   this.setState({});
+    // }
   },
 
 
   // view
   render:function(){
+    console.log("Admin::render", this.episodeData.users);
 
     var yourStreamClasses = "";
     if( this.episodeData.episode_state != "ENDED"){
@@ -248,12 +243,9 @@ var EpisodeBackstage = React.createClass({
 
     return(
       <div className="container max-video-width episode-container noselect">
-
         <EpisodePlayer users={ this.episodeData.users } context={this} />
         <EpisodeBackstageControls episodeData={ this.episodeData } />
-
         <div id="your-stream" className={yourStreamClasses}></div>
-
       </div>
     )
   }

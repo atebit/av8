@@ -75,7 +75,7 @@
     }
     .icon-guest-state.in-line{
       opacity:1;
-      color:yellow;
+      background: rgba(yellow, 1);
     }
   }
 
@@ -146,6 +146,14 @@
       opacity:0.4;
     }
 
+  }
+
+  .episode-guest-list.state_inactive{
+    display:none;
+  }
+
+  .episode-guest-list.state_active{
+    display:block;
   }
 
 }

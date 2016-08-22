@@ -1,12 +1,14 @@
 var EpisodeGuestList = React.createClass({
 
+  guestList: undefined,
+
   componentWillMount: function(){ },
   componentDidMount: function() { },
   componentDidUpdate: function(){ },
 
   render:function(){
 
-    var guestList = [];
+    this.guestList = [];
     var users = this.props.episodeData.users;
 
     if(users.length > 0){
@@ -15,7 +17,7 @@ var EpisodeGuestList = React.createClass({
         if( user ){
           if( user.guest_state == "IN_LINE" || user.guest_state == "BROADCASTING"){
             if( user.role != "admin" ){
-              guestList.push(<EpisodeGuestListItem user={ user } episodeData={this.props.episodeData} key={i} />);
+              this.guestList.push(<EpisodeGuestListItem user={ user } episodeData={this.props.episodeData} key={i} />);
             }
           }
         }
@@ -25,11 +27,15 @@ var EpisodeGuestList = React.createClass({
     var stateClasses = "episode-control-content episode-guest-list";
     if(this.props.episodeData.controls_view_state == "GUESTLIST"){
       stateClasses += " state_active ";
+    }else{
+      stateClasses += " state_inactive ";
     }
+
+    console.log("Render Episode Guest List")
 
     return(
       <section className={stateClasses}>
-        {guestList}
+        {this.guestList}
       </section>
     )
   }

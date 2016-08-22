@@ -65,6 +65,8 @@ class EpisodesController < OpentokController
     @episode_state = @episode.episode_state
     @attendees = get_episode_attendees( @episode.id )
 
+    # binding.pry
+
   end
 
 
@@ -146,7 +148,9 @@ class EpisodesController < OpentokController
           user_data[:id] = user.id
           # user_data[:name] = user.full_name
           user_data[:email] = user.email
+          user_data[:role] = user.role
           user_data[:rsvp_status] = rsvp.rsvp_status
+          user_data[:guest_state] = rsvp.live_state
           attendees.push( user_data )
         end
       end

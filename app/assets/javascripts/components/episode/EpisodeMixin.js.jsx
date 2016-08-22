@@ -28,6 +28,8 @@ var EpisodeMixin = {
 
   // when willMount is called, setup the episodeData object
   preInitialize: function( params ){
+
+    // setup new episodeData object.
     this.episodeData = {
       subclassName: params.subclass_name,
       episode_id: -1,
@@ -38,6 +40,21 @@ var EpisodeMixin = {
       users: [],
       controls_view_state: "HIDDEN"
     }
+
+    // if there are users in the session already, add them..
+
+    if( this.props.attendees.length ){
+      for( var i=0; i < this.props.attendees.length; i++){
+        var attendee = this.props.attendees[i];
+        this.addNewUser(attendee.email, {
+          role: attendee.role,
+          guest_state: attendee.guest_state,
+          player_status: "idle",
+          av_stats: "all"
+        });
+      }
+    }
+    console.log("preInit", this.episodeData)
   },
 
   // when we're ready, call the init function to get Tokbox rolling.
@@ -131,7 +148,7 @@ var EpisodeMixin = {
   connectionCreated: function(e){
     // console.log("connection created", e.connection);
     this.episodeData.identity = Params.query(this.session.connection.data ).email;
-    this.addNewUser( e.connection );
+    this.addUserConnection( e.connection );
   },
 
   connectionDestroyed: function(e){
@@ -141,6 +158,8 @@ var EpisodeMixin = {
     this.removeUser( identity );
     if( role == "admin" ){
       
+    }else{
+      this.updateUserGuestState(identity, "DISCONNECTED");
     }
   },
 
@@ -154,30 +173,54 @@ var EpisodeMixin = {
     }.bind(self));
   },
 
+  addNewUser: function( identity, params ){
+    if(!identity){
+      throw new Error("AV8 Error: An identity is required to add a New User");
+    }
+
+    // check to see if there's already a user with this identity
+    var user = this.getUserByIdentity( identity );
+    if( ! user ){
+      // set new props
+      user = {
+        identity: identity,
+        role: "not_set",
+        connection: undefined,
+        guest_state: "not_set",
+        player_status: "not_set",
+        av_stats: "not_set"
+      };
+      this.episodeData.users.push(user);
+    }
+    // set the roles.
+    if(params.role) user.role = params.role;
+    if(params.connection) user.connection = params.connection;
+    if(params.guest_state) user.guest_state = params.guest_state;
+    if(params.player_status) user.player_status = params.player_status;
+    if(params.av_stats) user.av_stats = params.av_stats;
+  },
+
 
   // User Table Methods
-  addNewUser: function( connection ){
+  addUserConnection: function( connection ){
     // if no reference object, create it.
     if(this.episodeData.users == undefined) this.episodeData.users = [];
     // create a reference to this user.
     var identity = Params.query(connection.data).email;
-
     var userObject = this.getUserByIdentity( identity );
+
     if( userObject ){
-      user.connection = connection;
+      userObject.connection = connection;
     }else{
-      // console.log("add new user", identity);
-      var role = Params.query(connection.data).role;
-      var user = {
-        identity: identity,
-        role: role,
+      this.addNewUser(identity, {
+        role: Params.query(connection.data).role,
         connection: connection,
         guest_state: "CONNECTED",
         player_status: "idle",
         av_stats: "all"
-      };
+      });
+
       // add to the users table
-      this.episodeData.users.push( user );
       // is this the current user?
       var newConnectionID = connection.id;
       if( newConnectionID == this.session.connection.id ){
@@ -196,17 +239,19 @@ var EpisodeMixin = {
   },
 
   // update user session status
-  updateUserSessionStatus: function( identity, guest_state ){
-    // console.log("update user.guest_state ", identity, guest_state)
+  updateUserGuestState: function( identity, guest_state ){
+    console.log("updateUserGuestState::BEFORE LOOP", identity, guest_state)
+
     var updated_attendees = [];
-    var users = this.episodeData.users;
+    var changed_user = undefined;
     // loop through, find and change
-    for(var i=0; i < users.length; i++){
-      var user = users[i];
+    for(var i=0; i < this.episodeData.users.length; i++){
+      var user = this.episodeData.users[i];
       var user_identity = user.identity;
       if( identity == user_identity ){
         // set it locally
         user.guest_state = guest_state;
+        changed_user = user;
         // pass it to the props for db
         updated_attendees.push({
           user_id: Params.query(user.connection.data).user_id,
@@ -233,48 +278,46 @@ var EpisodeMixin = {
         // console.log("updated user session status, api response: ", response );
       });
     }
+    console.log("updateUserGuestState::AFTER LOOP", changed_user)
   },
 
   // add stream object..
   addStreamToUser: function( identity, stream ){
-    console.log("add stream to user", identity);
+    console.log("addStreamToUser", identity);
     
     // remove the guest from the users table..
-    var users = this.episodeData.users;
-    for(var i=0; i < users.length; i++){
-      var user = users[i];
+    for(var i=0; i < this.episodeData.users.length; i++){
+      var user = this.episodeData.users[i];
       var user_identity = user.identity;
       if( identity == user_identity ){
         user.stream = stream;
       }
     }
-    this.updateUserSessionStatus( identity, "STREAMING" );
+    // this.updateUserGuestState( identity, "STREAMING" );
   },
 
   // remove stream object..
   removeStreamFromUser: function( identity ){
-    // console.log("remove stream from user", identity);
+    console.log("removeStreamFromUser", identity);
     // remove the guest from the users table..
-    var users = this.episodeData.users;
-    for(var i=0; i < users.length; i++){
-      var user = users[i];
+    for(var i=0; i < this.episodeData.users.length; i++){
+      var user = this.episodeData.users[i];
       var user_identity = user.identity;
       if( identity == user_identity ){
         user.stream = undefined;
       }
     }
-    this.updateUserSessionStatus( identity, "CONNECTED" );
+    // this.updateUserGuestState( identity, "CONNECTED" );
   },
 
   removeUser: function( identity ){
-    // console.log("remove user", identity);
+    console.log("removeUser", identity);
     // remove the guest from the users table..
-    var users = this.episodeData.users;
-    for(var i=0; i < users.length; i++){
-      var user = users[i];
+    for(var i=0; i < this.episodeData.users.length; i++){
+      var user = this.episodeData.users[i];
       var user_identity = user.identity;
       if( identity == user_identity ){
-        users.splice(i,1);
+        this.episodeData.users.splice(i,1);
       }
     }
     // alert the room
@@ -283,9 +326,8 @@ var EpisodeMixin = {
 
   getUserByIdentity: function( identity ){
     // remove the guest from the users table..
-    var users = this.episodeData.users;
-    for(var i=0; i < users.length; i++){
-      var user = users[i];
+    for(var i=0; i < this.episodeData.users.length; i++){
+      var user = this.episodeData.users[i];
       var user_identity = user.identity;
       if( identity == user_identity ){
         return user;
@@ -371,7 +413,7 @@ var EpisodeMixin = {
               // if user is public user, send a signal they joined the line and reset this page to that state.
               if(self.subclassName == "Public"){
                 self.sendGlobalSignal("GUEST_JOINED_LINE", identity);  
-                self.updateUserSessionStatus( identity, "IN_LINE" );
+                self.updateUserGuestState( identity, "IN_LINE" );
                 // set the state to "connected and watching".
                 self.episodeData.guest_state = "IN_LINE";
                 self.setState({});
@@ -392,16 +434,15 @@ var EpisodeMixin = {
     // console.log("disconnect local stream");
     var identity = this.episodeData.identity;
     if( identity && this.publisher ){
-      this.updateUserSessionStatus( identity, "CONNECTED" );
+      this.updateUserGuestState( identity, "CONNECTED" );
       this.removeStreamFromUser( identity );
       this.session.unpublish( this.publisher ); 
     }
   },
 
   removeAllStreams: function(){
-    var users = this.episodeData.users;
-    for(var j=0; j < users.length; j++){
-      var user = users[j];
+    for(var j=0; j < this.episodeData.users.length; j++){
+      var user = this.episodeData.users[j];
       if( user.guest_state == "BROADCASTING" ){
         user.guest_state = "REMOVED";
         user.player_status = "REMOVED";
@@ -419,10 +460,8 @@ var EpisodeMixin = {
 
     if(user.player_status != "MOUNTED"){
       user.player_status = "MOUNTED";
-
       var stream = user.stream;
       // console.log("connect to stream", identity)
-
       if(stream){
         var streamOptions = {
           subscribeToVideo: true,
