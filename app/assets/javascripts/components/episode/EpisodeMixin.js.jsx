@@ -496,8 +496,9 @@ var EpisodeMixin = {
           width: "100%",
           height: "100%"
         }
+
         var p = this.session.subscribe(stream, elementId, streamOptions); 
-        console.log("CONNECT TO REMOTE STREAM:",identity,elementId)
+        console.log("CONNECT TO REMOTE STREAM:", p);
       }
     }
   },
