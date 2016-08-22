@@ -282,3 +282,14 @@
 }
 
 
+
+
+
+// OPENTOK OVERRIDES
+
+
+.OT_bar, .OT_name, .OT_edge-bar-item, .OT_audio-level-meter, .OT_video-disabled-indicator{
+  display:none !important;
+}
+
+
