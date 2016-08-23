@@ -145,7 +145,7 @@ var EpisodeMixin = {
   // Stream Events
   streamCreated: function(e){
     var user = this.getUserByIdentity( Params.query(e.stream.connection.data).email );
-    console.log("streamCreated", user);
+    // console.log("streamCreated", user);
     this.addStreamToUser( user.identity, e.stream );
 
     // reset state..
@@ -168,7 +168,7 @@ var EpisodeMixin = {
     var self = this;
     var api = '/api/episodes/'+self.episode_id+'/get_episode_state';
     self.serverRequest = $.getJSON(api, function ( data ) {
-      console.log( "episode state received: ", data );
+      // console.log( "episode state received: ", data );
       // TODO: add some error catching...
       // this.setState({ comments });
     }.bind(self));
@@ -204,6 +204,13 @@ var EpisodeMixin = {
 
   addVideoElementToUser: function( identity, video ){
     var user = this.getUserByIdentity( identity );
+    console.log("ADD VIDEO ELEMENT TO USER:", user, video);
+
+    // if there is a stream already, unsubscribe..
+    // if(user.videoElement){
+    //   this.session.unsubscribe( user.stream ); 
+    // }
+    // add new one
     user.videoElement = video;
     // great. now set the state and let React do the rest..
     this.setState({});
@@ -347,7 +354,7 @@ var EpisodeMixin = {
   },
 
   removeUser: function( identity ){
-    console.log("removeUser", identity);
+    // console.log("removeUser", identity);
     // remove the guest from the users table..
     for(var i=0; i < this.episodeData.users.length; i++){
       var user = this.episodeData.users[i];
@@ -406,7 +413,7 @@ var EpisodeMixin = {
   // Session Methods
 
   connectLocalSession: function(){
-    console.log("connectLocalSession")
+    // console.log("connectLocalSession")
     var self = this;
     self.session.connect(SESSION_TOKEN, function(error) {
       if (error) {
@@ -467,11 +474,12 @@ var EpisodeMixin = {
               }
             }
           });
-          // when the users video element is ready, tie it to user hash
-          // self.publisher.on("videoElementCreated", self.videoElementCreated);
-          self.publisher.on("videoElementCreated", function( e ){ self.addVideoElementToUser( self.episodeData.identity, e.element ); });
         }
       });
+
+      // when the users video element is ready, tie it to user hash
+      // self.publisher.on("videoElementCreated", self.videoElementCreated);
+      self.publisher.on("videoElementCreated", function( e ){ self.addVideoElementToUser( self.episodeData.identity, e.element ); });
 
     } else {
         // The client cannot publish. 
@@ -488,6 +496,7 @@ var EpisodeMixin = {
       this.removeStreamFromUser( identity );
       this.session.unpublish( this.publisher ); 
     }
+    this.setState({});
   },
 
   connectRemoteStreamHandler: function( data ){
@@ -510,7 +519,7 @@ var EpisodeMixin = {
           height: "100%"
         }
         // if this user already has a "local stream", don't pull the audio to prevent echo
-        console.log("IDENTITY", this.episodeData.identity, identity);
+        // console.log("IDENTITY", this.episodeData.identity, identity);
         if(identity == this.episodeData.identity){
           streamOptions.subscribeToAudio = false;
         }
@@ -562,7 +571,7 @@ var EpisodeMixin = {
       method: method,
       data: data
     }).complete(function ( response ) {
-      console.log("UPDATE GUEST_STATE: ", response );
+      // console.log("UPDATE GUEST_STATE: ", response );
     });
   },
 

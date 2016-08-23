@@ -196,7 +196,7 @@ var EpisodeBackstage = React.createClass({
 
   // conference management functions..
   addGuestToLine: function( identity ){
-    console.log("Admin::addGuestToLine", identity); 
+    // console.log("Admin::addGuestToLine", identity); 
     this.updateUserGuestState( identity, "IN_LINE" );
     this.sendDirectSignal( identity, "ADDED_TO_LINE", {identity: identity});
     // update this page
@@ -204,7 +204,7 @@ var EpisodeBackstage = React.createClass({
   },
 
   removeGuestFromLine: function( identity ){
-    console.log("Admin::removeGuestFromLine", identity);
+    // console.log("Admin::removeGuestFromLine", identity);
     this.updateUserGuestState( identity, "REMOVED_FROM_LINE" );
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_LINE", {identity: identity});
@@ -213,7 +213,7 @@ var EpisodeBackstage = React.createClass({
   },
 
   addGuestToBroadcast: function( identity ){
-    console.log("Admin::addGuestToBroadcast", identity);
+    // console.log("Admin::addGuestToBroadcast", identity);
     this.updateUserGuestState( identity, "ADDED_TO_BROADCAST" );
     // update the broadcast with new guest..
     this.updateBroadcast();
@@ -222,7 +222,7 @@ var EpisodeBackstage = React.createClass({
   },
 
   removeGuestFromBroadcast: function( identity ){
-    console.log("Admin::removeGuestFromBroadcast", identity);
+    // console.log("Admin::removeGuestFromBroadcast", identity);
     this.updateUserGuestState( identity, "REMOVED_FROM_BROADCAST" );
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_BROADCAST", {identity: identity});
@@ -263,28 +263,23 @@ var EpisodeBackstage = React.createClass({
 
   // view
   render:function(){
-    console.log("Admin::render", this.episodeData.users);
-
-    var yourStreamClasses = "";
-    if( this.episodeData.episode_state != "ENDED"){
-      if(this.episodeData.guest_state == "BROADCASTING" ){
-        yourStreamClasses = " hidden ";
-      } 
-    }
-
+    // console.log("Admin::render", this.episodeData.users);
 
     var userPreviewComponent = "";
-    var user = this.getUserByIdentity( this.episodeData.identity );
-    if( user ){
-      userPreviewComponent = 
-        <div id="your-stream">
-          <TokboxVideo className={yourStreamClasses} videoElement={user.videoElement} />
-        </div>;
+    if( this.episodeData.episode_state != "ENDED"){
+      var user = this.getUserByIdentity( this.episodeData.identity );
+      if(user && this.episodeData.guest_state != "BROADCASTING" ){
+        userPreviewComponent = 
+          <div id="your-stream">
+            <TokboxVideo videoElement={user.videoElement} />
+          </div>;
+      } 
     }
 
     return(
       <div className="container max-video-width episode-container noselect">
         <EpisodePlayer users={ this.episodeData.users } context={this} />
+        <div className="controls-bg"></div>
         <EpisodeBackstageControls episodeData={ this.episodeData } />
         {userPreviewComponent}
       </div>

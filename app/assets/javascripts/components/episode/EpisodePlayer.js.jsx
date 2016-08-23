@@ -52,24 +52,21 @@ var EpisodePlayer = React.createClass({
   addStreamObjects: function(){
     var self = this;
 
-    setTimeout(function(){
-      var users = self.getBroadcastingUsers();
-      if( users ){
-        for(var i=0; i < users.length; i++){
-          var user = users[i];
-          // console.log(user)
-          var video_id = "guest-stream-video-"+user.stream.id;
-          var width = $("#"+video_id).width(), height = $("#"+video_id).height();
+    var users = self.getBroadcastingUsers();
+    if( users ){
+      for(var i=0; i < users.length; i++){
+        var user = users[i];
+        // console.log(user)
+        var video_id = "guest-stream-video-"+user.stream.id;
+        var width = $("#"+video_id).width(), height = $("#"+video_id).height();
 
-          CSEventManager.broadcast("CONNECT_REMOTE_STREAM", { 
-            identity: user.identity, 
-            elementId: video_id, 
-            width: width, 
-            height: height
-          });
-        }
+        CSEventManager.broadcast("CONNECT_REMOTE_STREAM", { 
+          identity: user.identity, 
+          width: width, 
+          height: height
+        });
       }
-    }, 200)
+    }
 
   },
 
@@ -89,7 +86,7 @@ var EpisodePlayer = React.createClass({
     var users = this.getBroadcastingUsers();
     var streamObjects = [];
 
-    console.log("Player::RENDER", users);
+    console.log("EpisodePlayer::::RENDER", users);
 
     if(users){
 
@@ -100,6 +97,7 @@ var EpisodePlayer = React.createClass({
         
         var user = users[i];
         if(user){
+          console.log("EpisodePlayer::user found")
           var containerW = player.width() / totalUsers;
           var container_id = "guest-stream-container-"+user.stream.id;
           var video_id = "guest-stream-video-"+user.stream.id;

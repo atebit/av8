@@ -12,14 +12,11 @@ var EpisodePublic = React.createClass({
 
     if( this.episodeData.episode_state == "ENDED" ){
       console.log("This Episode has ended.");
-
     }else{
-
       var self = this;
       /// click events, etc
       self.initialize();
       this.session.on("signal", this.receiveSignal);
-
       // initial state..
       this.episodeData.guest_state = "WATCHING";
       this.setState({});
@@ -35,7 +32,7 @@ var EpisodePublic = React.createClass({
       this.connectLocalStream();
       this.sendGlobalSignal("GUEST_JOINED_LINE", this.episodeData.identity);
       this.episodeData.guest_state = "IN_LINE";
-      this.setState({}); 
+      // this.setState({}); 
 
     }else if( guest_state == "LEFT_LINE"){
       this.disconnectLocalStream(); 
@@ -59,7 +56,7 @@ var EpisodePublic = React.createClass({
     switch( e.type ){
 
       case "signal:UPDATE_SESSION_STATUS":
-        console.log("signal recieved to update SESSION STATUS", data);
+        // console.log("signal recieved to update SESSION STATUS", data);
         this.updatedUserSessionStatus( self.episodeData.identity, data );
         
         break;
@@ -168,25 +165,22 @@ var EpisodePublic = React.createClass({
 
   render:function(){
 
-    var inlineButton = "";
-    var yourStreamClasses = "";
-    console.log("public player render", this.episodeData);
-
-    // this.logSessionInfo();
-
     var userPreviewComponent = "";
-    var user = this.getUserByIdentity( this.episodeData.identity );
-    if( user ){
-      userPreviewComponent = 
-        <div id="your-stream">
-          <TokboxVideo className={yourStreamClasses} videoElement={user.videoElement} />
-        </div>;
+    if( this.episodeData.episode_state != "ENDED"){
+      var user = this.getUserByIdentity( this.episodeData.identity );
+      if(user && this.episodeData.guest_state == "IN_LINE" ){
+        userPreviewComponent = 
+          <div id="your-stream">
+            <TokboxVideo videoElement={user.videoElement} />
+          </div>;
+      } 
     }
 
 
     return(
       <div className="container max-video-width episode-container noselect">
         <EpisodePlayer users={ this.episodeData.users } context={this} />
+        <div className="controls-bg"></div>
         <EpisodePublicControls episodeData={ this.episodeData } />
         {userPreviewComponent}
       </div>

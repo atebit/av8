@@ -40,33 +40,35 @@ class Api::EpisodesController < Api::ApiController
 
     @episode = Episode.find( params[:episode_id] )
 
+
     if @episode.episode_state != "ENDED"
 
       @episode.episode_state = params[:episode_state]
 
       # save start/end times..
       if params[:episode_state] == "LIVE"
-        @episode.started_at = Time.now
 
+        @episode.started_at = Time.now
         # save the archive id for later
         # archive = opentok.archives.create session_id :name => "Important Presentation"
         archive = @opentok.archives.create @episode.remote_session_id, :output_mode => :individual, :name => @episode.title
         @episode.archive_id = archive.id
 
+
       elsif params[:episode_state] == "ENDED"
-        @episode.ended_at = Time.now
 
-        # stop archive
-        @opentok.archives.stop_by_id @episode.archive_id
-
+        archive = @opentok.archives.find @episode.archive_id
+        if archive.present?
+          # archive[:]
+          # binding.pry
+          @episode.ended_at = Time.now
+          # stop archive
+          @opentok.archives.stop_by_id @episode.archive_id
+        end
+        
       end
 
-      # binding.pry
-
       if @episode.save
-        
-        # binding.pry
-
         render json: {
           status: 200,
           message: "Episode session state updated."

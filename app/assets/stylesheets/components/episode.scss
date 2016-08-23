@@ -1,5 +1,13 @@
 @import "config/variables";
 
+.controls-bg{
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 51px;
+  background: asset-url('controls-bg.png') top left repeat-x;
+}
 
 .episode-controls{
   position:absolute;
