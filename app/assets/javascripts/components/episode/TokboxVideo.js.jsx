@@ -9,7 +9,9 @@ var TokboxVideo = React.createClass({
     var video = $("#"+this.videoId)[0];
     console.log(video)
 
-    video.srcObject = this.props.videoElement.srcObject;
+    if(this.props.videoElement){
+    video.srcObject = this.props.videoElement.srcObject; 
+    }
 
   },
   componentDidUpdate: function(){ },

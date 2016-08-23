@@ -437,8 +437,6 @@ var EpisodeMixin = {
 
     if (self.session.capabilities.publish == 1) {
       // preview stream..
-      $("#your-stream").append("<div id='your-stream-elem'></div>");
-      // preview stream..
       var publisherOptions = {
         insertDefaultUI: false,
         publishAudio:false,
@@ -469,11 +467,11 @@ var EpisodeMixin = {
               }
             }
           });
+          // when the users video element is ready, tie it to user hash
+          // self.publisher.on("videoElementCreated", self.videoElementCreated);
+          self.publisher.on("videoElementCreated", function( e ){ self.addVideoElementToUser( self.episodeData.identity, e.element ); });
         }
       });
-      // when the users video element is ready, tie it to user hash
-      // self.publisher.on("videoElementCreated", self.videoElementCreated);
-      self.publisher.on("videoElementCreated", function( e ){ self.addVideoElementToUser( self.episodeData.identity, e.element ); });
 
     } else {
         // The client cannot publish. 
