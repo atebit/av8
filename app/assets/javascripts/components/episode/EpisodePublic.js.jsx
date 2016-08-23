@@ -174,15 +174,21 @@ var EpisodePublic = React.createClass({
 
     // this.logSessionInfo();
 
+    var userPreviewComponent = "";
+    var user = this.getUserByIdentity( this.episodeData.identity );
+    if( user ){
+      userPreviewComponent = 
+        <div id="your-stream">
+          <TokboxVideo className={yourStreamClasses} videoElement={user.videoElement} />
+        </div>;
+    }
 
 
     return(
       <div className="container max-video-width episode-container noselect">
-
         <EpisodePlayer users={ this.episodeData.users } context={this} />
         <EpisodePublicControls episodeData={ this.episodeData } />
-
-        <TokboxVideo id="your-stream" className={yourStreamClasses} episodeData={this.episodeData} />
+        {userPreviewComponent}
       </div>
     )
   }

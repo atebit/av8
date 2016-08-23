@@ -286,10 +286,7 @@ var EpisodeBackstage = React.createClass({
       <div className="container max-video-width episode-container noselect">
         <EpisodePlayer users={ this.episodeData.users } context={this} />
         <EpisodeBackstageControls episodeData={ this.episodeData } />
-
-
         {userPreviewComponent}
-        
       </div>
     )
   }
