@@ -7,19 +7,9 @@ var EpisodePlayerStream = React.createClass({
   render: function(){
     var css = this.props.css;
     // console.log("props", css)
-
-    //TODO: THIS ISN'T WORKING
-
-    var tokboxVideo = "";
-    if(this.props.user){
-      tokboxVideo = <TokboxVideo videoElement={user.videoElement} />;
-    }
-
     return(
       <div id={this.props.container_id} className="guest-stream" style={css.container}>
-        <div id={this.props.video_id} style={css.video}>
-          {tokboxVideo}
-        </div>
+        <TokboxVideo id={this.props.video_id} style={css.video} videoElement={this.props.user.videoElement} />
         <div className="stream-identity">{this.props.identity}</div>
       </div> 
     )
@@ -109,32 +99,34 @@ var EpisodePlayer = React.createClass({
       for(var i=0; i < totalUsers; i++){
         
         var user = users[i];
-        var containerW = player.width() / totalUsers;
-        var container_id = "guest-stream-container-"+user.stream.id;
-        var video_id = "guest-stream-video-"+user.stream.id;
+        if(user){
+          var containerW = player.width() / totalUsers;
+          var container_id = "guest-stream-container-"+user.stream.id;
+          var video_id = "guest-stream-video-"+user.stream.id;
 
-        var origVideoH = $("#"+video_id).height();
-        var videoH = player.height();
-        var videoW = origVideoH * 9/16;
-        var videoLeft = 0;
+          var origVideoH = $("#"+video_id).height();
+          var videoH = player.height();
+          var videoW = origVideoH * 9/16;
+          var videoLeft = 0;
 
-        var css = {
-          container: {
-            position:"absolute",
-            width: containerW,
-            height: player.height(),
-            left: i*containerW,
-            overflow: "hidden"
-          },
+          var css = {
+            container: {
+              position:"absolute",
+              width: containerW,
+              height: player.height(),
+              left: i*containerW,
+              overflow: "hidden"
+            },
 
-          video: {
-            position:"absolute",
-            // width: videoW,
-            // height: videoH,
-            // left: videoLeft
+            video: {
+              position:"absolute",
+              // width: videoW,
+              // height: videoH,
+              // left: videoLeft
+            }
           }
+          streamObjects.push(<EpisodePlayerStream key={i} css={css} container_id={container_id} video_id={video_id} stream_id={user.stream.id} user={user} />); 
         }
-        streamObjects.push(<EpisodePlayerStream key={i} css={css} container_id={container_id} video_id={video_id} stream_id={user.stream.id} user={user} />);
       }
 
     }
