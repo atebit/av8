@@ -272,11 +272,20 @@ var EpisodeBackstage = React.createClass({
       } 
     }
 
+
+    var userPreviewComponent = "";
+    var user = this.getUserByIdentity( this.episodeData.identity );
+    if( user ){
+      userPreviewComponent = <TokboxVideo className={yourStreamClasses} videoElement={user.videoElement} />;
+    }
+
     return(
       <div className="container max-video-width episode-container noselect">
         <EpisodePlayer users={ this.episodeData.users } context={this} />
         <EpisodeBackstageControls episodeData={ this.episodeData } />
-        <div id="your-stream" className={yourStreamClasses}></div>
+        
+        {userPreviewComponent}
+        
       </div>
     )
   }

@@ -178,7 +178,6 @@ var EpisodeMixin = {
     if(!identity){
       throw new Error("AV8 Error: An identity is required to add a New User");
     }
-
     // check to see if there's already a user with this identity
     var user = this.getUserByIdentity( identity );
     if( ! user ){
@@ -190,7 +189,8 @@ var EpisodeMixin = {
         stream: undefined,
         guest_state: "not_set",
         player_status: "not_set",
-        av_stats: "not_set"
+        av_stats: "not_set",
+        videoElement: undefined
       };
       this.episodeData.users.push(user);
     }
@@ -202,6 +202,12 @@ var EpisodeMixin = {
     if(params.av_stats) user.av_stats = params.av_stats;
   },
 
+  addVideoElementToUser: function( identity, video ){
+    var user = this.getUserByIdentity( identity );
+    user.videoElement = video;
+    // great. now set the state and let React do the rest..
+    this.setState({});
+  },
 
   // User Table Methods
   addUserConnection: function( connection ){
@@ -425,7 +431,6 @@ var EpisodeMixin = {
   },
 
   // Local User Methods
-
   connectLocalStream: function(){
     var self = this;
     console.log("connectLocalStream");
@@ -434,7 +439,13 @@ var EpisodeMixin = {
       // preview stream..
       $("#your-stream").append("<div id='your-stream-elem'></div>");
       // preview stream..
-      self.publisher = OT.initPublisher('your-stream-elem', {publishAudio:true, publishVideo:true}, function(error){
+      var publisherOptions = {
+        insertDefaultUI: false,
+        publishAudio:false,
+        publishVideo:true
+      };
+
+      self.publisher = OT.initPublisher(publisherOptions, function(error){
         if (error) {
           // The client cannot publish.
           // You may want to notify the user.
@@ -447,7 +458,6 @@ var EpisodeMixin = {
               var identity = self.episodeData.identity;
               // console.log("connect local stream")
               self.addStreamToUser( identity, self.publisher.stream );
-
               // if user is public user, send a signal they joined the line and reset this page to that state.
               if(self.subclassName == "Public"){
                 self.sendGlobalSignal("GUEST_JOINED_LINE", identity);  
@@ -461,6 +471,10 @@ var EpisodeMixin = {
           });
         }
       });
+      // when the users video element is ready, tie it to user hash
+      // self.publisher.on("videoElementCreated", self.videoElementCreated);
+      self.publisher.on("videoElementCreated", function( e ){ self.addVideoElementToUser( self.episodeData.identity, e.element ); });
+
     } else {
         // The client cannot publish. 
         // You may want to notify the user.
@@ -482,7 +496,8 @@ var EpisodeMixin = {
     this.connectToRemoteStream( data.identity, data.elementId );
   },
 
-  connectToRemoteStream: function( identity, elementId ){
+  connectToRemoteStream: function( identity ){
+    var self = this;
     var user = this.getUserByIdentity( identity );
     if(user.player_status != "MOUNTED"){
       user.player_status = "MOUNTED";
@@ -490,8 +505,9 @@ var EpisodeMixin = {
       // console.log("connect to stream", identity)
       if(stream){
         var streamOptions = {
+          insertDefaultUI: false,
           subscribeToVideo: true,
-          subscribeToAudio: true,
+          subscribeToAudio: false,
           width: "100%",
           height: "100%"
         }
@@ -501,13 +517,15 @@ var EpisodeMixin = {
           streamOptions.subscribeToAudio = false;
         }
 
-        var subscriber = this.session.subscribe(stream, elementId, streamOptions); 
-        if(identity == this.episodeData.identity){
+        var subscriber = this.session.subscribe(stream, streamOptions); 
+        // when the users video element is ready, tie it to user hash
+        subscriber.on("videoElementCreated", function( e ){ self.addVideoElementToUser( identity, e.element ); });
 
+
+        if(identity == this.episodeData.identity){
           //TODO: Don't do this when it's the preview window?
           subscriber.setAudioVolume(0);
         }
-
         console.log("CONNECT TO REMOTE STREAM:", subscriber);
       }
     }

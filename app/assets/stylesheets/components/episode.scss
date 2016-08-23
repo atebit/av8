@@ -9,7 +9,6 @@
   font-size: 0.8em;
   z-index: 800;
 
-
   .broadcast-status-icon{
     position:relative;
     border-radius:999px;
@@ -28,8 +27,6 @@
     border-radius:999px;
     border: 1px solid rgba(white, 1);
   }
-
-
 
   .control-menu{
     margin-bottom:20px;
@@ -245,11 +242,7 @@
   position:absolute;
   bottom:0px;
   left:0px;
-}
-
-#your-stream-elem{
-  max-width: 150px;
-  max-height: 110px;
+  width: 120px;
 }
 
 

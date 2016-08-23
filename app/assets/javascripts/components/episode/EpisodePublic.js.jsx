@@ -174,13 +174,15 @@ var EpisodePublic = React.createClass({
 
     // this.logSessionInfo();
 
+
+
     return(
       <div className="container max-video-width episode-container noselect">
 
         <EpisodePlayer users={ this.episodeData.users } context={this} />
         <EpisodePublicControls episodeData={ this.episodeData } />
 
-        <div id="your-stream" className={yourStreamClasses}></div>
+        <TokboxVideo id="your-stream" className={yourStreamClasses} episodeData={this.episodeData} />
       </div>
     )
   }
