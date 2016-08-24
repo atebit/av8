@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
 
+  #settings
+  get 'settings/', to: "settings#index", as: "settings_index"
+  get 'settings/integrations'
+  get 'settings/integrations/soundcloud', to: "settings#soundcloud"
+
   devise_for :users
 
   resources :episodes do

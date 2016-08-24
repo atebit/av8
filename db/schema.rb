@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160819033145) do
+ActiveRecord::Schema.define(version: 20160822193013) do
 
   create_table "episode_rsvps", force: :cascade do |t|
     t.datetime "created_at",                   null: false
@@ -42,6 +42,17 @@ ActiveRecord::Schema.define(version: 20160819033145) do
     t.string   "archive_assets_path"
     t.string   "archive_id"
   end
+
+  create_table "settings", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "soundcloud_access_token"
+    t.string   "soundcloud_refresh_token"
+    t.integer  "soundcloud_expires_in"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "settings", ["user_id"], name: "index_settings_on_user_id", unique: true
 
   create_table "users", force: :cascade do |t|
     t.string   "first_name",             default: "",     null: false
