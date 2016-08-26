@@ -56,6 +56,9 @@ gem 'airbrake'
 gem 'rename'
 gem 'local_time'
 
+#
+gem 'soundcloud'
+
 group :development do
   gem 'annotate'
   gem 'quiet_assets'

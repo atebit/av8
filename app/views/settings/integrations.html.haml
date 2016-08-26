@@ -1,0 +1,11 @@
+.maxwidth
+  %h1 
+    = link_to "Settings", settings_index_path
+  .settings-list
+    .setting.soundcloud 
+      %h2 Soundcloud
+      - if current_user.setting.soundcloud_is_active?
+        %p Soundcloud is active.
+      - else
+        %p Connect your soundcloud account to publish your podcasts directly to soundcloud
+        = link_to image_tag("btn-connect-sc-l.png"), @sc_client.authorize_url(), :class => "soundcloud-link"

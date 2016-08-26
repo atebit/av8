@@ -32,6 +32,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :episode_rsvps
+  has_one :setting, autosave: true
 
 
   def name
