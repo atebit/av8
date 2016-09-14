@@ -41,13 +41,12 @@ var EpisodeBackstage = React.createClass({
   onSetEpisodeState: function( episode_state ){ this.setEpisodeState( episode_state );  },
   // when EpisodeModeratorStateBtn is toggled
   onSetModeratorState: function( moderator_state ){ 
+    // console.log("onSetModeratorState:", moderator_state)
     if( moderator_state == "BROADCASTING" ){
       this.addGuestToBroadcast( this.episodeData.identity );
     }else{
       this.removeGuestFromBroadcast( this.episodeData.identity );
     }
-    this.updateUserGuestState( this.episodeData.identity, moderator_state );
-    // this.setState({});
   },
   // when EpisodeModeratorStateBtn is toggled
   onSetControlsViewState: function( controls_view_state ){
@@ -213,7 +212,7 @@ var EpisodeBackstage = React.createClass({
   },
 
   addGuestToBroadcast: function( identity ){
-    // console.log("Admin::addGuestToBroadcast", identity);
+    console.log("addGuestToBroadcast", identity);
     this.updateUserGuestState( identity, "ADDED_TO_BROADCAST" );
     // update the broadcast with new guest..
     this.updateBroadcast();
@@ -233,7 +232,7 @@ var EpisodeBackstage = React.createClass({
   },
 
   updateBroadcast: function(){
-    // console.log("admin: update broadcast");
+    console.log(" >> UPDATE BROADCAST");
     if( this.episodeData.episode_state == "LIVE"){
       var broadcasting_users = [];
       // push identities of the current broadcasters..
@@ -249,6 +248,7 @@ var EpisodeBackstage = React.createClass({
       // send it
       this.sendGlobalSignal("UPDATE_BROADCAST", identities);
       // update this page.
+      this.requestStateChange("update broadcast");
       // this.forceUpdate(); 
 
     }else if(this.episodeData.episode_state == "ENDED"){

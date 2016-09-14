@@ -6,17 +6,17 @@ var EpisodeBroadcastStateIcon = React.createClass({
 
   render:function(){
 
-    var stateClasses = "broadcast-status-icon",
+    var stateClasses = "menu-item",
         text = this.props.episodeData.episode_state;
 
     if( text == "LIVE" ){
-      stateClasses = " broadcast-status-icon live ";
+      stateClasses = "menu-item focused ";
     }
 
     return(
-      <div className="menu-item">
+      <div className={stateClasses}>
         <div className="icon">
-          <span className={stateClasses}></span>
+          <span className='broadcast-status-icon'></span>
         </div>
         <div className="title">{text}</div>
       </div>

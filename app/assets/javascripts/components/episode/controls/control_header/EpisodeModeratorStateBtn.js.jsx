@@ -18,7 +18,7 @@ var EpisodeModeratorStateBtn = React.createClass({
 
   render:function(){
 
-    // console.log(this.props.episodeData)
+    // console.log(" -- Moderator State Btn: Render", this.props.episodeData)
 
     var text = "",
         stateClasses = "menu-item";

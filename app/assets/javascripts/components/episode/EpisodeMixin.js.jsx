@@ -147,11 +147,6 @@ var EpisodeMixin = {
     var user = this.getUserByIdentity( Params.query(e.stream.connection.data).email );
     // console.log("streamCreated", user);
     this.addStreamToUser( user.identity, e.stream );
-
-    // reset state..
-    // if(this.episodeData.subclassName == "Backstage" || user.guest_state == "BROADCASTING"){
-    //   this.setEpisodeState("stream created, is admin");
-    // }
   },
 
   streamDestroyed: function(e){
@@ -263,7 +258,7 @@ var EpisodeMixin = {
 
   // update user session status
   updateUserGuestState: function( identity, guest_state ){
-    // console.log("updateUserGuestState::BEFORE LOOP", identity, guest_state)
+    console.log("updateUserGuestState", identity, guest_state)
 
     var updated_attendees = [];
     // loop through, find and change
@@ -299,7 +294,8 @@ var EpisodeMixin = {
 
         // is it the current_user?
         if( identity == this.episodeData.identity ){
-          this.episodeData.guest_state = guest_state;
+          // console.log("current user")
+          this.episodeData.guest_state = user.guest_state;
         }
       }
     }
@@ -320,6 +316,8 @@ var EpisodeMixin = {
         // console.log("UPDATE GUEST_STATE: ", response );
       });
     }
+
+
   },
 
   // add stream object..
@@ -329,8 +327,13 @@ var EpisodeMixin = {
     var user = this.getUserByIdentity( identity );
     if( user ){
       user.stream = stream;
+      // this.stateChangeValidator("ADD_STREAM_TO_USER");
       // console.log(user)
       // this.setState({});
+
+      if(this.episodeData.subclassName == "Backstage" || user.guest_state == "BROADCASTING"){
+        this.requestStateChange("add stream to user, user is admin and state is broadcasting");
+      }
     }else{
       console.log("Couldn't add stream: no user found.");
     }
@@ -579,9 +582,9 @@ var EpisodeMixin = {
   },
 
 
-  stateChangeValidator: function(){
-    console.log(" >>> SET EPISODE STATE <<< ")
-    // this.setState( this.episodeData );
+  requestStateChange: function(reason){
+    console.log(">> SET EPISODE STATE: reason: ["+reason+"]");
+    this.setState( this.episodeData );
   }
 
 
