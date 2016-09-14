@@ -54,7 +54,6 @@ class Api::EpisodesController < Api::ApiController
         archive = @opentok.archives.create @episode.remote_session_id, :output_mode => :individual, :name => @episode.title
         @episode.archive_id = archive.id
 
-
       elsif params[:episode_state] == "ENDED"
 
         archive = @opentok.archives.find @episode.archive_id
@@ -63,7 +62,17 @@ class Api::EpisodesController < Api::ApiController
           # binding.pry
           @episode.ended_at = Time.now
           # stop archive
-          @opentok.archives.stop_by_id @episode.archive_id
+          archive = @opentok.archives.find( @episode.archive_id )
+          if archive.status == "started" or archive.status == "paused"
+            # "started" — The archive started and is in the process of being recorded.
+            # "paused" — The archive is paused. This happens when all clients stop publishing streams after archive was started. If another client publishes, the archive recording resumes, and the status changes to "started". 60 seconds after the last client disconnects from the session, the archive recording stops, and the status changes to "stopped".
+            # "stopped" — The archive stopped recording.
+            # "uploaded" — The archive is available for download from the Amazon S3 bucket or Windows Azure container you specified at your TokBox Account.
+            # "available" — The archive is available for download from the OpenTok cloud.
+            # "expired" — The archive is no longer available for download from the OpenTok cloud. (Archives on the OpenTok cloud are only available for 72 hours from the time they are created.)
+            # "failed" — The archive recording failed.
+            @opentok.archives.stop_by_id @episode.archive_id
+          end
         end
         
       end

@@ -13,7 +13,7 @@ var TokboxVideo = React.createClass({
 
   render:function(){
 
-    console.log("-- Render VIDEO:", this.props.videoElement);
+    // console.log("-- Render VIDEO:", this.props.videoElement);
 
     return(
       <video id={this.videoId}  autoPlay="true" />
