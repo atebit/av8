@@ -19,7 +19,7 @@ var EpisodePublic = React.createClass({
       this.session.on("signal", this.receiveSignal);
       // initial state..
       this.episodeData.guest_state = "WATCHING";
-      this.setState({});
+      // this.setState({});
     }
   },
 
@@ -38,20 +38,20 @@ var EpisodePublic = React.createClass({
       this.disconnectLocalStream(); 
       this.sendGlobalSignal("GUEST_LEFT_LINE", this.episodeData.identity);
       this.episodeData.guest_state = "WATCHING";
-      this.setState({}); 
+      // this.setState({}); 
 
     }else if( guest_state == "LEFT_BROADCAST"){
       this.disconnectLocalStream(); 
       this.sendGlobalSignal("GUEST_LEFT_BROADCAST", this.episodeData.identity);
       this.episodeData.guest_state = "WATCHING";
-      this.setState({}); 
+      // this.setState({}); 
     }
   },
 
   receiveSignal: function(e){ 
     var self = this;
     var data = e.data;
-      console.log("signal recieved", data); 
+    // console.log("signal recieved", data); 
 
     switch( e.type ){
 
@@ -69,7 +69,7 @@ var EpisodePublic = React.createClass({
 
         this.disconnectLocalStream(); 
         this.episodeData.guest_state = "WATCHING";
-        this.setState({});
+        // this.setState({});
         
         break;
 
@@ -81,7 +81,7 @@ var EpisodePublic = React.createClass({
 
         this.disconnectLocalStream(); 
         this.episodeData.guest_state = "WATCHING";
-        this.setState({});
+        // this.setState({});
 
         break;
 
@@ -108,7 +108,7 @@ var EpisodePublic = React.createClass({
         if( data == "ENDED" ){
           this.removeAllStreams();
           this.episodeData.guest_state = "ENDED";
-          this.setState({});
+          // this.setState({});
         }
         break;
     }
@@ -156,10 +156,10 @@ var EpisodePublic = React.createClass({
 
     if(isSelfStream){
       this.episodeData.guest_state = "BROADCASTING";
-      this.setState({});
+      // this.setState({});
     }else{
       this.episodeData.guest_state = "WATCHING";
-      this.setState({});
+      // this.setState({});
     }
   },
 

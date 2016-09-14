@@ -47,12 +47,12 @@ var EpisodeBackstage = React.createClass({
       this.removeGuestFromBroadcast( this.episodeData.identity );
     }
     this.updateUserGuestState( this.episodeData.identity, moderator_state );
-    this.setState({});
+    // this.setState({});
   },
   // when EpisodeModeratorStateBtn is toggled
   onSetControlsViewState: function( controls_view_state ){
     this.episodeData.controls_view_state = controls_view_state;
-    this.setState({});
+    // this.setState({});
   },
 
   // event listener relays
@@ -90,7 +90,7 @@ var EpisodeBackstage = React.createClass({
         subscriber: this.session.subscribe(stream, tempID, streamOptions)
       });
     }
-    this.setState({});
+    // this.setState({});
   },
 
   disconnectPreviewStream: function(identity){
@@ -100,7 +100,7 @@ var EpisodeBackstage = React.createClass({
         this.session.unsubscribe( s.subscriber );
       }
     }
-    this.setState({});
+    // this.setState({});
   },
 
 
@@ -116,7 +116,7 @@ var EpisodeBackstage = React.createClass({
     // update broadcast
     self.updateBroadcast();
     // update player
-    self.setState({});
+    // self.setState({});
     // save to DB
     var self = this;
     var api = '/api/episodes/'+self.episodeData.episode_id+'/set_episode_state';
@@ -134,7 +134,7 @@ var EpisodeBackstage = React.createClass({
     if(episode_state == "ENDED"){
       self.removeAllStreams();
       self.disconnectLocalStream();
-      self.setState({}); 
+      // self.setState({}); 
     }
   },
 
@@ -200,7 +200,7 @@ var EpisodeBackstage = React.createClass({
     this.updateUserGuestState( identity, "IN_LINE" );
     this.sendDirectSignal( identity, "ADDED_TO_LINE", {identity: identity});
     // update this page
-    this.setState({});
+    // this.setState({});
   },
 
   removeGuestFromLine: function( identity ){
@@ -209,7 +209,7 @@ var EpisodeBackstage = React.createClass({
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_LINE", {identity: identity});
     // update this page
-    this.setState({});
+    // this.setState({});
   },
 
   addGuestToBroadcast: function( identity ){
@@ -218,7 +218,7 @@ var EpisodeBackstage = React.createClass({
     // update the broadcast with new guest..
     this.updateBroadcast();
     // reload this page..
-    this.setState({});
+    // this.setState({});
   },
 
   removeGuestFromBroadcast: function( identity ){
@@ -229,7 +229,7 @@ var EpisodeBackstage = React.createClass({
     // update the broadcast..
     this.updateBroadcast();
     // update this page..
-    this.forceUpdate();
+    // this.forceUpdate();
   },
 
   updateBroadcast: function(){
@@ -249,14 +249,14 @@ var EpisodeBackstage = React.createClass({
       // send it
       this.sendGlobalSignal("UPDATE_BROADCAST", identities);
       // update this page.
-      this.forceUpdate(); 
+      // this.forceUpdate(); 
 
     }else if(this.episodeData.episode_state == "ENDED"){
       //
       this.sendGlobalSignal("BROADCAST_ENDED");
       this.removeAllStreams();
       //
-      this.setState({});
+      // this.setState({});
     }
   },
 

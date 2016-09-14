@@ -27,7 +27,7 @@ var EpisodeGuestStateBtn = React.createClass({
 
   render:function(){
 
-    console.log("Guest State Btn: ",this.props.episodeData)
+    // console.log("Guest State Btn: ",this.props.episodeData)
 
     var text = "",
         stateClasses = "menu-item";

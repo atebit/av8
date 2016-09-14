@@ -86,7 +86,7 @@ var EpisodePlayer = React.createClass({
     var users = this.getBroadcastingUsers();
     var streamObjects = [];
 
-    console.log("EpisodePlayer::::RENDER", users);
+    // console.log("EpisodePlayer::::RENDER", users);
 
     if(users){
 
@@ -97,7 +97,7 @@ var EpisodePlayer = React.createClass({
         
         var user = users[i];
         if(user){
-          console.log("EpisodePlayer::user found")
+          // console.log("EpisodePlayer::user found")
           var containerW = player.width() / totalUsers;
           var container_id = "guest-stream-container-"+user.stream.id;
           var video_id = "guest-stream-video-"+user.stream.id;

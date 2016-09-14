@@ -31,7 +31,7 @@ var EpisodeGuestList = React.createClass({
       stateClasses += " state_inactive ";
     }
 
-    console.log("Render Episode Guest List")
+    // console.log("Render Episode Guest List")
 
     return(
       <section className={stateClasses}>
