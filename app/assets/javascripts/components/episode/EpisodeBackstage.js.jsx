@@ -51,7 +51,7 @@ var EpisodeBackstage = React.createClass({
   // when EpisodeModeratorStateBtn is toggled
   onSetControlsViewState: function( controls_view_state ){
     this.episodeData.controls_view_state = controls_view_state;
-    // this.setState({});
+    this.requestStateChange("changed the control view state")
   },
 
   // event listener relays
@@ -164,6 +164,11 @@ var EpisodeBackstage = React.createClass({
       case "signal:GUEST_LEFT_BROADCAST":
         this.removeGuestFromBroadcast( data );
         break;
+
+      case "signal:REQUEST_BROADCAST_UPDATE":
+        console.log("User Requested broadcast update", data);
+        this.updateBroadcast();
+        break;
     }
   },
 
@@ -195,20 +200,20 @@ var EpisodeBackstage = React.createClass({
 
   // conference management functions..
   addGuestToLine: function( identity ){
-    // console.log("Admin::addGuestToLine", identity); 
+    console.log("Admin::addGuestToLine", identity); 
     this.updateUserGuestState( identity, "IN_LINE" );
     this.sendDirectSignal( identity, "ADDED_TO_LINE", {identity: identity});
     // update this page
-    // this.setState({});
+    this.requestStateChange("user added to line");
   },
 
   removeGuestFromLine: function( identity ){
-    // console.log("Admin::removeGuestFromLine", identity);
+    console.log("Admin::removeGuestFromLine", identity);
     this.updateUserGuestState( identity, "REMOVED_FROM_LINE" );
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_LINE", {identity: identity});
     // update this page
-    // this.setState({});
+    this.requestStateChange("user removed from line");
   },
 
   addGuestToBroadcast: function( identity ){
@@ -216,8 +221,6 @@ var EpisodeBackstage = React.createClass({
     this.updateUserGuestState( identity, "ADDED_TO_BROADCAST" );
     // update the broadcast with new guest..
     this.updateBroadcast();
-    // reload this page..
-    // this.setState({});
   },
 
   removeGuestFromBroadcast: function( identity ){
@@ -227,8 +230,6 @@ var EpisodeBackstage = React.createClass({
     this.sendDirectSignal( identity, "REMOVED_FROM_BROADCAST", {identity: identity});
     // update the broadcast..
     this.updateBroadcast();
-    // update this page..
-    // this.forceUpdate();
   },
 
   updateBroadcast: function(){

@@ -28,23 +28,21 @@ var EpisodePublic = React.createClass({
   },
 
   onSetGuestState: function( guest_state ){
+    console.log("onSetGuestState: ", guest_state);
     if( guest_state == "JOIN_LINE" ){
-      this.connectLocalStream();
       this.sendGlobalSignal("GUEST_JOINED_LINE", this.episodeData.identity);
-      this.episodeData.guest_state = "IN_LINE";
-      // this.setState({}); 
+      this.connectLocalStream();
+      this.updateUserGuestState( this.episodeData.identity, "IN_LINE" );
 
     }else if( guest_state == "LEFT_LINE"){
-      this.disconnectLocalStream(); 
       this.sendGlobalSignal("GUEST_LEFT_LINE", this.episodeData.identity);
-      this.episodeData.guest_state = "WATCHING";
-      // this.setState({}); 
+      this.disconnectLocalStream(); 
+      this.updateUserGuestState( this.episodeData.identity, "WATCHING" );
 
     }else if( guest_state == "LEFT_BROADCAST"){
-      this.disconnectLocalStream(); 
       this.sendGlobalSignal("GUEST_LEFT_BROADCAST", this.episodeData.identity);
-      this.episodeData.guest_state = "WATCHING";
-      // this.setState({}); 
+      this.disconnectLocalStream(); 
+      this.updateUserGuestState( this.episodeData.identity, "WATCHING" );
     }
   },
 
@@ -61,6 +59,7 @@ var EpisodePublic = React.createClass({
         
         break;
 
+
       case "signal:REMOVED_FROM_LINE":
         // console.log("Moderator removed you from line");
 
@@ -69,7 +68,7 @@ var EpisodePublic = React.createClass({
 
         this.disconnectLocalStream(); 
         this.episodeData.guest_state = "WATCHING";
-        // this.setState({});
+        this.requestStateChange("removed from line");
         
         break;
 
@@ -81,6 +80,7 @@ var EpisodePublic = React.createClass({
 
         this.disconnectLocalStream(); 
         this.episodeData.guest_state = "WATCHING";
+        this.requestStateChange("removed from broadcast");
         // this.setState({});
 
         break;
@@ -117,6 +117,7 @@ var EpisodePublic = React.createClass({
   // update the player
 
   updateBroadcastPlayer: function( published_identities ){
+    console.log("updateBroadcastPlayer")
 
     // TODO: check to see if the player needs to update or not... 
     // If not, don't update because it causes a blink to the users that don't need it.
@@ -156,11 +157,11 @@ var EpisodePublic = React.createClass({
 
     if(isSelfStream){
       this.episodeData.guest_state = "BROADCASTING";
-      // this.setState({});
     }else{
       this.episodeData.guest_state = "WATCHING";
-      // this.setState({});
     }
+
+    this.requestStateChange("update broadcast player");
   },
 
   render:function(){

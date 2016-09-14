@@ -197,20 +197,8 @@ var EpisodeMixin = {
     if(params.av_stats) user.av_stats = params.av_stats;
   },
 
-  addVideoElementToUser: function( identity, video ){
-    var user = this.getUserByIdentity( identity );
-    //console.log("ADD VIDEO ELEMENT TO USER:", user, video);
 
-    // if there is a stream already, unsubscribe..
-    // if(user.videoElement){
-    //   this.session.unsubscribe( user.stream ); 
-    // }
-    // add new one
-    user.videoElement = video;
-    // great. now set the state and let React do the rest..
-    // this.setState({});
 
-  },
 
   // User Table Methods
   addUserConnection: function( connection ){
@@ -316,8 +304,6 @@ var EpisodeMixin = {
         // console.log("UPDATE GUEST_STATE: ", response );
       });
     }
-
-
   },
 
   // add stream object..
@@ -327,17 +313,56 @@ var EpisodeMixin = {
     var user = this.getUserByIdentity( identity );
     if( user ){
       user.stream = stream;
-      // this.stateChangeValidator("ADD_STREAM_TO_USER");
-      // console.log(user)
-      // this.setState({});
-
-      if(this.episodeData.subclassName == "Backstage" || user.guest_state == "BROADCASTING"){
-        this.requestStateChange("add stream to user, user is admin and state is broadcasting");
+    
+      if( this.episodeData.subclassName == "Public" ){
+        if(this.episodeData.episode_state == "LIVE"){
+          if(user.videoElement == undefined){
+            this.connectToRemoteStream( identity ); 
+          }
+        }
       }
+
     }else{
       console.log("Couldn't add stream: no user found.");
     }
   },
+
+  addVideoElementToUser: function( identity, video ){
+    var user = this.getUserByIdentity( identity );
+    console.log("addVideoElementToUser:", identity);
+    // add new one
+    user.videoElement = video;
+
+    if( this.episodeData.subclassName == "Public" ){
+      if(this.episodeData.episode_state == "LIVE"){
+        // the episode is already going..
+        if( user.videoElement ){
+          this.requestStateChange("video element added and ready to stream");
+        }
+      }
+    }else{
+      // the episode is already going..
+      if( user.videoElement ){
+        this.requestStateChange("video element added and ready to stream");
+      }
+      
+    }
+  },
+
+
+
+
+  validateUserCanBroadcast: function( identity ){
+    var user = this.getUserByIdentity( identity );
+    if( !user ) return false;
+    // console.log("validate user broadcast:", user)
+    if(user.guest_state != "BROADCASTING") return false;
+    if(user.stream == undefined) return false;
+    if(user.connection == undefined) return false;
+    if(user.videoElement == undefined) return false;
+    return true;
+  },
+
 
   // remove stream object..
   removeStreamFromUser: function( identity ){
@@ -506,6 +531,7 @@ var EpisodeMixin = {
   },
 
   connectToRemoteStream: function( identity ){
+    console.log("connectToRemoteStream", identity)
     var self = this;
     var user = this.getUserByIdentity( identity );
     if(user.player_status != "MOUNTED"){

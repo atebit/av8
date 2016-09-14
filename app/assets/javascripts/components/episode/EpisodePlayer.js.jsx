@@ -10,11 +10,16 @@ var EpisodePlayerStream = React.createClass({
     return(
       <div id={this.props.container_id} className="guest-stream" style={css.container}>
         <TokboxVideo id={this.props.video_id} style={css.video} videoElement={this.props.user.videoElement} />
-        <div className="stream-identity">{this.props.identity}</div>
+        <div className="stream-identity">{this.props.user.identity}</div>
       </div> 
     )
   }
 });
+
+
+
+
+
 
 
 var EpisodePlayer = React.createClass({

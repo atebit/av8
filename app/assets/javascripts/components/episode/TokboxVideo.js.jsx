@@ -4,10 +4,8 @@ var TokboxVideo = React.createClass({
     this.videoId = "tokbox-video-"+Guid.get();
   },
   componentDidMount: function() { 
-    console.log("RENDER TOKBOX VIDEO:", this.props);
-
+    // console.log("-- Render VIDEO:", $("#"+this.videoId));
     var video = $("#"+this.videoId)[0];
-
     if(this.props.videoElement){
       video.srcObject = this.props.videoElement.srcObject; 
     }
