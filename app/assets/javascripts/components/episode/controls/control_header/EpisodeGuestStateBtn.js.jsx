@@ -9,16 +9,14 @@ var EpisodeGuestStateBtn = React.createClass({
     $("#guest-state-btn").on("click", function(e){
 
       var guest_state = self.props.episodeData.guest_state;
+      // console.log(guest_state)
 
-      if( guest_state == "WATCHING" || guest_state == undefined){
-        CSEventManager.broadcast("SET_GUEST_STATE", "JOIN_LINE");
-
-      }else if( guest_state = "IN_LINE" ){
+      if( guest_state == "IN_LINE" ){
         CSEventManager.broadcast("SET_GUEST_STATE", "LEFT_LINE");
-
-      }else if( guest_state = "BROADCASTING" ){
+      }else if( guest_state == "BROADCASTING" ){
         CSEventManager.broadcast("SET_GUEST_STATE", "LEFT_BROADCAST");
-
+      }else{
+        CSEventManager.broadcast("SET_GUEST_STATE", "JOIN_LINE");
       }
     });
   },
@@ -27,7 +25,7 @@ var EpisodeGuestStateBtn = React.createClass({
 
   render:function(){
 
-    console.log("Guest State Btn: ",this.props.episodeData)
+    // console.log("Guest State Btn: ",this.props.episodeData.guest_state)
 
     var text = "",
         stateClasses = "menu-item";

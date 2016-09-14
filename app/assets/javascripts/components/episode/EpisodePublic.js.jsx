@@ -12,17 +12,14 @@ var EpisodePublic = React.createClass({
 
     if( this.episodeData.episode_state == "ENDED" ){
       console.log("This Episode has ended.");
-
     }else{
-
       var self = this;
       /// click events, etc
       self.initialize();
       this.session.on("signal", this.receiveSignal);
-
       // initial state..
       this.episodeData.guest_state = "WATCHING";
-      this.setState({});
+      // this.setState({});
     }
   },
 
@@ -31,38 +28,37 @@ var EpisodePublic = React.createClass({
   },
 
   onSetGuestState: function( guest_state ){
+    console.log("onSetGuestState: ", guest_state);
     if( guest_state == "JOIN_LINE" ){
-      this.connectLocalStream();
       this.sendGlobalSignal("GUEST_JOINED_LINE", this.episodeData.identity);
-      this.episodeData.guest_state = "IN_LINE";
-      this.setState({}); 
+      this.connectLocalStream();
+      this.updateUserGuestState( this.episodeData.identity, "IN_LINE" );
 
     }else if( guest_state == "LEFT_LINE"){
-      this.disconnectLocalStream(); 
       this.sendGlobalSignal("GUEST_LEFT_LINE", this.episodeData.identity);
-      this.episodeData.guest_state = "WATCHING";
-      this.setState({}); 
+      this.disconnectLocalStream(); 
+      this.updateUserGuestState( this.episodeData.identity, "WATCHING" );
 
     }else if( guest_state == "LEFT_BROADCAST"){
-      this.disconnectLocalStream(); 
       this.sendGlobalSignal("GUEST_LEFT_BROADCAST", this.episodeData.identity);
-      this.episodeData.guest_state = "WATCHING";
-      this.setState({}); 
+      this.disconnectLocalStream(); 
+      this.updateUserGuestState( this.episodeData.identity, "WATCHING" );
     }
   },
 
   receiveSignal: function(e){ 
     var self = this;
     var data = e.data;
-      console.log("signal recieved", data); 
+    // console.log("signal recieved", data); 
 
     switch( e.type ){
 
       case "signal:UPDATE_SESSION_STATUS":
-        console.log("signal recieved to update SESSION STATUS", data);
+        // console.log("signal recieved to update SESSION STATUS", data);
         this.updatedUserSessionStatus( self.episodeData.identity, data );
         
         break;
+
 
       case "signal:REMOVED_FROM_LINE":
         // console.log("Moderator removed you from line");
@@ -72,7 +68,7 @@ var EpisodePublic = React.createClass({
 
         this.disconnectLocalStream(); 
         this.episodeData.guest_state = "WATCHING";
-        this.setState({});
+        this.requestStateChange("removed from line");
         
         break;
 
@@ -84,7 +80,8 @@ var EpisodePublic = React.createClass({
 
         this.disconnectLocalStream(); 
         this.episodeData.guest_state = "WATCHING";
-        this.setState({});
+        this.requestStateChange("removed from broadcast");
+        // this.setState({});
 
         break;
 
@@ -111,7 +108,7 @@ var EpisodePublic = React.createClass({
         if( data == "ENDED" ){
           this.removeAllStreams();
           this.episodeData.guest_state = "ENDED";
-          this.setState({});
+          // this.setState({});
         }
         break;
     }
@@ -120,6 +117,7 @@ var EpisodePublic = React.createClass({
   // update the player
 
   updateBroadcastPlayer: function( published_identities ){
+    console.log("updateBroadcastPlayer")
 
     // TODO: check to see if the player needs to update or not... 
     // If not, don't update because it causes a blink to the users that don't need it.
@@ -159,28 +157,33 @@ var EpisodePublic = React.createClass({
 
     if(isSelfStream){
       this.episodeData.guest_state = "BROADCASTING";
-      this.setState({});
     }else{
       this.episodeData.guest_state = "WATCHING";
-      this.setState({});
     }
+
+    this.requestStateChange("update broadcast player");
   },
 
   render:function(){
 
-    var inlineButton = "";
-    var yourStreamClasses = "";
-    console.log("public player render", this.episodeData);
+    var userPreviewComponent = "";
+    if( this.episodeData.episode_state != "ENDED"){
+      var user = this.getUserByIdentity( this.episodeData.identity );
+      if(user && this.episodeData.guest_state == "IN_LINE" ){
+        userPreviewComponent = 
+          <div id="your-stream">
+            <TokboxVideo videoElement={user.videoElement} />
+          </div>;
+      } 
+    }
 
-    // this.logSessionInfo();
 
     return(
       <div className="container max-video-width episode-container noselect">
-
         <EpisodePlayer users={ this.episodeData.users } context={this} />
+        <div className="controls-bg"></div>
         <EpisodePublicControls episodeData={ this.episodeData } />
-
-        <div id="your-stream" className={yourStreamClasses}></div>
+        {userPreviewComponent}
       </div>
     )
   }

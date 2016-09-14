@@ -1,2 +1,12 @@
 
+
+  
+- if @episode_state == "ENDED"
+  .card
+    %div.bold This episode has ended.
+    - if @archive.status == "uploaded"
+      %div Download Assets: id:#{@archive.id}
+
 = react_component("EpisodePublic", {episode_state: @episode_state, attendees: @attendees, episode_id: @episode.id});
+
+

@@ -1,5 +1,13 @@
 @import "config/variables";
 
+.controls-bg{
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 51px;
+  background: asset-url('controls-bg.png') top left repeat-x;
+}
 
 .episode-controls{
   position:absolute;
@@ -8,7 +16,6 @@
   color:white;
   font-size: 0.8em;
   z-index: 800;
-
 
   .broadcast-status-icon{
     position:relative;
@@ -28,8 +35,6 @@
     border-radius:999px;
     border: 1px solid rgba(white, 1);
   }
-
-
 
   .control-menu{
     margin-bottom:20px;
@@ -83,6 +88,11 @@
     .icon-guest-state{
       opacity:1;
       color:#50ff50;
+    }
+
+    .broadcast-status-icon{
+       background: #50ff50;
+       .icon{ opacity:1; }
     }
   }
 
@@ -245,11 +255,7 @@
   position:absolute;
   bottom:0px;
   left:0px;
-}
-
-#your-stream-elem{
-  max-width: 150px;
-  max-height: 110px;
+  width: 120px;
 }
 
 

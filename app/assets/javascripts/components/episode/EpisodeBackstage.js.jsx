@@ -41,18 +41,17 @@ var EpisodeBackstage = React.createClass({
   onSetEpisodeState: function( episode_state ){ this.setEpisodeState( episode_state );  },
   // when EpisodeModeratorStateBtn is toggled
   onSetModeratorState: function( moderator_state ){ 
+    // console.log("onSetModeratorState:", moderator_state)
     if( moderator_state == "BROADCASTING" ){
       this.addGuestToBroadcast( this.episodeData.identity );
     }else{
       this.removeGuestFromBroadcast( this.episodeData.identity );
     }
-    this.updateUserGuestState( this.episodeData.identity, moderator_state );
-    this.setState({});
   },
   // when EpisodeModeratorStateBtn is toggled
   onSetControlsViewState: function( controls_view_state ){
     this.episodeData.controls_view_state = controls_view_state;
-    this.setState({});
+    this.requestStateChange("changed the control view state")
   },
 
   // event listener relays
@@ -90,7 +89,7 @@ var EpisodeBackstage = React.createClass({
         subscriber: this.session.subscribe(stream, tempID, streamOptions)
       });
     }
-    this.setState({});
+    // this.setState({});
   },
 
   disconnectPreviewStream: function(identity){
@@ -100,7 +99,7 @@ var EpisodeBackstage = React.createClass({
         this.session.unsubscribe( s.subscriber );
       }
     }
-    this.setState({});
+    // this.setState({});
   },
 
 
@@ -116,7 +115,7 @@ var EpisodeBackstage = React.createClass({
     // update broadcast
     self.updateBroadcast();
     // update player
-    self.setState({});
+    // self.setState({});
     // save to DB
     var self = this;
     var api = '/api/episodes/'+self.episodeData.episode_id+'/set_episode_state';
@@ -134,7 +133,7 @@ var EpisodeBackstage = React.createClass({
     if(episode_state == "ENDED"){
       self.removeAllStreams();
       self.disconnectLocalStream();
-      self.setState({}); 
+      // self.setState({}); 
     }
   },
 
@@ -164,6 +163,11 @@ var EpisodeBackstage = React.createClass({
 
       case "signal:GUEST_LEFT_BROADCAST":
         this.removeGuestFromBroadcast( data );
+        break;
+
+      case "signal:REQUEST_BROADCAST_UPDATE":
+        console.log("User Requested broadcast update", data);
+        this.updateBroadcast();
         break;
     }
   },
@@ -200,7 +204,7 @@ var EpisodeBackstage = React.createClass({
     this.updateUserGuestState( identity, "IN_LINE" );
     this.sendDirectSignal( identity, "ADDED_TO_LINE", {identity: identity});
     // update this page
-    this.setState({});
+    this.requestStateChange("user added to line");
   },
 
   removeGuestFromLine: function( identity ){
@@ -209,31 +213,27 @@ var EpisodeBackstage = React.createClass({
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_LINE", {identity: identity});
     // update this page
-    this.setState({});
+    this.requestStateChange("user removed from line");
   },
 
   addGuestToBroadcast: function( identity ){
-    console.log("Admin::addGuestToBroadcast", identity);
+    console.log("addGuestToBroadcast", identity);
     this.updateUserGuestState( identity, "ADDED_TO_BROADCAST" );
     // update the broadcast with new guest..
     this.updateBroadcast();
-    // reload this page..
-    this.setState({});
   },
 
   removeGuestFromBroadcast: function( identity ){
-    console.log("Admin::removeGuestFromBroadcast", identity);
+    // console.log("Admin::removeGuestFromBroadcast", identity);
     this.updateUserGuestState( identity, "REMOVED_FROM_BROADCAST" );
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_BROADCAST", {identity: identity});
     // update the broadcast..
     this.updateBroadcast();
-    // update this page..
-    this.forceUpdate();
   },
 
   updateBroadcast: function(){
-    // console.log("admin: update broadcast");
+    console.log(" >> UPDATE BROADCAST");
     if( this.episodeData.episode_state == "LIVE"){
       var broadcasting_users = [];
       // push identities of the current broadcasters..
@@ -249,34 +249,40 @@ var EpisodeBackstage = React.createClass({
       // send it
       this.sendGlobalSignal("UPDATE_BROADCAST", identities);
       // update this page.
-      this.forceUpdate(); 
+      this.requestStateChange("update broadcast");
+      // this.forceUpdate(); 
 
     }else if(this.episodeData.episode_state == "ENDED"){
       //
       this.sendGlobalSignal("BROADCAST_ENDED");
       this.removeAllStreams();
       //
-      this.setState({});
+      // this.setState({});
     }
   },
 
 
   // view
   render:function(){
-    console.log("Admin::render", this.episodeData.users);
+    // console.log("Admin::render", this.episodeData.users);
 
-    var yourStreamClasses = "";
+    var userPreviewComponent = "";
     if( this.episodeData.episode_state != "ENDED"){
-      if(this.episodeData.guest_state == "BROADCASTING" ){
-        yourStreamClasses = " hidden ";
+      var user = this.getUserByIdentity( this.episodeData.identity );
+      if(user && this.episodeData.guest_state != "BROADCASTING" ){
+        userPreviewComponent = 
+          <div id="your-stream">
+            <TokboxVideo videoElement={user.videoElement} />
+          </div>;
       } 
     }
 
     return(
       <div className="container max-video-width episode-container noselect">
         <EpisodePlayer users={ this.episodeData.users } context={this} />
+        <div className="controls-bg"></div>
         <EpisodeBackstageControls episodeData={ this.episodeData } />
-        <div id="your-stream" className={yourStreamClasses}></div>
+        {userPreviewComponent}
       </div>
     )
   }
