@@ -1,8 +1,10 @@
 
 # in use
 
-BASE_URL: 
+# BASE_URL: 
+# ULTRAHOOK_API_KEY: 
 
+# AWS_USER:
 AWS_REGION:
 AWS_KEY:
 AWS_SECRET:
