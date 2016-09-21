@@ -94,7 +94,7 @@ if (!String.prototype.trim) { String.prototype.trim = function () { return this.
 
 /* 
 Simple Utility for Global Event Management
-Written by Christopher L. Smith :: movepixels.to
+Written by Christopher L. Smith :: somethingcolorful.com
 Features:
 - pure javascript, so no dependencies at all.
 - value is that the "scope" is in the proper object of the callback function.
