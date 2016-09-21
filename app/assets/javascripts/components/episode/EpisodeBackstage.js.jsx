@@ -107,6 +107,7 @@ var EpisodeBackstage = React.createClass({
 
 
   setEpisodeState: function( episode_state ){
+    // console.log("SET EPISODE STATE: ", episode_state)
     var self = this;
     // save local
     self.episodeData.episode_state = episode_state;

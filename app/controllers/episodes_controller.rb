@@ -37,7 +37,7 @@ class EpisodesController < OpentokController
     @episode_state = @episode.episode_state
     @attendees = get_episode_attendees( @episode.id )
 
-    @archive = @opentok.archives.find( @episode.archive_id )
+    # @archive = @opentok.archives.find( @episode.archive_id )
   end
 
   def backstage
