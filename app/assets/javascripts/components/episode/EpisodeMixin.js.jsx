@@ -246,7 +246,7 @@ var EpisodeMixin = {
 
   // update user session status
   updateUserGuestState: function( identity, guest_state ){
-    console.log("updateUserGuestState", identity, guest_state)
+    // console.log("updateUserGuestState", identity, guest_state)
 
     var updated_attendees = [];
     // loop through, find and change
@@ -308,7 +308,7 @@ var EpisodeMixin = {
 
   // add stream object..
   addStreamToUser: function( identity, stream ){
-    console.log("addStreamToUser", identity);  
+    // console.log("addStreamToUser", identity);  
     // remove the guest from the users table..
     var user = this.getUserByIdentity( identity );
     if( user ){
@@ -329,7 +329,7 @@ var EpisodeMixin = {
 
   addVideoElementToUser: function( identity, video ){
     var user = this.getUserByIdentity( identity );
-    console.log("addVideoElementToUser:", identity);
+    // console.log("addVideoElementToUser:", identity);
     // add new one
     user.videoElement = video;
 
@@ -531,7 +531,7 @@ var EpisodeMixin = {
   },
 
   connectToRemoteStream: function( identity ){
-    console.log("connectToRemoteStream", identity)
+    // console.log("connectToRemoteStream", identity)
     var self = this;
     var user = this.getUserByIdentity( identity );
     if(user.player_status != "MOUNTED"){
@@ -609,7 +609,7 @@ var EpisodeMixin = {
 
 
   requestStateChange: function(reason){
-    console.log(">> SET EPISODE STATE: reason: ["+reason+"]");
+    // console.log(">> SET EPISODE STATE: reason: ["+reason+"]");
     this.setState( this.episodeData );
   }
 

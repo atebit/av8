@@ -28,7 +28,7 @@ var EpisodePublic = React.createClass({
   },
 
   onSetGuestState: function( guest_state ){
-    console.log("onSetGuestState: ", guest_state);
+    // console.log("onSetGuestState: ", guest_state);
     if( guest_state == "JOIN_LINE" ){
       this.sendGlobalSignal("GUEST_JOINED_LINE", this.episodeData.identity);
       this.connectLocalStream();
@@ -117,7 +117,7 @@ var EpisodePublic = React.createClass({
   // update the player
 
   updateBroadcastPlayer: function( published_identities ){
-    console.log("updateBroadcastPlayer")
+    // console.log("updateBroadcastPlayer")
 
     // TODO: check to see if the player needs to update or not... 
     // If not, don't update because it causes a blink to the users that don't need it.
