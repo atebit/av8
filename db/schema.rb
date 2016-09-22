@@ -11,7 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160822193013) do
+ActiveRecord::Schema.define(version: 20160922022135) do
+
+  create_table "chat_messages", force: :cascade do |t|
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "user_id"
+    t.string   "message"
+    t.integer  "thread_id"
+    t.boolean  "starred",    default: false
+    t.boolean  "flagged",    default: false
+  end
+
+  create_table "chat_threads", force: :cascade do |t|
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.string   "content_type"
+    t.integer  "content_id"
+    t.boolean  "archived"
+  end
 
   create_table "episode_rsvps", force: :cascade do |t|
     t.datetime "created_at",                   null: false
