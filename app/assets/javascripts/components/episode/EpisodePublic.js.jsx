@@ -111,6 +111,10 @@ var EpisodePublic = React.createClass({
           // this.setState({});
         }
         break;
+
+      case "signal:CHAT_MESSAGE_SAVED":
+        CSEventManager.broadcast("CHAT_THREAD_UPDATE");
+        break;
     }
   },
 

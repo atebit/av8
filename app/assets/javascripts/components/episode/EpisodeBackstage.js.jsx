@@ -170,6 +170,10 @@ var EpisodeBackstage = React.createClass({
         // console.log("User Requested broadcast update", data);
         this.updateBroadcast();
         break;
+
+      case "signal:CHAT_MESSAGE_SAVED":
+        CSEventManager.broadcast("CHAT_THREAD_UPDATE");
+        break;
     }
   },
 

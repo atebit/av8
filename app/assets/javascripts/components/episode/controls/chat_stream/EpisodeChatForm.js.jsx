@@ -43,7 +43,7 @@ var EpisodeChatForm = React.createClass({
       if(response.responseText.indexOf("SUCCESS") != -1){
         self.setInteraction();
         // push messages happen to, but this is useful.
-        CSEventManager.broadcast( "EPISODE_CHAT_THREAD_UPDATE" );
+        CSEventManager.broadcast( "CHAT_MESSAGE_SAVED" );
       }else{
         // CSEventManager.broadcast( AppMessages.SHOW_TOAST_NOTIFICATION, {
         //   type: "error",

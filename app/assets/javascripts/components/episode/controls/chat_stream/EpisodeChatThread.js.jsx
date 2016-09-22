@@ -1,7 +1,7 @@
 var EpisodeChatStream = React.createClass({
 
   componentWillMount: function(){
-    CSEventManager.addListener("EPISODE_CHAT_THREAD_UPDATE", this, "onChatThreadUpdate");
+    CSEventManager.addListener("CHAT_THREAD_UPDATE", this, "onChatThreadUpdate");
   },
 
   componentDidMount: function() { },

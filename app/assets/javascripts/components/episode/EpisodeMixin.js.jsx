@@ -47,8 +47,10 @@ var EpisodeMixin = {
 
   // when we're ready, call the init function to get Tokbox rolling.
   initialize: function(){
-    // if there are users already in the session, prepopulate the users table.
+    //
     CSEventManager.addListener("CONNECT_REMOTE_STREAM", this, "connectRemoteStreamHandler");
+    //
+    CSEventManager.addListener("CHAT_MESSAGE_SAVED", this, "onChatMessageSaved");
 
     var self = this;
 
@@ -393,8 +395,14 @@ var EpisodeMixin = {
   },
 
 
-
   // Send Signals
+
+
+  // when the user posts a chat thread, send a signal to everyone to reload the chat stream..
+  onChatMessageSaved: function(){
+    this.sendGlobalSignal("CHAT_MESSAGE_SAVED", "");
+  },
+
 
   sendDirectSignal: function(identity, type, data){
     // console.log("send direct signal to:", identity );
