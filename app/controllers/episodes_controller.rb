@@ -38,6 +38,27 @@ class EpisodesController < OpentokController
     @attendees = get_episode_attendees( @episode.id )
 
     # @archive = @opentok.archives.find( @episode.archive_id )
+
+
+
+    # chat thread > port from "event" to "episode"
+    # thread = ChatThread.where( content_type: "event", content_id: @event.id).first
+    # if thread.present?
+    #   @thread_id = thread.id
+    # else
+    #   thread = ChatThread.new( content_type: "event", content_id: @event.id)
+    #   if thread.save
+    #     @thread_id = thread.id
+    #   else
+    #     @thread_id = -1
+    #   end
+    # end
+
+    # if @event.is_archive
+    #   archive_event( @event.id )
+    # end
+
+    # @chat_thread_archive_status = "archived" if thread.archived
   end
 
   def backstage
