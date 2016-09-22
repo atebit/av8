@@ -29,7 +29,7 @@ var EpisodeGuestStateBtn = React.createClass({
 
     var text = "",
         stateClasses = "menu-item";
-        
+    
     if( this.props.episodeData.guest_state == "BROADCASTING" ){
       // broadcasting
       text = "Leave Broadcast";

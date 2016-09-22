@@ -8,7 +8,7 @@ var EpisodePublicControls = React.createClass({
 
     var guestState = <EpisodeGuestStateBtn episodeData={ this.props.episodeData } />;
 
-    if( this.props.episodeData.episode_state == "ENDED"){
+    if( this.props.episodeData.episode_state != "LIVE"){
       guestState = "";
     }
 

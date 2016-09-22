@@ -4,26 +4,10 @@ var EpisodeMixin = {
 
   episodeData: undefined,
 
-  // episodeData: {
-  //   episode_state: CONNECTED / STREAMING / IN_LINE / PREP_TO_BROADCAST / BROADCASTING / BANNED
-  //   guest_state: BROADCASTING / WATCHING
-  //   users: the current users array
-  //   controls_view_state: HIDDEN / CHAT / GUESTLIST
-  // }
-
-  // users:[{
-  //   connection: connectionObject,
-  //   stream: streamObject,
-  //   identity: email,
-  //   role: "GUEST / ADMIN / HOST / CELEBRITY",
-  //   live_state: " CONNECTED / STREAMING / IN_LINE / PREP_TO_BROADCAST / BROADCASTING / BANNED",
-  //   av_status: "ALL / VIDEO_ONLY / AUDIO_ONLY",
-  // }],
-
   session: undefined,
   publisher: undefined,
   stream_id: undefined,
-  broadcast_status: "idle", // " CONNECTED / STREAMING / IN_LINE / PREP_TO_BROADCAST / BROADCASTING / BANNED"
+  broadcast_status: "idle",
 
 
   // when willMount is called, setup the episodeData object
