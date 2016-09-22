@@ -7,6 +7,6 @@
 /    - if @archive.status == "uploaded"
 /      %div Download Assets: id:#{@archive.id}
 
-= react_component("EpisodePublic", {episode_state: @episode_state, attendees: @attendees, episode_id: @episode.id});
+= react_component("EpisodePublic", {episode_state: @episode_state, attendees: @attendees, episode_id: @episode.id, chat_thread_id: @thread_id });
 
 
