@@ -136,7 +136,6 @@ class EpisodesController < OpentokController
 
   def append_chat_thread
 
-    # chat thread > port from "event" to "episode"
     thread = ChatThread.where( content_type: "episode", content_id: @episode.id).first
     if thread.present?
       @thread_id = thread.id
@@ -148,8 +147,6 @@ class EpisodesController < OpentokController
         @thread_id = -1
       end
     end
-
-    @chat_thread_archive_status = "archived" if thread.archived
     
   end
 
