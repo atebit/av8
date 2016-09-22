@@ -1,16 +1,31 @@
 var EpisodeChatStream = React.createClass({
 
   componentWillMount: function(){
+    // the state data for this component
+    this.store = {
+      thread_id: this.props.chat_thread_id,
+      messages_id: "chat-messages-"+Guid.get(),
+      messages: undefined,
+      scroll_listen: false,
+      scroll_takeover: false,
+    }
+    // listen for when to update the thread..
     CSEventManager.addListener("CHAT_THREAD_UPDATE", this, "onChatThreadUpdate");
+
+    //TODO: should probably listen for page resize..
   },
 
-  componentDidMount: function() { },
+  componentDidMount: function() { 
+    // load the thread the first time..
+    this.onChatThreadUpdate();
+  },
+
   componentDidUpdate: function(){ },
 
-  onChatThreadUpdate: function( e ){
+  onChatThreadUpdate: function(){
 
     var self = this;
-    var thread_id = self.store.thread_id
+    var thread_id = self.store.thread_id;
     var api = '/api/chat_messages/find/?thread_id=' + thread_id;
     var method = "get";
     var data = {};
@@ -72,6 +87,8 @@ var EpisodeChatStream = React.createClass({
 
     var messages = "";
     var messageFormComponent = "";
+
+    // TODO: for all messages, create a chat message and give it style props for "fading out" as it nears the top of the page.
 
     return(
 
