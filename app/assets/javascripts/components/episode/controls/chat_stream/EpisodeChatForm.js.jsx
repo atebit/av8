@@ -1,4 +1,4 @@
-var AddNewChatMessageForm = React.createClass({ 
+var EpisodeChatForm = React.createClass({
 
   componentWillMount: function() { 
     this.input_id = "chat-thread-input-"+Guid.get(); 
@@ -6,7 +6,6 @@ var AddNewChatMessageForm = React.createClass({
   componentDidMount: function() { this.setInteraction(); },
   componentWillUnmount: function() { },
   componentDidUpdate: function() { },
-
 
   setInteraction: function(){
     var self = this;
@@ -44,13 +43,13 @@ var AddNewChatMessageForm = React.createClass({
       if(response.responseText.indexOf("SUCCESS") != -1){
         self.setInteraction();
         // push messages happen to, but this is useful.
-        CSEventManager.broadcast( AppMessages.CHAT_THREAD_UPDATE );
+        CSEventManager.broadcast( "EPISODE_CHAT_THREAD_UPDATE" );
       }else{
-        CSEventManager.broadcast( AppMessages.SHOW_TOAST_NOTIFICATION, {
-          type: "error",
-          message: response.responseText
-        });
-        // console.log("error posting chat", response.responseText)
+        // CSEventManager.broadcast( AppMessages.SHOW_TOAST_NOTIFICATION, {
+        //   type: "error",
+        //   message: response.responseText
+        // });
+        console.log("error posting chat", response.responseText)
       }
     });
   },

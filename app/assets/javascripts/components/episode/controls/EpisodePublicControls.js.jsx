@@ -12,6 +12,8 @@ var EpisodePublicControls = React.createClass({
       guestState = "";
     }
 
+    var chatStreamComponent = "";
+
     return(
       <section className="episode-controls">
         <header>
@@ -22,7 +24,7 @@ var EpisodePublicControls = React.createClass({
             <ChatStreamStateBtn episodeData={ this.props.episodeData } />
           </div>
         </header>
-
+        {chatStreamComponent}
       </section>
     )
   }

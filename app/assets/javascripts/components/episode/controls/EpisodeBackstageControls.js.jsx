@@ -18,6 +18,9 @@ var EpisodeBackstageControls = React.createClass({
     }
 
 
+    var chatStreamComponent = "";
+
+
     return(
       <section className="episode-controls">
         <header>
@@ -30,6 +33,7 @@ var EpisodeBackstageControls = React.createClass({
           </div>
         </header>
         {guestListComponent}
+        {chatStreamComponent}
       </section>
     )
   }
