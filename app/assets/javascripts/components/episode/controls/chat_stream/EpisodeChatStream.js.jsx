@@ -92,6 +92,13 @@ var EpisodeChatStream = React.createClass({
 
   render:function(){
 
+    var stateClasses = "episode-control-content episode-chat";
+    if(this.props.episodeData.controls_view_state == "CHAT"){
+      stateClasses += " state_active ";
+    }else{
+      stateClasses += " state_inactive ";
+    }
+
     var messages = [];
     var messageFormComponent = <EpisodeChatForm thread_id={this.store.thread_id} />;
 
@@ -118,7 +125,7 @@ var EpisodeChatStream = React.createClass({
 
     return(
 
-      <section className="episode-control-content episode-chat">
+      <section className={stateClasses}>
         <div id={this.store.messages_id} className="chat-messages" onScroll={this.onMessageScroll} style={messagesStyle}>
           {messages}
         </div>
