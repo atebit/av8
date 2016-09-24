@@ -3,6 +3,12 @@
 /* clearfix */ .clear:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; } .clear { display: inline-block; } * html .clear { height: 1%; } .clear { display: block; }
 
 /* Swatches */
+
+$color5: #00A500;
+.green{
+  color: $color5;
+}
+
 $color4: #262626; /* important action */
 $color4Faded: lighten($color4, 40%);
 .color4{ color:$color4; }
@@ -22,10 +28,6 @@ $color1Faded: darken($color1, 40%);
 
 $white: rgb(255,255,255);
 $black: rgb(0,0,0);
-
-.green{
-  color: #00A500;
-}
 
 /* textures, patterns & gradients */
 

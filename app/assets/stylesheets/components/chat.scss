@@ -1,7 +1,10 @@
+@import "config/variables";
+
 .chat-thread-item{
   margin: 3px 0px;
-  padding: 5px 5px;
+  padding: 8px 5px;
   // width:200px;
+  background: rgba(#00ff8a, 0.4);
   .avatar{
 
   }
