@@ -14,6 +14,11 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
+
+    resources :chat_threads, only: [:create, :update, :destroy]
+    resources :chat_messages, only: [:create, :destroy]
+    get '/chat_messages/find', :to => 'chat_messages#find'
+
     post "/episodes/:episode_id/start_episode", to: "episodes#start_episode", as: "episode_start"
     post "/episodes/:episode_id/end_episode", to: "episodes#end_episode", as: "episode_end"
 

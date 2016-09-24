@@ -47,4 +47,8 @@ class User < ActiveRecord::Base
     end
   end
 
+  def is_deleted?
+    false
+  end
+
 end

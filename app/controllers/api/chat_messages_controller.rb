@@ -81,7 +81,7 @@ class Api::ChatMessagesController < Api::ApiController
       p[:content] = content
       p[:user] = {}
       p[:user][:id] = user.id
-      p[:user][:name] = user.full_name
+      p[:user][:name] = user.name
       p[:user][:active] = ( ! user.is_deleted? )
       return p
     end

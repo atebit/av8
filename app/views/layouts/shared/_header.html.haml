@@ -12,6 +12,9 @@
       window.API_KEY = "#{ENV["OPENTOK_KEY"]}";
       window.SESSION_ID = "#{@remote_session_id}";
       window.SESSION_TOKEN = "#{@token}";
+      window.SESSION_VARS = {
+        current_user_id: #{current_user.id}
+      }
 
   %header.mainHeader.clear
     .left 

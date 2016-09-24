@@ -2,8 +2,9 @@ var EpisodeChatStream = React.createClass({
 
   componentWillMount: function(){
     // the state data for this component
+    // console.log(this.props.episodeData)
     this.store = {
-      thread_id: this.props.chat_thread_id,
+      thread_id: this.props.episodeData.chat_thread_id,
       messages_id: "chat-messages-"+Guid.get(),
       messages: undefined,
       scroll_listen: false,
@@ -14,6 +15,10 @@ var EpisodeChatStream = React.createClass({
 
     //TODO: should probably listen for page resize..
     
+    var self = this;
+    $(window).resize(function(){
+      self.forceUpdate();
+    });
   },
 
   componentDidMount: function() { 
@@ -25,6 +30,7 @@ var EpisodeChatStream = React.createClass({
 
   onChatThreadUpdate: function(){
 
+    // console.log(this.store.thread_id)
     var self = this;
     var thread_id = self.store.thread_id;
     var api = '/api/chat_messages/find/?thread_id=' + thread_id;
@@ -86,15 +92,36 @@ var EpisodeChatStream = React.createClass({
 
   render:function(){
 
-    var messages = "";
-    var messageFormComponent = "";
+    var messages = [];
+    var messageFormComponent = <EpisodeChatForm thread_id={this.store.thread_id} />;
+
+    // var controls = $("#episode-controls .control-menu");
+    var player = $("#episode-player");
+    var messagesHeight = player.height() - (42*3);
+
+// console.log(player.height(),controls.height())
+    var messagesStyle={
+      overflow:"hidden",
+      height: messagesHeight
+    }
 
     // TODO: for all messages, create a chat message and give it style props for "fading out" as it nears the top of the page.
+    if(this.store.messages){
+      // console.log(this.store.messages)
+      for(var i=0; i < this.store.messages.length; i++){
+        var message = this.store.messages[i];
+        messages.push(
+          <EpisodeChatMessage key={i} message={ message } container_id={this.store.messages_id}  />
+        );
+      }
+    }
 
     return(
 
       <section className="episode-control-content episode-chat">
-        {messages}
+        <div id={this.store.messages_id} className="chat-messages" onScroll={this.onMessageScroll} style={messagesStyle}>
+          {messages}
+        </div>
         {messageFormComponent}
       </section>
     )
