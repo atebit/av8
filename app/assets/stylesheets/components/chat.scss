@@ -1,7 +1,7 @@
 .chat-thread-item{
   margin: 3px 0px;
   padding: 5px 5px;
-  width:200px;
+  // width:200px;
   .avatar{
 
   }
@@ -14,4 +14,14 @@
 
     }
   }
+}
+
+
+
+.episode-chat.state_inactive{
+  display:none;
+}
+
+.episode-chat.state_active{
+  display:block;
 }
