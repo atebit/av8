@@ -13,6 +13,7 @@ var EpisodeChatStream = React.createClass({
     CSEventManager.addListener("CHAT_THREAD_UPDATE", this, "onChatThreadUpdate");
 
     //TODO: should probably listen for page resize..
+    
   },
 
   componentDidMount: function() { 
