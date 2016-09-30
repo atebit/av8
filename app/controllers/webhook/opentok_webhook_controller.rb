@@ -15,28 +15,36 @@ class Webhook::OpentokWebhookController < ApplicationController
   # "expired" — The archive is no longer available for download from the OpenTok cloud. (Archives on the OpenTok cloud are only available for 72 hours from the time they are created.)
   # "failed" — The archive recording failed.
 
+  # an actual hook request "raw body"
   # {
-  #     "id" : "b40ef09b-3811-4726-b508-e41a0f96c68f",
-  #     "event": "archive",
-  #     "createdAt" : 1384221380000,
-  #     "duration" : 328,
-  #     "name" : "Foo",
-  #     "partnerId" : 123456,
-  #     "reason" : "",
-  #     "sessionId" : "2_MX40NzIwMzJ-flR1ZSBPY3QgMjkgMTI6MTM6MjMgUERUIDIwMTN-MC45NDQ2MzE2NH4",
-  #     "size" : 18023312,
-  #     "status" : "available",
-  #     "url" : "http://tokbox.com.archive2.s3.amazonaws.com/123456/b40ef09b-3811-4726-b508-e41a0f96c68f/archive.mp4"
+  #   "id":"daf723a7-879d-4124-b8ba-a840831635e5",
+  #   "status":"uploaded",
+  #   "name":"webhook test 2",
+  #   "reason":"user initiated",
+  #   "sessionId":"1_MX40NTYwMDA4Mn5-MTQ3NTAwMTE2NjE3MH4rOGl1UklUNmdBZnlQZElnSGxQK2YydVB-fg",
+  #   "projectId":45600082,
+  #   "createdAt":1475001170000,
+  #   "size":1027961,
+  #   "duration":24,
+  #   "outputMode":"individual",
+  #   "hasAudio":true,
+  #   "hasVideo":true,
+  #   "certificate":"",
+  #   "sha256sum":"D6GkDmb+aY17sVBE4XrZFUhQDTSee96WmN19Fvypixs=",
+  #   "password":"",
+  #   "updatedAt":1475001197837,
+  #   "partnerId":45600082
   # }
 
+  def status
 
-  def archive_complete
+    data = JSON.parse(request.body.read)
 
     # find the episode
-    episode = Episode.where( archive_id: params[:id] ).first
+    episode = Episode.where( archive_id: data["id"] ).first
 
     if episode.present?
-      case params[:status]
+      case data["status"]
 
       when "uploaded"
       when "available"
@@ -44,8 +52,8 @@ class Webhook::OpentokWebhookController < ApplicationController
         # TODO: the archive is complete
 
         # TODO: maybe don't save this URL here...
-        episode.archive_assets_path = params[:url]
-        episode.save
+        # episode.archive_assets_path = data["url"]
+        # episode.save
 
         puts "***** AV8: EPISODE ARCHIVE AVAILABLE *****"
         puts "                                          "

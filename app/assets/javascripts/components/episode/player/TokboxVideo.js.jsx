@@ -11,6 +11,17 @@ var TokboxVideo = React.createClass({
     var video = videoJQ[0];
     if(this.props.videoElement){
       video.srcObject = this.props.videoElement.srcObject; 
+
+
+      // hack to remove volume from own videos...
+      if(this.props.user){
+        if(this.props.user.is_local){
+          // console.log(video)
+          video.volume = 0;
+        }
+      }else{
+        video.volume = 0;
+      }
     }
   },
 

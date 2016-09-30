@@ -14,6 +14,7 @@ var EpisodePlayerStream = React.createClass({
           id={this.props.video_id} 
           css={css} 
           stream={this.props.stream}
+          user={this.props.user}
           videoElement={this.props.user.videoElement} />
 
         <div className="stream-identity">{this.props.user.identity}</div>

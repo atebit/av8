@@ -84,10 +84,13 @@ var EpisodeBackstage = React.createClass({
         width: "100%",
         height: "100%"
       }
+
       this.previewSubscribers.push({
         identity: identity,
         subscriber: this.session.subscribe(stream, tempID, streamOptions)
       });
+
+
     }
     // this.setState({});
   },
@@ -181,7 +184,7 @@ var EpisodeBackstage = React.createClass({
   guestJoinedRoom: function( identity ){
     var self = this;
     if( identity != self.episodeData.identity ){
-      console.log("guestJoinedRoom", identity);
+      // console.log("guestJoinedRoom", identity);
       // TODO:  SEND A SPECIFIC MESSAGE TO THE PERSON WHO JOINED.
       if( self.episodeData.episode_state == "LIVE" ){
         self.updateBroadcast(); 
@@ -194,7 +197,7 @@ var EpisodeBackstage = React.createClass({
   // 
   guestLeftRoom: function( identity ){
     var self = this;
-    console.log("guestLeftRoom", identity);
+    // console.log("guestLeftRoom", identity);
     var user = self.getUserByIdentity( identity );
     if( user ){
       self.removeGuestFromLine( identity );
@@ -205,7 +208,7 @@ var EpisodeBackstage = React.createClass({
 
   // conference management functions..
   addGuestToLine: function( identity ){
-    console.log("Admin::addGuestToLine", identity); 
+    // console.log("Admin::addGuestToLine", identity); 
     this.updateUserGuestState( identity, "IN_LINE" );
     this.sendDirectSignal( identity, "ADDED_TO_LINE", {identity: identity});
     // update this page
@@ -213,7 +216,7 @@ var EpisodeBackstage = React.createClass({
   },
 
   removeGuestFromLine: function( identity ){
-    console.log("Admin::removeGuestFromLine", identity);
+    // console.log("Admin::removeGuestFromLine", identity);
     this.updateUserGuestState( identity, "REMOVED_FROM_LINE" );
     // shoot them a direct message..
     this.sendDirectSignal( identity, "REMOVED_FROM_LINE", {identity: identity});
@@ -222,7 +225,7 @@ var EpisodeBackstage = React.createClass({
   },
 
   addGuestToBroadcast: function( identity ){
-    console.log("addGuestToBroadcast", identity);
+    // console.log("addGuestToBroadcast", identity);
     this.updateUserGuestState( identity, "ADDED_TO_BROADCAST" );
     // update the broadcast with new guest..
     this.updateBroadcast();
@@ -238,7 +241,7 @@ var EpisodeBackstage = React.createClass({
   },
 
   updateBroadcast: function(){
-    console.log(" >> UPDATE BROADCAST");
+    // console.log(" >> UPDATE BROADCAST");
     if( this.episodeData.episode_state == "LIVE"){
       var broadcasting_users = [];
       // push identities of the current broadcasters..
@@ -279,10 +282,12 @@ var EpisodeBackstage = React.createClass({
           <div id="your-stream">
             <TokboxVideo videoElement={user.videoElement} />
           </div>;
+
+        // userPreviewComponent = ""
       } 
     }
 
-    console.log(this.props.chat_thread_id)
+    // console.log(this.props.chat_thread_id)
 
     return(
       <div className="container max-video-width episode-container noselect">
